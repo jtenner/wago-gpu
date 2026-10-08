@@ -12,7 +12,7 @@ func TestHardwareMandelbrot(t *testing.T) {
 	if os.Getenv("WAGO_GPU_TEST") != "1" {
 		t.Skip("set WAGO_GPU_TEST=1 to require hardware")
 	}
-	for _, size := range [][3]uint32{{19, 17, 12}, {32, 24, 16}} {
+	for _, size := range [][3]uint32{{19, 17, 12}, {32, 24, 16}, {1920, 1080, 1}, {2560, 1440, 1}} {
 		want := image(t, "cpu", true, false, size[0], size[1], size[2])
 		got := image(t, "buffers", false, true, size[0], size[1], size[2])
 		if !bytes.Equal(got, want) {

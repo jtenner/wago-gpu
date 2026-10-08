@@ -5,6 +5,7 @@ package wagogpu
 import (
 	"context"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"github.com/oliverbestmann/webgpu/wgpu"
 	"time"
@@ -98,20 +99,23 @@ func (b *gpuBackend) submitBuffers(ctx context.Context, encode func(*wgpu.Comman
 	}
 	return b.waitIdle(ctx)
 }
-func (b *gpuBackend) ReadBuffer(ctx context.Context, resource deviceBuffer, size uint64, commit func([]byte)) (resultErr error) {
-	r, err := b.device.TryCreateBuffer(&wgpu.BufferDescriptor{Size: size, Usage: wgpu.BufferUsageMapRead | wgpu.BufferUsageCopyDst})
-	if err != nil {
-		return err
+func (b *gpuBackend) AllocateReadback(size uint64) (deviceBuffer, error) {
+	r, e := b.device.TryCreateBuffer(&wgpu.BufferDescriptor{Size: size, Usage: wgpu.BufferUsageMapRead | wgpu.BufferUsageCopyDst})
+	if e != nil {
+		return nil, e
 	}
-	defer func() {
-		if resultErr != nil {
-			b.retired = append(b.retired, r)
-			b.retainedBytes += size
-		} else {
-			r.Destroy()
-			r.Release()
-		}
-	}()
+	return &nativeBuffer{r}, nil
+}
+func (b *gpuBackend) AllocateUniform(size uint64) (deviceBuffer, error) {
+	r, e := b.device.TryCreateBuffer(&wgpu.BufferDescriptor{Size: size, Usage: wgpu.BufferUsageUniform | wgpu.BufferUsageCopyDst})
+	if e != nil {
+		return nil, e
+	}
+	return &nativeBuffer{r}, nil
+}
+func (b *gpuBackend) ReadBuffer(ctx context.Context, resource, staging deviceBuffer, size uint64, commit func([]byte)) (resultErr error) {
+	r := staging.(*nativeBuffer).buffer
+	var err error
 	if err = b.submitBuffers(ctx, func(e *wgpu.CommandEncoder) error {
 		return e.TryCopyBufferToBuffer(resource.(*nativeBuffer).buffer, 0, r, 0, size)
 	}); err != nil {
@@ -121,7 +125,7 @@ func (b *gpuBackend) ReadBuffer(ctx context.Context, resource deviceBuffer, size
 	if err = r.TryMapAsync(wgpu.MapModeRead, 0, size, func(status wgpu.MapAsyncStatus) { done <- status }); err != nil {
 		return err
 	}
-	defer r.TryUnmap()
+	defer func() { resultErr = errors.Join(resultErr, r.TryUnmap()) }()
 	err = waitGPU(ctx, func() (bool, error) {
 		if err := b.poll(); err != nil {
 			return false, err
@@ -155,41 +159,31 @@ func (b *gpuBackend) ReadBuffer(ctx context.Context, resource deviceBuffer, size
 	commit(data)
 	return nil
 }
-func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline, resources []deviceBuffer, seeds []bufferSeed, count uint32, op *BufferOperation) (resultErr error) {
+func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline, parameter deviceBuffer, resources []deviceBuffer, seeds []bufferSeed, count uint32, op *BufferOperation) (resultErr error) {
 	if uint32(len(resources)) > b.limits.MaxStorageBuffersPerShaderStage || uint32(len(resources)+1) > b.limits.MaxBindingsPerBindGroup || b.limits.MaxUniformBuffersPerShaderStage < 1 || b.limits.MaxUniformBufferBindingSize < 16 || b.limits.MaxComputeInvocationsPerWorkgroup < 256 || b.limits.MaxComputeWorkgroupSizeX < 256 || (count+255)/256 > b.limits.MaxComputeWorkgroupsPerDimension {
 		return fmt.Errorf("dispatch device limit")
 	}
 	p := pipeline.(*nativeBufferPipeline)
-	uniform, e := b.device.TryCreateBuffer(&wgpu.BufferDescriptor{Size: 16, Usage: wgpu.BufferUsageUniform | wgpu.BufferUsageCopyDst})
-	if e != nil {
-		return e
-	}
+	uniform := parameter.(*nativeBuffer).buffer
 	parameterQueued := false
 	defer func() {
-		if resultErr != nil {
-			b.retired = append(b.retired, uniform)
+		if resultErr != nil && parameterQueued {
 			b.retainedBytes += 16
-			if parameterQueued {
-				b.retainedBytes += 16
-			}
-		} else {
-			uniform.Destroy()
-			uniform.Release()
 		}
 	}()
 	var params [16]byte
 	binary.LittleEndian.PutUint32(params[:], count)
-	if e = b.queue.TryWriteBuffer(uniform, 0, params[:]); e != nil {
+	if e := b.queue.TryWriteBuffer(uniform, 0, params[:]); e != nil {
 		return e
 	}
 	parameterQueued = true
-	entries := make([]wgpu.BindGroupEntry, len(resources)+1)
+	var entries [9]wgpu.BindGroupEntry
 	entries[0] = wgpu.BindGroupEntry{Binding: 0, Buffer: uniform, Size: 16}
 	for i, r := range resources {
 		buffer := r.(*nativeBuffer).buffer
 		entries[i+1] = wgpu.BindGroupEntry{Binding: uint32(i + 1), Buffer: buffer, Size: buffer.GetSize()}
 	}
-	group, e := b.device.TryCreateBindGroup(&wgpu.BindGroupDescriptor{Layout: p.layout, Entries: entries})
+	group, e := b.device.TryCreateBindGroup(&wgpu.BindGroupDescriptor{Layout: p.layout, Entries: entries[:len(resources)+1]})
 	if e != nil {
 		return e
 	}

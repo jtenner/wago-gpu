@@ -30,6 +30,10 @@ The [Mandelbrot benchmark report](examples/mandelbrot/BENCHMARKS.md) records
 separate setup and repeated-command measurements. These results do not change
 the earlier array-kernel benchmark tables below.
 
+The [current large-image performance report](examples/mandelbrot/PERFORMANCE.md)
+records the full-HD/1440p runs and scratch reuse changes. The array benchmark
+numbers below remain the earlier recorded measurements.
+
 ## Implemented behavior
 
 - All 34 canonical imports, all 11 CPU element types, and eight GPU element types.

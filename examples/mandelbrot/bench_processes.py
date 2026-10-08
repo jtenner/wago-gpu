@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Measure nine fresh default commands on Linux; emit JSON on stdout."""
+"""Measure nine fresh 96x64 commands on Linux; emit JSON on stdout."""
 import argparse
 import hashlib
 import json
@@ -17,7 +17,7 @@ reference = None
 for mode, options in [('cpu', []), ('fallback', ['-program', 'buffers', '-cpu']),
                       ('gpu', ['-program', 'buffers', '-require-gpu'])]:
     for trial in range(3):
-        command = [args.executable] + options
+        command = [args.executable, "-width", "96", "-height", "64", "-iterations", "32"] + options
         # Files prevent a full pipe from blocking the child before wait4.
         with tempfile.TemporaryFile() as out, tempfile.TemporaryFile() as err:
             start = time.perf_counter_ns()

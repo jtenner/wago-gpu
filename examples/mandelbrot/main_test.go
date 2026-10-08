@@ -6,6 +6,7 @@ import (
 	"fmt"
 	gpu "github.com/jtenner/wago-gpu"
 	"github.com/jtenner/wago-gpu/examples/internal/runwasm"
+	"github.com/jtenner/wago-gpu/examples/mandelbrot/internal/settings"
 	"github.com/wago-org/wasi/p1"
 	"io"
 	"testing"
@@ -74,8 +75,8 @@ func TestInvalidSettings(t *testing.T) {
 		w, h, n       uint32
 	}{
 		{"other", false, false, 1, 1, 1}, {"cpu", false, false, 0, 1, 1},
-		{"cpu", false, false, 513, 1, 1}, {"cpu", false, false, 1, 513, 1},
-		{"cpu", false, false, 1, 1, 129}, {"cpu", false, false, 1, 1, 0},
+		{"cpu", false, false, 4097, 1, 1}, {"cpu", false, false, 1, 4097, 1},
+		{"cpu", false, false, 4096, 4096, 1}, {"cpu", false, false, 1, 1, 129}, {"cpu", false, false, 1, 1, 0},
 		{"cpu", false, true, 1, 1, 1}, {"buffers", true, true, 1, 1, 1},
 	} {
 		if e := run(test.program, test.cpu, test.required, test.w, test.h, test.n, io.Discard, io.Discard); e == nil {
@@ -88,7 +89,7 @@ func TestGuestArgumentLimits(t *testing.T) {
 	if e != nil {
 		t.Fatal(e)
 	}
-	for _, args := range [][]string{{"mandelbrot", "0", "8", "16"}, {"mandelbrot", "513", "8", "16"}, {"mandelbrot", "8", "8", "129"}, {"mandelbrot", "bad", "8", "16"}} {
+	for _, args := range [][]string{{"mandelbrot", "0", "8", "16"}, {"mandelbrot", "4097", "8", "16"}, {"mandelbrot", "8", "8", "129"}, {"mandelbrot", "bad", "8", "16"}, {"mandelbrot", "4096", "4096", "1"}} {
 		var out bytes.Buffer
 		e := runwasm.Run(source, runwasm.Options{WASI: &p1.Config{Args: args, Stdout: &out, Stderr: io.Discard}, Calls: []string{"_start"}}, nil)
 		if e == nil || out.Len() != 0 {
@@ -103,5 +104,26 @@ func (failedOutput) Write([]byte) (int, error) { return 0, errors.New("injected 
 func TestWASIOutputFailure(t *testing.T) {
 	if e := run("cpu", true, false, 6, 5, 16, failedOutput{}, io.Discard); e == nil {
 		t.Fatal("WASI output error was lost")
+	}
+}
+
+func TestLargeCPUImages(t *testing.T) {
+	for _, size := range [][2]uint32{{settings.DefaultWidth, settings.DefaultHeight}, {2560, 1440}, {settings.MaxDimension, 1}} {
+		image(t, "cpu", false, false, size[0], size[1], 1)
+	}
+}
+func TestStandaloneDefaultImage(t *testing.T) {
+	source, e := programs.ReadFile("cpu.wasm")
+	if e != nil {
+		t.Fatal(e)
+	}
+	var out bytes.Buffer
+	e = runwasm.Run(source, runwasm.Options{WASI: &p1.Config{Args: []string{"mandelbrot"}, Stdout: &out, Stderr: io.Discard}, Calls: []string{"_start"}}, nil)
+	if e != nil {
+		t.Fatal(e)
+	}
+	header := []byte(fmt.Sprintf("P5\n%d %d\n255\n", settings.DefaultWidth, settings.DefaultHeight))
+	if !bytes.HasPrefix(out.Bytes(), header) || out.Len() != len(header)+settings.DefaultWidth*settings.DefaultHeight {
+		t.Fatal("invalid default full-HD image")
 	}
 }

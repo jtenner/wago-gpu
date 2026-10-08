@@ -46,11 +46,27 @@ func step(index uint32) {
 	writeBuffer(getBuffer(3), index, 2*x*y+ci)
 }
 
+// CPU scratch is allocated once per command and shared with the escape check.
+var cr, ci, x, y []float32
+
 //export wago_gpu.cpu.step
 func cpuStep(count uint32) {
-	for i := uint32(0); i < count; i++ {
-		step(i)
+	if count == 0 {
+		return
 	}
+	// Read current plugin contents once, then compute in native Wasm memory.
+	// This runner has the same math as step without per-element host calls.
+	handles := [4]uint32{getBuffer(0), getBuffer(1), getBuffer(2), getBuffer(3)}
+	check(copyBuffer(handles[0], 0, 0, address(cr), count))
+	check(copyBuffer(handles[1], 0, 0, address(ci), count))
+	check(copyBuffer(handles[2], 0, 0, address(x), count))
+	check(copyBuffer(handles[3], 0, 0, address(y), count))
+	for i := uint32(0); i < count; i++ {
+		nextX, nextY := x[i]*x[i]-y[i]*y[i]+cr[i], 2*x[i]*y[i]+ci[i]
+		x[i], y[i] = nextX, nextY
+	}
+	check(setBuffer(handles[2], 0, 0, address(x), count))
+	check(setBuffer(handles[3], 0, 0, address(y), count))
 }
 
 var gpuPasses, cpuPasses uint32
@@ -70,8 +86,8 @@ func address(data []float32) uint32 { return uint32(uintptr(unsafe.Pointer(&data
 
 func render(width, height, iterations uint32) []byte {
 	count := width * height
-	cr, ci := make([]float32, count), make([]float32, count)
-	x, y := make([]float32, count), make([]float32, count)
+	cr, ci = make([]float32, count), make([]float32, count)
+	x, y = make([]float32, count), make([]float32, count)
 	escaped := make([]uint32, count)
 	pixels := make([]byte, count)
 	for row := uint32(0); row < height; row++ {
@@ -93,16 +109,16 @@ func render(width, height, iterations uint32) []byte {
 		switch dispatch(1, count) {
 		case 0:
 			gpuPasses++
+			// The shader subset has no comparison or conditional branch.
+			// Reuse the orbit scratch for the guest's first-escape check.
+			check(copyBuffer(buffers[2], 0, 0, address(x), count))
+			check(copyBuffer(buffers[3], 0, 0, address(y), count))
 		case 1:
 			cpuStep(count)
 			cpuPasses++
 		default:
 			panic("dispatch failed")
 		}
-		// The current shader subset has no comparison or conditional branch.
-		// Copy z back once per pass so the guest can record each first escape.
-		check(copyBuffer(buffers[2], 0, 0, address(x), count))
-		check(copyBuffer(buffers[3], 0, 0, address(y), count))
 		for i := uint32(0); i < count; i++ {
 			if escaped[i] == 0 && x[i]*x[i]+y[i]*y[i] > 4 {
 				escaped[i] = pass

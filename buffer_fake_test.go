@@ -14,12 +14,14 @@ import (
 
 type fakeBufferDevice struct {
 	fakeBackend
-	buffers                    int
-	pipelineCount              int
-	fail, errorAfterCompletion bool
-	lose                       bool
-	beforeReturn               func()
-	mode                       string
+	allocations, readbackAllocations, uniformAllocations, executions int
+	readErrorAfterCommit                                             bool
+	buffers                                                          int
+	pipelineCount                                                    int
+	fail, errorAfterCompletion                                       bool
+	lose                                                             bool
+	beforeReturn                                                     func()
+	mode                                                             string
 }
 type fakeDeviceBuffer struct {
 	owner  *fakeBufferDevice
@@ -44,28 +46,54 @@ func (d *fakeBufferDevice) BuildBuffer(string) (bufferPipeline, error) {
 }
 func (d *fakeBufferDevice) AllocateBuffer(n uint64) (deviceBuffer, error) {
 	d.buffers++
+	d.allocations++
 	return &fakeDeviceBuffer{owner: d, bytes: make([]byte, n)}, nil
+}
+func (d *fakeBufferDevice) AllocateReadback(n uint64) (deviceBuffer, error) {
+	d.readbackAllocations++
+	return d.AllocateBuffer(n)
+}
+func (d *fakeBufferDevice) AllocateUniform(n uint64) (deviceBuffer, error) {
+	d.uniformAllocations++
+	return d.AllocateBuffer(n)
 }
 func (d *fakeBufferDevice) UploadBuffer(ctx context.Context, b deviceBuffer, data []byte) error {
 	copy(b.(*fakeDeviceBuffer).bytes, data)
 	return ctx.Err()
 }
-func (d *fakeBufferDevice) ReadBuffer(ctx context.Context, b deviceBuffer, n uint64, commit func([]byte)) error {
+func (d *fakeBufferDevice) ReadBuffer(ctx context.Context, b, staging deviceBuffer, n uint64, commit func([]byte)) error {
 	if d.fail {
 		return errors.New("readback failed")
 	}
 	if e := ctx.Err(); e != nil {
 		return e
 	}
-	commit(b.(*fakeDeviceBuffer).bytes[:n])
+	copy(staging.(*fakeDeviceBuffer).bytes, b.(*fakeDeviceBuffer).bytes[:n])
+	commit(staging.(*fakeDeviceBuffer).bytes[:n])
+	if d.readErrorAfterCommit {
+		return errors.New("unmap failed after copy")
+	}
 	return nil
 }
 func (d *fakeBufferDevice) Lost() bool { return d.lose }
-func (d *fakeBufferDevice) ExecuteBuffers(ctx context.Context, _ bufferPipeline, buffers []deviceBuffer, seeds []bufferSeed, count uint32, op *BufferOperation) error {
+func (d *fakeBufferDevice) ExecuteBuffers(ctx context.Context, _ bufferPipeline, parameter deviceBuffer, buffers []deviceBuffer, seeds []bufferSeed, count uint32, op *BufferOperation) error {
+	d.executions++
 	for _, s := range seeds {
 		copy(s.destination.(*fakeDeviceBuffer).bytes, s.source.(*fakeDeviceBuffer).bytes)
 	}
-	if len(buffers) >= 2 {
+	if d.mode == "mandelbrot" {
+		cr, ci := buffers[0].(*fakeDeviceBuffer).bytes, buffers[1].(*fakeDeviceBuffer).bytes
+		x, y := buffers[2].(*fakeDeviceBuffer).bytes, buffers[3].(*fakeDeviceBuffer).bytes
+		for j := uint32(0); j < count; j++ {
+			r, im := math.Float32frombits(binary.LittleEndian.Uint32(x[j*4:])), math.Float32frombits(binary.LittleEndian.Uint32(y[j*4:]))
+			a, b := math.Float32frombits(binary.LittleEndian.Uint32(cr[j*4:])), math.Float32frombits(binary.LittleEndian.Uint32(ci[j*4:]))
+			binary.LittleEndian.PutUint32(x[j*4:], math.Float32bits(r*r-im*im+a))
+			binary.LittleEndian.PutUint32(y[j*4:], math.Float32bits(2*r*im+b))
+		}
+		if d.executions == 2 {
+			return errors.New("injected failure on second GPU pass")
+		}
+	} else if len(buffers) >= 2 {
 		src, dst := buffers[0].(*fakeDeviceBuffer).bytes, buffers[1].(*fakeDeviceBuffer).bytes
 		for j := uint32(0); j < count; j++ {
 			v := math.Float32frombits(binary.LittleEndian.Uint32(src[j*4:]))
@@ -226,7 +254,7 @@ func TestActualWriteSetAndPool(t *testing.T) {
 		if i.buffers[1].version != 2 || !i.buffers[1].cpuCurrent {
 			t.Fatal("read-only input changed version/state")
 		}
-		if i.pool == nil || i.poolBytes != 16 {
+		if i.poolCount == 0 || i.poolBytes != 16 {
 			t.Fatal("scratch was not reused")
 		}
 		if i.buffers[2].version != 5 {
@@ -234,7 +262,7 @@ func TestActualWriteSetAndPool(t *testing.T) {
 		}
 	}
 	p.mu.Unlock()
-	if d.buffers != 3 {
+	if d.buffers != 4 {
 		t.Fatal("unbounded scratch allocations", d.buffers)
 	}
 	close()

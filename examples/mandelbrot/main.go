@@ -7,6 +7,7 @@ import (
 	"fmt"
 	gpu "github.com/jtenner/wago-gpu"
 	"github.com/jtenner/wago-gpu/examples/internal/runwasm"
+	"github.com/jtenner/wago-gpu/examples/mandelbrot/internal/settings"
 	"github.com/wago-org/wasi/p1"
 	"io"
 	"os"
@@ -31,12 +32,20 @@ func kernel() gpu.KernelConfig {
 	}
 }
 
+// Use the same kernel and bounded plugin storage in hosts and benchmarks.
+func bufferConfig(disabled bool) gpu.Config {
+	return gpu.Config{Disabled: disabled, Kernels: []gpu.KernelConfig{kernel()}}
+}
+
 func run(program string, cpu, required bool, width, height, iterations uint32, out, stderr io.Writer) error {
 	if program != "cpu" && program != "buffers" {
 		return fmt.Errorf("program must be cpu or buffers")
 	}
-	if width == 0 || height == 0 || width > 512 || height > 512 || iterations == 0 || iterations > 128 {
-		return fmt.Errorf("width/height must be 1..512 and iterations 1..128")
+	if width == 0 || height == 0 || width > settings.MaxDimension || height > settings.MaxDimension || iterations == 0 || iterations > settings.MaxIterations {
+		return fmt.Errorf("width/height must be 1..%d and iterations 1..%d", settings.MaxDimension, settings.MaxIterations)
+	}
+	if uint64(width)*uint64(height) > settings.MaxPixels {
+		return fmt.Errorf("image exceeds %d pixels", settings.MaxPixels)
 	}
 	if required && (cpu || program != "buffers") {
 		return fmt.Errorf("require-gpu needs program=buffers with the GPU enabled")
@@ -48,7 +57,8 @@ func run(program string, cpu, required bool, width, height, iterations uint32, o
 	}}
 	if program == "buffers" {
 		file = "gpu.wasm"
-		options.GPU = &gpu.Config{Disabled: cpu, Kernels: []gpu.KernelConfig{kernel()}}
+		config := bufferConfig(cpu)
+		options.GPU = &config
 	}
 	source, e := programs.ReadFile(file)
 	if e != nil {
@@ -92,11 +102,11 @@ func main() {
 	program := flag.String("program", "cpu", "cpu or buffers")
 	cpu := flag.Bool("cpu", false, "force buffer CPU fallback")
 	required := flag.Bool("require-gpu", false, "require every buffer pass to use the GPU")
-	width := flag.Uint("width", 96, "image width, 1..512")
-	height := flag.Uint("height", 64, "image height, 1..512")
-	iterations := flag.Uint("iterations", 32, "iteration limit, 1..128")
+	width := flag.Uint("width", settings.DefaultWidth, "image width, 1..4096")
+	height := flag.Uint("height", settings.DefaultHeight, "image height, 1..4096")
+	iterations := flag.Uint("iterations", settings.DefaultIterations, "iteration limit, 1..128")
 	flag.Parse()
-	if *width > 512 || *height > 512 || *iterations > 128 {
+	if *width > settings.MaxDimension || *height > settings.MaxDimension || *iterations > settings.MaxIterations {
 		fmt.Fprintln(os.Stderr, "dimensions or iteration count exceed their limit")
 		os.Exit(1)
 	}

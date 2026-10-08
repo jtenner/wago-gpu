@@ -17,7 +17,7 @@ import (
 	"github.com/wago-org/wasi/p1"
 )
 
-var benchmarkSizes = [][2]uint32{{96, 64}, {256, 192}, {512, 512}}
+var benchmarkSizes = [][2]uint32{{96, 64}, {256, 192}, {512, 512}, {1920, 1080}, {2560, 1440}}
 
 // Both cases include a fresh WASI command instance and its cleanup. The second
 // case retains the compiled module, device, and pipeline between commands.
@@ -112,7 +112,7 @@ func reusedCommand(b *testing.B, mode string, size [2]uint32) (func() error, *gp
 	if mode != "cpu" {
 		file = "gpu.wasm"
 		var e error
-		plugin, e = gpu.New(gpu.Config{Disabled: mode == "fallback", Kernels: []gpu.KernelConfig{kernel()}})
+		plugin, e = gpu.New(bufferConfig(mode == "fallback"))
 		if e != nil {
 			b.Fatal(e)
 		}

@@ -3,7 +3,6 @@ package wagogpu
 import (
 	"context"
 	"encoding/binary"
-	"sort"
 	"time"
 )
 
@@ -14,9 +13,11 @@ type bufferPipeline interface{ Close() }
 type bufferDevice interface {
 	BuildBuffer(string) (bufferPipeline, error)
 	AllocateBuffer(uint64) (deviceBuffer, error)
+	AllocateReadback(uint64) (deviceBuffer, error)
+	AllocateUniform(uint64) (deviceBuffer, error)
 	UploadBuffer(context.Context, deviceBuffer, []byte) error
-	ReadBuffer(context.Context, deviceBuffer, uint64, func([]byte)) error
-	ExecuteBuffers(context.Context, bufferPipeline, []deviceBuffer, []bufferSeed, uint32, *BufferOperation) error
+	ReadBuffer(context.Context, deviceBuffer, deviceBuffer, uint64, func([]byte)) error
+	ExecuteBuffers(context.Context, bufferPipeline, deviceBuffer, []deviceBuffer, []bufferSeed, uint32, *BufferOperation) error
 	Lost() bool
 	RetainedBytes() uint64
 }
@@ -120,20 +121,20 @@ func (p *Plugin) ensureCPU(ctx context.Context, i *bufferInstance, b *bufferStat
 		return V1ContentsLost
 	}
 	size := physicalBytes(b)
-	if !p.reserveBuffer(i, size) {
-		return V1LimitExceeded
+	staging, status := p.takeTransferScratch(i, &i.readback, size, d.AllocateReadback)
+	if status != V1OK {
+		return status
 	}
-	before := d.RetainedBytes()
 	defer func() {
-		if d.RetainedBytes() > before {
-			i.retiredBytes += size
+		if p.stats.GPUFailed {
+			p.closeBufferResource(i, staging, size)
 		} else {
-			p.releaseBufferBytes(i, size)
+			i.readback = retiredBuffer{staging, size}
 		}
 	}()
 	start := time.Now()
 	var conversion time.Duration
-	err := d.ReadBuffer(ctx, b.gpu, size, func(data []byte) {
+	err := d.ReadBuffer(ctx, b.gpu, staging, size, func(data []byte) {
 		conversionStart := time.Now()
 		if b.typ.spec().size == 4 {
 			copy(b.cpu, data)
@@ -215,11 +216,14 @@ func (p *Plugin) ensureGPU(ctx context.Context, i *bufferInstance, b *bufferStat
 	data := b.cpu
 	if b.typ.spec().size != 4 {
 		conversionStart := time.Now()
-		if !p.reserveBuffer(i, size) {
-			return V1LimitExceeded
+		var status int32
+		data, status = p.conversionScratch(i, size)
+		if status != V1OK {
+			return status
 		}
-		defer p.releaseBufferBytes(i, size)
-		data = make([]byte, size)
+		// The active payload must not be reclaimed by a later reservation.
+		i.conversion = nil
+		defer func() { i.conversion = data }()
 		stride := b.typ.spec().size
 		for j := uint32(0); j < b.count; j++ {
 			v := uint32(b.cpu[uint64(j)*stride])
@@ -264,23 +268,28 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 		p.quarantineBuffers("device lost")
 		return V1ContentsLost
 	}
-	slots := make([]uint32, 0, len(k.config.Bindings))
-	for _, binding := range k.config.Bindings {
-		if k.lowered.reads[binding.Slot] || k.lowered.writes[binding.Slot] {
-			slots = append(slots, binding.Slot)
+	// The ABI has at most eight slots. Fixed storage preserves binding order
+	// without a sort, growing slice, or per-dispatch output map.
+	var slots [8]uint32
+	var resources [8]deviceBuffer
+	var outputs [8]deviceBuffer
+	var seeds [8]bufferSeed
+	used, seedCount := 0, 0
+	for slot := uint32(0); slot < 8; slot++ {
+		if k.lowered.reads[slot] || k.lowered.writes[slot] {
+			slots[used] = slot
+			used++
 		}
 	}
-	sort.Slice(slots, func(a, b int) bool { return slots[a] < slots[b] })
-	resources := make([]deviceBuffer, len(slots))
-	outputs := map[uint32]deviceBuffer{}
-	seeds := make([]bufferSeed, 0, len(slots))
 	defer func() {
 		for slot, r := range outputs {
-			b := i.buffers[i.bindings[slot]]
-			p.closeBufferResource(i, r, physicalBytes(b))
+			if r != nil {
+				b := i.buffers[i.bindings[slot]]
+				p.closeBufferResource(i, r, physicalBytes(b))
+			}
 		}
 	}()
-	for idx, slot := range slots {
+	for idx, slot := range slots[:used] {
 		b := i.buffers[i.bindings[slot]]
 		if status := p.ensureGPU(ctx, i, b, op); status != V1OK {
 			return status
@@ -294,28 +303,40 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			}
 			outputs[slot] = r
 			resources[idx] = r
-			seeds = append(seeds, bufferSeed{b.gpu, r, size})
+			seeds[seedCount] = bufferSeed{b.gpu, r, size}
+			seedCount++
 		}
 	}
-	// Charge the uniform parameter block and its upload payload. Bindings and commands have driver
-	// overhead, but no unbounded application payload allocation.
-	if !p.reserveBuffer(i, 32) {
+	uniform, status := p.takeTransferScratch(i, &i.uniform, 16, d.AllocateUniform)
+	if status != V1OK {
+		return status
+	}
+	defer func() {
+		if p.stats.GPUFailed {
+			p.closeBufferResource(i, uniform, 16)
+		} else {
+			i.uniform = retiredBuffer{uniform, 16}
+		}
+	}()
+	// The persistent parameter buffer has its own charge. Each pending queue
+	// write additionally holds a 16-byte payload until completion.
+	if !p.reserveBuffer(i, 16) {
 		return V1LimitExceeded
 	}
 	before := d.RetainedBytes()
 	defer func() {
 		if d.RetainedBytes() > before {
 			retained := d.RetainedBytes() - before
-			if retained > 32 {
+			if retained > 16 {
 				panic("backend exceeded uniform reservation")
 			}
 			i.retiredBytes += retained
-			p.releaseBufferBytes(i, 32-retained)
+			p.releaseBufferBytes(i, 16-retained)
 		} else {
-			p.releaseBufferBytes(i, 32)
+			p.releaseBufferBytes(i, 16)
 		}
 	}()
-	err := d.ExecuteBuffers(ctx, k.pipeline.pipeline, resources, seeds, count, op)
+	err := d.ExecuteBuffers(ctx, k.pipeline.pipeline, uniform, resources[:used], seeds[:seedCount], count, op)
 	if err != nil {
 		op.TransferCountsComplete = false
 		p.buffers.stats.TotalsComplete = false
@@ -328,7 +349,7 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 		return V1DeviceError
 	}
 	delta := TransferCounters{ParameterUploadBytes: 16, ParameterUploadCount: 1}
-	for _, seed := range seeds {
+	for _, seed := range seeds[:seedCount] {
 		delta.DeviceCopyBytes += seed.size
 		delta.DeviceCopyCount++
 	}
@@ -344,13 +365,16 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 	commitStart := time.Now()
 	// Single commit decision under Plugin.mu. All fallible GPU checks are over.
 	for slot, r := range outputs {
+		if r == nil {
+			continue
+		}
 		b := i.buffers[i.bindings[slot]]
 		p.keepBufferScratch(i, b.gpu, physicalBytes(b))
 		b.gpu = r
 		b.gpuCurrent = true
 		b.cpuCurrent = false
 		b.version++
-		delete(outputs, slot)
+		outputs[slot] = nil
 	}
 	op.Commit += time.Since(commitStart)
 	op.Outcome = "GPU"
@@ -366,21 +390,37 @@ func (p *Plugin) markTransferUnknown(op *BufferOperation) {
 }
 
 func (p *Plugin) evictBufferPool(i *bufferInstance) {
-	if i.pool != nil {
-		i.pool.Close()
-		p.releaseBufferBytes(i, i.poolBytes)
-		i.pool = nil
-		i.poolBytes = 0
+	for _, item := range []*retiredBuffer{&i.readback, &i.uniform} {
+		if item.resource != nil {
+			item.resource.Close()
+			p.releaseBufferBytes(i, item.size)
+			*item = retiredBuffer{}
+		}
 	}
+	if i.conversion != nil {
+		p.releaseBufferBytes(i, uint64(cap(i.conversion)))
+		i.conversion = nil
+	}
+	for n := 0; n < i.poolCount; n++ {
+		item := i.pool[n]
+		item.resource.Close()
+		p.releaseBufferBytes(i, item.size)
+		i.pool[n] = retiredBuffer{}
+	}
+	i.poolCount = 0
+	i.poolBytes = 0
 }
 func (p *Plugin) takeBufferScratch(i *bufferInstance, size uint64) (deviceBuffer, int32) {
-	if i.pool != nil && i.poolBytes == size {
-		r := i.pool
-		i.pool = nil
-		i.poolBytes = 0
-		return r, V1OK
+	for n := 0; n < i.poolCount; n++ {
+		if i.pool[n].size == size {
+			r := i.pool[n].resource
+			i.poolCount--
+			i.pool[n] = i.pool[i.poolCount]
+			i.pool[i.poolCount] = retiredBuffer{}
+			i.poolBytes -= size
+			return r, V1OK
+		}
 	}
-	p.evictBufferPool(i)
 	if !p.reserveBuffer(i, size) {
 		return nil, V1LimitExceeded
 	}
@@ -392,10 +432,48 @@ func (p *Plugin) takeBufferScratch(i *bufferInstance, size uint64) (deviceBuffer
 	return r, V1OK
 }
 func (p *Plugin) keepBufferScratch(i *bufferInstance, r deviceBuffer, size uint64) {
-	if i.pool != nil {
+	if i.poolCount == len(i.pool) {
 		p.closeBufferResource(i, r, size)
 		return
 	}
-	i.pool = r
-	i.poolBytes = size
+	i.pool[i.poolCount] = retiredBuffer{r, size}
+	i.poolCount++
+	i.poolBytes += size
+}
+
+// The caller removes active scratch from idle storage before making further
+// reservations. Idle eviction must never release an in-flight operation.
+func (p *Plugin) takeTransferScratch(i *bufferInstance, idle *retiredBuffer, size uint64, allocate func(uint64) (deviceBuffer, error)) (deviceBuffer, int32) {
+	item := *idle
+	*idle = retiredBuffer{}
+	if item.resource != nil {
+		if item.size == size {
+			return item.resource, V1OK
+		}
+		item.resource.Close()
+		p.releaseBufferBytes(i, item.size)
+	}
+	if !p.reserveBuffer(i, size) {
+		return nil, V1LimitExceeded
+	}
+	r, e := allocate(size)
+	if e != nil {
+		p.releaseBufferBytes(i, size)
+		return nil, V1DeviceError
+	}
+	return r, V1OK
+}
+func (p *Plugin) conversionScratch(i *bufferInstance, size uint64) ([]byte, int32) {
+	if uint64(cap(i.conversion)) >= size {
+		return i.conversion[:size], V1OK
+	}
+	// Reserve growth while the old allocation is still owned. Admission can
+	// reclaim idle scratch, including the old conversion storage.
+	if !p.reserveBuffer(i, size) {
+		return nil, V1LimitExceeded
+	}
+	old := uint64(cap(i.conversion))
+	i.conversion = make([]byte, size)
+	p.releaseBufferBytes(i, old)
+	return i.conversion, V1OK
 }

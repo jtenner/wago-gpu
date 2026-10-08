@@ -38,7 +38,11 @@ type bufferState struct {
 }
 type bufferInstance struct {
 	peakBytes    uint64
-	pool         deviceBuffer
+	pool         [8]retiredBuffer
+	poolCount    int
+	readback     retiredBuffer
+	uniform      retiredBuffer
+	conversion   []byte
 	poolBytes    uint64
 	retiredBytes uint64
 	module       *moduleContract
@@ -281,8 +285,9 @@ func (p *Plugin) BufferSnapshot() BufferSnapshot {
 		}
 	}
 	for id, i := range b.instances {
-		d := InstanceDiagnostic{Instance: id, Buffers: uint32(len(i.buffers)), RetainedPoolBytes: i.poolBytes, ReservedBytes: i.retiredBytes, PeakBytes: i.peakBytes}
-		s.RuntimePoolBytes += i.poolBytes
+		idle := i.poolBytes + i.readback.size + i.uniform.size + uint64(cap(i.conversion))
+		d := InstanceDiagnostic{Instance: id, Buffers: uint32(len(i.buffers)), RetainedPoolBytes: idle, ReservedBytes: i.bytes, ScratchBytes: i.retiredBytes, PeakBytes: i.peakBytes}
+		s.RuntimePoolBytes += idle
 		for _, v := range i.buffers {
 			d.LogicalBytes += uint64(v.count) * v.typ.spec().size
 			d.CPUBytes += uint64(len(v.cpu))

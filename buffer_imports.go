@@ -25,7 +25,11 @@ func bufferTrap(status int32) {
 	panic(wago.HostTrap{Err: fmt.Errorf("wago_gpu_v1 scalar access: status %d", status)})
 }
 func (p *Plugin) bufferCall(caller wago.Caller, call wago.HostCall, name string) {
-	started := time.Now()
+	scalar := name == "getBuffer" || strings.HasPrefix(name, "readBuffer") || strings.HasPrefix(name, "writeBuffer")
+	var started, queued time.Time
+	if !scalar || name != "getBuffer" {
+		started = time.Now()
+	}
 	id, err := p.resolver.Resolve(caller)
 	if err != nil {
 		bufferTrap(V1InvalidState)
@@ -41,11 +45,16 @@ func (p *Plugin) bufferCall(caller wago.Caller, call wago.HostCall, name string)
 			bufferTrap(V1InvalidState)
 		}
 	}
-	queued := time.Now()
+	if !scalar {
+		queued = time.Now()
+	}
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.observeBufferDeviceLoss()
-	queueWait := time.Since(queued)
+	var queueWait time.Duration
+	if !scalar {
+		queueWait = time.Since(queued)
+	}
 	instance := p.buffers.instances[id]
 	// Ordinary CPU scalar loops need no timer or per-element heap allocation.
 	needsDeadline := name == "dispatch" || strings.HasPrefix(name, "setBuffer") || strings.HasPrefix(name, "copyBuffer")
@@ -54,11 +63,13 @@ func (p *Plugin) bufferCall(caller wago.Caller, call wago.HostCall, name string)
 		needsDeadline = b != nil && !b.cpuCurrent
 	}
 	if needsDeadline {
+		if started.IsZero() {
+			started = time.Now()
+		}
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithDeadline(ctx, started.Add(p.config.RunTimeout))
 		defer cancel()
 	}
-	scalar := name == "getBuffer" || strings.HasPrefix(name, "readBuffer") || strings.HasPrefix(name, "writeBuffer")
 	if scalar {
 		if p.stopped || instance == nil {
 			bufferTrap(V1InvalidState)
@@ -273,14 +284,21 @@ func (p *Plugin) dispatchBuffers(ctx context.Context, i *bufferInstance, id, cou
 		op.ReasonCode = "CONTRACT_ERROR"
 		return V1InvalidKernel
 	}
-	seen := map[uint32]bool{}
+	var seen [8]uint32
+	seenCount := 0
 	for _, slot := range k.config.Bindings {
 		handle := i.bindings[slot.Slot]
 		b := i.buffers[handle]
-		if b == nil || seen[handle] {
+		if b == nil {
 			return V1InvalidBinding
 		}
-		seen[handle] = true
+		for _, previous := range seen[:seenCount] {
+			if previous == handle {
+				return V1InvalidBinding
+			}
+		}
+		seen[seenCount] = handle
+		seenCount++
 		if b.typ != slot.Type {
 			return V1TypeMismatch
 		}

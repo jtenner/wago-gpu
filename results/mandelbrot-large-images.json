@@ -1,0 +1,140 @@
+[
+  {
+    "Width": 1920,
+    "Height": 1080,
+    "Iterations": 64,
+    "Mode": "cpu",
+    "Command": [
+      ".cache/mandelbrot-large",
+      "-width",
+      "1920",
+      "-height",
+      "1080",
+      "-iterations",
+      "64"
+    ],
+    "OutputBytes": 2073617,
+    "SHA256": "54850e18c629a1632c92b6b85a8840076816ef8ab05d7efa0415da05cc09c6b4",
+    "DifferentPixels": 0,
+    "Stderr": "Mandelbrot: direct Wago CPU\n"
+  },
+  {
+    "Width": 1920,
+    "Height": 1080,
+    "Iterations": 64,
+    "Mode": "fallback",
+    "Command": [
+      ".cache/mandelbrot-large",
+      "-width",
+      "1920",
+      "-height",
+      "1080",
+      "-iterations",
+      "64",
+      "-program",
+      "buffers",
+      "-cpu"
+    ],
+    "OutputBytes": 2073617,
+    "SHA256": "54850e18c629a1632c92b6b85a8840076816ef8ab05d7efa0415da05cc09c6b4",
+    "DifferentPixels": 0,
+    "Stderr": "Mandelbrot buffers: GPU passes=0, CPU passes=64\n"
+  },
+  {
+    "Width": 1920,
+    "Height": 1080,
+    "Iterations": 64,
+    "Mode": "gpu",
+    "Command": [
+      ".cache/mandelbrot-large",
+      "-width",
+      "1920",
+      "-height",
+      "1080",
+      "-iterations",
+      "64",
+      "-program",
+      "buffers",
+      "-require-gpu"
+    ],
+    "OutputBytes": 2073617,
+    "SHA256": "fefcee6e1a941baf45cd0a1228bdbcfea0ac0612a6eae33aa4675ed198dece8b",
+    "DifferentPixels": 198,
+    "Stderr": "Mandelbrot buffers: GPU passes=64, CPU passes=0\n"
+  },
+  {
+    "Mode": "wasmtime",
+    "Width": 1920,
+    "Height": 1080,
+    "Iterations": 64,
+    "Command": [
+      "wasmtime",
+      "examples/mandelbrot/cpu.wasm"
+    ],
+    "SHA256": "54850e18c629a1632c92b6b85a8840076816ef8ab05d7efa0415da05cc09c6b4",
+    "MatchesWago": true
+  },
+  {
+    "Width": 2560,
+    "Height": 1440,
+    "Iterations": 64,
+    "Mode": "cpu",
+    "Command": [
+      ".cache/mandelbrot-large",
+      "-width",
+      "2560",
+      "-height",
+      "1440",
+      "-iterations",
+      "64"
+    ],
+    "OutputBytes": 3686417,
+    "SHA256": "0b110714e04d40b069cab2e8ee4fc3f044b594deefb8333014c5944dd29c8df3",
+    "DifferentPixels": 0,
+    "Stderr": "Mandelbrot: direct Wago CPU\n"
+  },
+  {
+    "Width": 2560,
+    "Height": 1440,
+    "Iterations": 64,
+    "Mode": "fallback",
+    "Command": [
+      ".cache/mandelbrot-large",
+      "-width",
+      "2560",
+      "-height",
+      "1440",
+      "-iterations",
+      "64",
+      "-program",
+      "buffers",
+      "-cpu"
+    ],
+    "OutputBytes": 3686417,
+    "SHA256": "0b110714e04d40b069cab2e8ee4fc3f044b594deefb8333014c5944dd29c8df3",
+    "DifferentPixels": 0,
+    "Stderr": "Mandelbrot buffers: GPU passes=0, CPU passes=64\n"
+  },
+  {
+    "Width": 2560,
+    "Height": 1440,
+    "Iterations": 64,
+    "Mode": "gpu",
+    "Command": [
+      ".cache/mandelbrot-large",
+      "-width",
+      "2560",
+      "-height",
+      "1440",
+      "-iterations",
+      "64",
+      "-program",
+      "buffers",
+      "-require-gpu"
+    ],
+    "OutputBytes": 3686417,
+    "SHA256": "c2e7e58d779d6611b5ece2dbf102ec8fc744c3bd4928fe35891d2ee75745e631",
+    "DifferentPixels": 366,
+    "Stderr": "Mandelbrot buffers: GPU passes=64, CPU passes=0\n"
+  }
+]

@@ -105,6 +105,7 @@ func testModule(body string) string {
 (memory (export "memory") 1)
 (export "create" (func $create)) (export "bind" (func $bind)) (export "dispatch" (func $dispatch))
 (export "set" (func $set)) (export "copy" (func $copy))
+(func (export "firstWord") (result i32) (i32.load (i32.const 0)))
 (func (export "wago_gpu.kernel.double") (param $i i32) ` + body + `)
 (func (export "wago_gpu.cpu.double") (param i32))
 (func (export "scalarLoop") (param i32)

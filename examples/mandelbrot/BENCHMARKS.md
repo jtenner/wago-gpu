@@ -1,4 +1,8 @@
-# Mandelbrot benchmark results
+# Earlier Mandelbrot benchmark results
+
+These measurements precede the bulk CPU runner and retained scratch changes.
+See [the current performance report](PERFORMANCE.md). The earlier small sizes
+and scalar-fallback measurements remain here as recorded evidence.
 
 Measured on 2026-10-08 using an NVIDIA RTX 4060 Laptop GPU, Vulkan,
 driver 550.163.01, and an AMD Ryzen 7 8845HS CPU. The host ran Debian 13,
@@ -106,7 +110,7 @@ does not prove bit agreement for other grids or devices. Clocks were not fixed,
 and there was no thermal control or statistical confidence interval. A short
 CPU/hardware race-test run occurred while the fallback benchmark process was
 active; it was not an isolated-machine run. The large fallback values have only
-one timed sample. No GPU crossover was found within the supported image sizes.
+one timed sample. No GPU crossover was found within the sizes tested in this earlier run.
 
 The largest GPU image requires 64 MiB of readback and 64 MiB of device-local
 seed copies. Avoiding the per-pass readbacks, keeping escape tests on the GPU,

@@ -2,6 +2,8 @@
 
 package main
 
+import "github.com/jtenner/wago-gpu/examples/mandelbrot/internal/settings"
+
 func number(text string, max uint32) uint32 {
 	var n uint32
 	for _, c := range text {
@@ -31,13 +33,16 @@ func shade(escaped, iterations uint32) byte {
 }
 
 func main() {
-	width, height, iterations := uint32(96), uint32(64), uint32(32)
+	width, height, iterations := uint32(settings.DefaultWidth), uint32(settings.DefaultHeight), uint32(settings.DefaultIterations)
 	args := arguments()
 	if len(args) != 1 {
 		if len(args) != 4 {
 			panic("usage: mandelbrot [width height iterations]")
 		}
-		width, height, iterations = number(args[1], 512), number(args[2], 512), number(args[3], 128)
+		width, height, iterations = number(args[1], settings.MaxDimension), number(args[2], settings.MaxDimension), number(args[3], settings.MaxIterations)
+	}
+	if uint64(width)*uint64(height) > settings.MaxPixels {
+		panic("image exceeds the pixel limit")
 	}
 	pixels := render(width, height, iterations)
 	// WASI fd_write carries the PGM header and pixel bytes to stdout.
