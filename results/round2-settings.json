@@ -1,0 +1,28 @@
+{
+  "baseline_commit": "07db1f4747991b9f6d4681f4d292398cda4c511e",
+  "date_utc": "2026-10-08T21:17:43.822754+00:00",
+  "paired_processes": 5,
+  "cpu_iterations": 500,
+  "marshal_iterations": 20,
+  "pipeline_iterations": 100,
+  "GOMAXPROCS": 1,
+  "WAGO_GPU_TEST": 1,
+  "build_tags_gpu": [
+    "webgpu"
+  ],
+  "warmup_marshal_operations": 2,
+  "device_startup_included": false,
+  "driver_cache": "normal; not cleared",
+  "clocks": "normal; not fixed",
+  "method": "median of five process means; paired order alternates; no concurrent tests or builds",
+  "binaries": {
+    ".cache/round2-before-cpu.test": "e571259b2f96623d74acd9495d3699fc6fbfe4ef87d5c65c201cf7899a1f55a3",
+    ".cache/round2-before-gpu.test": "d5f4d73c613be06e76428cc765a740eaba11c3b1567ac28a3aedde703aa20228",
+    ".cache/round2-after-cpu.test": "9b3d447ac025c92d75121615a1bbcd71857fce2e7edbc0c35ddb49df110d6c3f",
+    ".cache/round2-after-gpu.test": "e7b05a2080f07f534bd0f0e7d02077b220da31c3368dd172d38950b598b0b6ff"
+  },
+  "go": "go version go1.27.1 linux/amd64",
+  "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.7\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"",
+  "kernel": "6.12.111+deb13-amd64",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 550.163.01, 8188 MiB"
+}

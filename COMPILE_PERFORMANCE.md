@@ -1,5 +1,8 @@
 # Compilation performance
 
+This is the first compiler change. The next measurements and import-record
+changes are in [the compiler and transfer follow-up](MARSHAL_PERFORMANCE.md).
+
 Measured on 2026-10-08. The plugin now uses a single forward pass with compact
 symbolic values, as in the Valent-Block design. The supported Wasm subset and
 public plugin API are unchanged. Wago is unchanged.

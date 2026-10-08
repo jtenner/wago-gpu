@@ -282,9 +282,6 @@ func (p *gpuProgram) Run(ctx context.Context, input []byte, commit func([]byte),
 	}); err != nil {
 		return t, err
 	}
-	if err = b.waitIdle(ctx); err != nil {
-		return t, err
-	}
 	// A buffered channel lets a late cancellation callback finish. It retains
 	// neither guest input nor commit, and no polling goroutine outlives this call.
 	done := make(chan wgpu.MapAsyncStatus, 1)

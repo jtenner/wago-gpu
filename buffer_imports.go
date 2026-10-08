@@ -277,7 +277,7 @@ func (p *Plugin) scalarBuffer(ctx context.Context, i *bufferInstance, call wago.
 			binary.LittleEndian.PutUint64(data, math.Float64bits(call.F64(2)))
 		}
 		b.version++
-		b.gpuCurrent = false
+		b.dirty(index, 1)
 		return
 	}
 	switch b.typ {

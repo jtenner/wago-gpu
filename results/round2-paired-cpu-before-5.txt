@@ -1,0 +1,26 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkCompilePath/FourKernels/Decode  	     500	      3209 ns/op	    5624 B/op	      38 allocs/op
+BenchmarkCompilePath/FourKernels/StandaloneKernel         	     500	      5254 ns/op	    8824 B/op	      40 allocs/op
+BenchmarkCompilePath/FourKernels/PrepareSource            	     500	     29498 ns/op	   41706 B/op	      79 allocs/op
+BenchmarkCompilePath/FourKernels/NativeOnly               	     500	    222078 ns/op	  229748 B/op	     454 allocs/op
+BenchmarkCompilePath/FourKernels/NativeWithPlugin         	     500	    242623 ns/op	  267418 B/op	     523 allocs/op
+BenchmarkCompilePath/Polynomial/Decode                    	     500	      3991 ns/op	    5624 B/op	      38 allocs/op
+BenchmarkCompilePath/Polynomial/StandaloneKernel          	     500	     14427 ns/op	   27512 B/op	      46 allocs/op
+BenchmarkCompilePath/Polynomial/PrepareSource             	     500	     24669 ns/op	   37359 B/op	      64 allocs/op
+BenchmarkCompilePath/Polynomial/NativeOnly                	     500	    230352 ns/op	  229749 B/op	     454 allocs/op
+BenchmarkCompilePath/Polynomial/NativeWithPlugin          	     500	    245555 ns/op	  263234 B/op	     514 allocs/op
+BenchmarkCompilePath/Mandelbrot/Decode                    	     500	      4784 ns/op	    4880 B/op	      43 allocs/op
+BenchmarkCompilePath/Mandelbrot/StandaloneKernel          	     500	      7055 ns/op	    8464 B/op	      45 allocs/op
+BenchmarkCompilePath/Mandelbrot/PrepareSource             	     500	     23307 ns/op	   37511 B/op	      63 allocs/op
+BenchmarkCompilePath/Mandelbrot/NativeOnly                	     500	   1088842 ns/op	  591254 B/op	     707 allocs/op
+BenchmarkCompilePath/Mandelbrot/NativeWithPlugin          	     500	   1112826 ns/op	  624880 B/op	     766 allocs/op
+BenchmarkCompilePath/LargeCustom/Decode                   	     500	      4788 ns/op	    5624 B/op	      38 allocs/op
+BenchmarkCompilePath/LargeCustom/StandaloneKernel         	     500	      5914 ns/op	    8824 B/op	      40 allocs/op
+BenchmarkCompilePath/LargeCustom/PrepareSource            	     500	   1131600 ns/op	 4247115 B/op	      81 allocs/op
+BenchmarkCompilePath/LargeCustom/NativeOnly               	     500	    335798 ns/op	 2327012 B/op	     457 allocs/op
+BenchmarkCompilePath/LargeCustom/NativeWithPlugin         	     500	   2274071 ns/op	 6570051 B/op	     527 allocs/op
+BenchmarkCompilePath/LegacyHeavy                          	     500	      4501 ns/op	    6944 B/op	      18 allocs/op
+PASS

@@ -1239,6 +1239,20 @@ the unchanged tail. The temporary output must still preserve every element
 outside the dispatch range. Transfer counters report the actual physical copy
 bytes. This optimization does not relax the commit or error protocol.
 
+**Existing optimization.** A known completed GPU copy can be updated with one
+bounded interval of CPU writes. Track the interval in elements and use its
+union when several writes occur. If the GPU base is unknown, upload the full
+buffer. A failed or uncertain transfer MUST NOT establish a current GPU copy.
+Narrow types expand only the uploaded interval into the existing charged
+conversion scratch. Count the canonical and physical bytes separately.
+
+With stage profiling disabled, the native backend can queue F32/I32/U32 input
+uploads, output seeds, parameter upload, and compute in one ordered submission.
+Reserve all payload and resource costs before queueing. Retain uncertain queue
+payloads until safe cleanup. Successful completion can populate unchanged input
+mirrors, but only the existing commit decision can publish new output versions.
+The profiled path uses separate waits to keep its stage measurements valid.
+
 ### 23.4 Completion and commit
 
 **Proposed.** A GPU buffer dispatch can finish without copying all outputs to the CPU. Commit requires four completed checks: successful resource creation; valid command encoding and submission; successful work completion; and completed relevant validation/allocation/internal-error reporting with no invalidating error. Unknown status fails. Queue completion alone proves none of the earlier validation decisions.
@@ -1250,6 +1264,12 @@ A decisive test rejects a command, reports successful queue completion, then del
 On a nonzero success, exactly the buffers in the actual write set switch to new committed versions as one logical dispatch commit under the instance lock. No other buffer receives a new version or loses a current copy. On failure, none switches. Temporary storage cannot return to a pool until in-flight use is complete. Driver-level device loss can still destroy old GPU-only versions, as section 9 states.
 
 Readback MUST include the required device-to-host synchronization. Map completion and range length MUST be checked. Conversion from physical GPU storage to canonical CPU storage finishes before that CPU version is published. No successful read may observe a partially converted buffer.
+
+**Existing optimization.** A successful staging-buffer map completes after
+the submitted copy into that buffer. The native backend therefore omits a
+separate queue wait before mapping. Completed encoding/submission error checks,
+map status, device-loss checks, cancellation, and the final copy commit remain
+required. This does not use map completion as a replacement for error reporting.
 
 ### 23.5 Confirmed callback defect and backend acceptance gate
 

@@ -35,7 +35,34 @@ type bufferState struct {
 	count                        uint32
 	cpu                          []byte
 	version                      uint64
+	dirtyStart, dirtyEnd         uint32 // Elements; empty means the GPU base is unknown.
 }
+
+// The CPU owns all source bytes. A completed GPU base plus a bounded union of
+// CPU writes lets the next upload replace only the changed element range.
+func (b *bufferState) dirty(offset, count uint32) {
+	end := offset + count // Callers have checked the range against b.count.
+	if b.gpuCurrent {
+		b.dirtyStart, b.dirtyEnd = offset, end
+	} else if b.dirtyEnd > b.dirtyStart {
+		b.dirtyStart = min(b.dirtyStart, offset)
+		b.dirtyEnd = max(b.dirtyEnd, end)
+	}
+	b.gpuCurrent = false
+}
+
+func (b *bufferState) uploadRange() (uint32, uint32) {
+	if b.gpu != nil && b.dirtyEnd > b.dirtyStart {
+		return b.dirtyStart, b.dirtyEnd
+	}
+	return 0, b.count
+}
+
+func (b *bufferState) gpuReady() {
+	b.gpuCurrent = true
+	b.dirtyStart, b.dirtyEnd = 0, 0
+}
+
 type bufferInstance struct {
 	peakBytes    uint64
 	pool         [8]retiredBuffer

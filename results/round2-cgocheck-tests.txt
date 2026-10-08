@@ -1,0 +1,13 @@
+ok  	github.com/jtenner/wago-gpu	7.833s
+?   	github.com/jtenner/wago-gpu/cmd/buffer-bench	[no test files]
+?   	github.com/jtenner/wago-gpu/cmd/demo	[no test files]
+ok  	github.com/jtenner/wago-gpu/examples/buffers	0.271s
+?   	github.com/jtenner/wago-gpu/examples/internal/benchwasm	[no test files]
+?   	github.com/jtenner/wago-gpu/examples/internal/runwasm	[no test files]
+ok  	github.com/jtenner/wago-gpu/examples/mandelbrot	0.973s
+?   	github.com/jtenner/wago-gpu/examples/mandelbrot/internal/settings	[no test files]
+ok  	github.com/jtenner/wago-gpu/examples/start	0.288s
+ok  	github.com/jtenner/wago-gpu/examples/storage	0.006s
+ok  	github.com/jtenner/wago-gpu/examples/tinygo	0.006s
+?   	github.com/jtenner/wago-gpu/internal/fixtures	[no test files]
+?   	github.com/jtenner/wago-gpu/internal/genabi	[no test files]

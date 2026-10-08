@@ -14,6 +14,37 @@ without an intermediate guest transfer. The earlier scalar `wago_gpu.run` and
 
 ## Measured findings
 
+The latest changes check intrinsic signatures once per import, keep eight-byte
+import records, upload a bounded range after CPU writes, and combine input
+uploads with dispatch when stage profiling is disabled. Readback uses staging
+map completion without a second queue wait. Checked memory, error reporting,
+output commit, and resource limits remain in place.
+
+Five paired runs compared these changes with commit `07db1f4` on the hardware
+listed below. Times are medians of process means. Device startup is excluded.
+The GPU jobs retain their runtime, module, pipeline, and buffers.
+
+| Work | Before µs | After µs | Before → after Go allocations |
+| --- | ---: | ---: | ---: |
+| Translate twice kernel, including decode | 5.756 | 3.285 | 40 → 32 |
+| Translate 32-step kernel, including decode | 14.309 | 12.851 | 46 → 38 |
+| Translate Mandelbrot step, including decode | 7.055 | 4.753 | 45 → 27 |
+| One-element job, 10M-element input | 4,058.430 | 78.699 | 50 → 43 |
+| Four 1,024-element inputs, dispatch and readback | 167.664 | 101.978 | 77 → 58 |
+| Fresh 10M-element input, dispatch and readback | 12,583.614 | 12,441.788 | 56 → 49 |
+
+The one-element job changes one input element after an initial full upload and
+reads a separate one-element output. Its input upload falls from 40 MB to four
+bytes. It is not a full-array speedup. Complete Wago compilation and large fresh
+transfers show no clear gain in this round. Simple full-array math still favors
+direct Wago CPU execution. Combined uploads can raise peak tracked memory; the
+1440p example uses 196.9 MiB, within its 256 MiB limit. Go bytes per small fresh
+operation increased slightly even though allocation counts fell. See the
+[compiler and transfer report](MARSHAL_PERFORMANCE.md) for all measurements,
+controls, memory costs, test logs, and remaining limits.
+
+### Earlier compiler measurements
+
 The compiler now uses compact symbolic values and one forward pass, based on
 the Valent-Block design. It emits each arithmetic value at most once and reuses
 private scratch between kernels. Saved loads and exact float copies keep their
@@ -73,7 +104,7 @@ plus multiply was 131.703 ms. The matrix loops are simple references, not BLAS.
 Fresh-input SAXPY and dot product remained slower on the GPU at all tested
 sizes. Device-resident timings show the value of avoiding transfers.
 
-The latest changes reduce work while keeping the commit and lifetime rules:
+Earlier changes also reduce work while keeping the commit and lifetime rules:
 
 - Cache at most two native binding groups. Release them before closing any
   referenced buffer or pipeline. Reuse stored buffer sizes.
@@ -98,7 +129,7 @@ The small examples are faster on the CPU. GPU full setup took about 82–91 ms.
 With the module retained, the four-value TinyGo command took 0.025 ms on CPU
 and 0.171 ms on GPU.
 
-The latest Mandelbrot run uses the default 64 iterations and three samples
+The earlier repeated Mandelbrot run uses the default 64 iterations and three samples
 of three images. The module stays loaded. Each render creates a WASI instance
 and includes setup, output to `io.Discard`, checks, and cleanup.
 Stage profiling is disabled.

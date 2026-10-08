@@ -4,13 +4,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 type wasmSignature struct{ params, results []byte }
 type wasmImport struct {
-	module, name string
-	signature    uint32
-	intrinsic    uint8
+	signature                         uint32
+	intrinsic, element, scalar, flags uint8
 }
 type memoryDeclaration struct{ wide, shared bool }
 type bufferModule struct {
@@ -30,6 +30,55 @@ var bufferIntrinsicNames = func() map[string]uint8 {
 		names[bufferImports[i].name] = uint8(i + 1)
 	}
 	return names
+}()
+
+const (
+	intrinsicBadSignature byte = 1 << iota
+	intrinsicGet
+	intrinsicRead
+	intrinsicWrite
+	intrinsicNamespace
+)
+
+// Build the canonical scalar call descriptions once. Each eight-byte import
+// record keeps its signature index, classification, and signature validity.
+var bufferIntrinsicInfo = func() [len(bufferImports)]struct {
+	params, results        []byte
+	element, scalar, flags byte
+} {
+	var info [len(bufferImports)]struct {
+		params, results        []byte
+		element, scalar, flags byte
+	}
+	for j, imp := range bufferImports {
+		d := &info[j]
+		for _, t := range imp.params {
+			d.params = append(d.params, wasmType(t))
+		}
+		for _, t := range imp.results {
+			d.results = append(d.results, wasmType(t))
+		}
+		if imp.name == "getBuffer" {
+			d.flags = intrinsicGet
+			continue
+		}
+		prefix := "readBuffer"
+		if strings.HasPrefix(imp.name, prefix) {
+			d.flags = intrinsicRead
+		} else if strings.HasPrefix(imp.name, "writeBuffer") {
+			prefix = "writeBuffer"
+			d.flags = intrinsicWrite
+		} else {
+			continue
+		}
+		for i, e := range elementSpecs {
+			if e.suffix == strings.TrimPrefix(imp.name, prefix) {
+				d.element, d.scalar = byte(i), wasmType(e.scalar)
+				break
+			}
+		}
+	}
+	return info
 }()
 
 var wasmSectionOrder = [14]byte{1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 13: 6, 6: 7, 7: 8, 8: 9, 9: 10, 12: 11, 10: 12, 11: 13}
@@ -149,7 +198,9 @@ func decodeBufferModule(source []byte) (*bufferModule, error) {
 		seen |= 1 << id
 		switch id {
 		case 1:
-			for n := s.count(); n > 0 && s.err == nil; n-- {
+			n := s.count()
+			m.types = make([]wasmSignature, 0, n)
+			for ; n > 0 && s.err == nil; n-- {
 				groups := uint32(1)
 				tag := s.byte()
 				if tag == 0x4e {
@@ -189,14 +240,27 @@ func decodeBufferModule(source []byte) (*bufferModule, error) {
 				}
 			}
 		case 2:
-			for n := s.count(); n > 0 && s.err == nil; n-- {
-				module, name := s.name(), s.name()
+			n := s.count()
+			m.imports = make([]wasmImport, 0, n)
+			for ; n > 0 && s.err == nil; n-- {
+				// Import names are needed only for classification. Compare borrowed
+				// bytes here; do not retain or allocate strings for unrelated imports.
+				module, name := s.take(s.u32()), s.take(s.u32())
 				kind := s.byte()
 				switch kind {
 				case 0:
-					imp := wasmImport{module: module, name: name, signature: s.u32()}
-					if module == "wago_gpu_v1" {
-						imp.intrinsic = bufferIntrinsicNames[name]
+					imp := wasmImport{signature: s.u32()}
+					if bytes.Equal(module, []byte("wago_gpu_v1")) {
+						imp.flags = intrinsicNamespace
+						imp.intrinsic = bufferIntrinsicNames[string(name)]
+						if imp.intrinsic != 0 {
+							info := bufferIntrinsicInfo[imp.intrinsic-1]
+							imp.element, imp.scalar = info.element, info.scalar
+							imp.flags |= info.flags
+							if int(imp.signature) >= len(m.types) || !bytes.Equal(m.types[imp.signature].params, info.params) || !bytes.Equal(m.types[imp.signature].results, info.results) {
+								imp.flags |= intrinsicBadSignature
+							}
+						}
 					}
 					m.imports = append(m.imports, imp)
 				case 1:

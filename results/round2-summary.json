@@ -1,0 +1,626 @@
+{
+  "cpu": {
+    "BenchmarkCompilePath/FourKernels/Decode": {
+      "before": {
+        "ns/op": 3333.0,
+        "B/op": 5624.0,
+        "allocs/op": 38.0,
+        "ns/op_min": 3209.0,
+        "ns/op_max": 4041.0
+      },
+      "after": {
+        "ns/op": 2385.0,
+        "B/op": 3224.0,
+        "allocs/op": 30.0,
+        "ns/op_min": 2238.0,
+        "ns/op_max": 2586.0
+      },
+      "speedup": 1.3974842767295597
+    },
+    "BenchmarkCompilePath/FourKernels/StandaloneKernel": {
+      "before": {
+        "ns/op": 5756.0,
+        "B/op": 8824.0,
+        "allocs/op": 40.0,
+        "ns/op_min": 5248.0,
+        "ns/op_max": 6728.0
+      },
+      "after": {
+        "ns/op": 3285.0,
+        "B/op": 6424.0,
+        "allocs/op": 32.0,
+        "ns/op_min": 3117.0,
+        "ns/op_max": 3586.0
+      },
+      "speedup": 1.75220700152207
+    },
+    "BenchmarkCompilePath/FourKernels/PrepareSource": {
+      "before": {
+        "ns/op": 31357.0,
+        "B/op": 41706.0,
+        "allocs/op": 79.0,
+        "ns/op_min": 29498.0,
+        "ns/op_max": 32346.0
+      },
+      "after": {
+        "ns/op": 30001.0,
+        "B/op": 39306.0,
+        "allocs/op": 71.0,
+        "ns/op_min": 28734.0,
+        "ns/op_max": 30976.0
+      },
+      "speedup": 1.0451984933835539
+    },
+    "BenchmarkCompilePath/FourKernels/NativeOnly": {
+      "before": {
+        "ns/op": 224239.0,
+        "B/op": 229748.0,
+        "allocs/op": 454.0,
+        "ns/op_min": 218576.0,
+        "ns/op_max": 299706.0
+      },
+      "after": {
+        "ns/op": 228465.0,
+        "B/op": 229748.0,
+        "allocs/op": 454.0,
+        "ns/op_min": 219264.0,
+        "ns/op_max": 248362.0
+      },
+      "speedup": 0.9815026371654302
+    },
+    "BenchmarkCompilePath/FourKernels/NativeWithPlugin": {
+      "before": {
+        "ns/op": 245689.0,
+        "B/op": 267418.0,
+        "allocs/op": 523.0,
+        "ns/op_min": 242623.0,
+        "ns/op_max": 291780.0
+      },
+      "after": {
+        "ns/op": 242019.0,
+        "B/op": 265018.0,
+        "allocs/op": 515.0,
+        "ns/op_min": 239339.0,
+        "ns/op_max": 267353.0
+      },
+      "speedup": 1.0151640986864667
+    },
+    "BenchmarkCompilePath/Polynomial/Decode": {
+      "before": {
+        "ns/op": 3967.0,
+        "B/op": 5624.0,
+        "allocs/op": 38.0,
+        "ns/op_min": 3851.0,
+        "ns/op_max": 4252.0
+      },
+      "after": {
+        "ns/op": 2607.0,
+        "B/op": 3224.0,
+        "allocs/op": 30.0,
+        "ns/op_min": 2496.0,
+        "ns/op_max": 2760.0
+      },
+      "speedup": 1.5216724204065977
+    },
+    "BenchmarkCompilePath/Polynomial/StandaloneKernel": {
+      "before": {
+        "ns/op": 14309.0,
+        "B/op": 27512.0,
+        "allocs/op": 46.0,
+        "ns/op_min": 14096.0,
+        "ns/op_max": 14535.0
+      },
+      "after": {
+        "ns/op": 12851.0,
+        "B/op": 25112.0,
+        "allocs/op": 38.0,
+        "ns/op_min": 12668.0,
+        "ns/op_max": 13527.0
+      },
+      "speedup": 1.1134542058983736
+    },
+    "BenchmarkCompilePath/Polynomial/PrepareSource": {
+      "before": {
+        "ns/op": 24669.0,
+        "B/op": 37359.0,
+        "allocs/op": 64.0,
+        "ns/op_min": 24616.0,
+        "ns/op_max": 25028.0
+      },
+      "after": {
+        "ns/op": 24698.0,
+        "B/op": 34959.0,
+        "allocs/op": 56.0,
+        "ns/op_min": 23741.0,
+        "ns/op_max": 29180.0
+      },
+      "speedup": 0.9988258158555349
+    },
+    "BenchmarkCompilePath/Polynomial/NativeOnly": {
+      "before": {
+        "ns/op": 230352.0,
+        "B/op": 229749.0,
+        "allocs/op": 454.0,
+        "ns/op_min": 220519.0,
+        "ns/op_max": 231944.0
+      },
+      "after": {
+        "ns/op": 224925.0,
+        "B/op": 229748.0,
+        "allocs/op": 454.0,
+        "ns/op_min": 218594.0,
+        "ns/op_max": 235595.0
+      },
+      "speedup": 1.0241280426808936
+    },
+    "BenchmarkCompilePath/Polynomial/NativeWithPlugin": {
+      "before": {
+        "ns/op": 248903.0,
+        "B/op": 263233.0,
+        "allocs/op": 514.0,
+        "ns/op_min": 239330.0,
+        "ns/op_max": 255041.0
+      },
+      "after": {
+        "ns/op": 251154.0,
+        "B/op": 260833.0,
+        "allocs/op": 506.0,
+        "ns/op_min": 242743.0,
+        "ns/op_max": 256420.0
+      },
+      "speedup": 0.9910373714931875
+    },
+    "BenchmarkCompilePath/Mandelbrot/Decode": {
+      "before": {
+        "ns/op": 4631.0,
+        "B/op": 4880.0,
+        "allocs/op": 43.0,
+        "ns/op_min": 4008.0,
+        "ns/op_max": 5430.0
+      },
+      "after": {
+        "ns/op": 2485.0,
+        "B/op": 2648.0,
+        "allocs/op": 25.0,
+        "ns/op_min": 2409.0,
+        "ns/op_max": 2618.0
+      },
+      "speedup": 1.8635814889336015
+    },
+    "BenchmarkCompilePath/Mandelbrot/StandaloneKernel": {
+      "before": {
+        "ns/op": 7055.0,
+        "B/op": 8464.0,
+        "allocs/op": 45.0,
+        "ns/op_min": 6467.0,
+        "ns/op_max": 7926.0
+      },
+      "after": {
+        "ns/op": 4753.0,
+        "B/op": 6232.0,
+        "allocs/op": 27.0,
+        "ns/op_min": 4558.0,
+        "ns/op_max": 5077.0
+      },
+      "speedup": 1.484325689038502
+    },
+    "BenchmarkCompilePath/Mandelbrot/PrepareSource": {
+      "before": {
+        "ns/op": 23307.0,
+        "B/op": 37511.0,
+        "allocs/op": 63.0,
+        "ns/op_min": 23025.0,
+        "ns/op_max": 23859.0
+      },
+      "after": {
+        "ns/op": 23032.0,
+        "B/op": 35279.0,
+        "allocs/op": 45.0,
+        "ns/op_min": 21906.0,
+        "ns/op_max": 23942.0
+      },
+      "speedup": 1.0119399096908648
+    },
+    "BenchmarkCompilePath/Mandelbrot/NativeOnly": {
+      "before": {
+        "ns/op": 1092363.0,
+        "B/op": 591254.0,
+        "allocs/op": 707.0,
+        "ns/op_min": 1072774.0,
+        "ns/op_max": 1122448.0
+      },
+      "after": {
+        "ns/op": 1116326.0,
+        "B/op": 591254.0,
+        "allocs/op": 707.0,
+        "ns/op_min": 1074804.0,
+        "ns/op_max": 1133294.0
+      },
+      "speedup": 0.9785340482977195
+    },
+    "BenchmarkCompilePath/Mandelbrot/NativeWithPlugin": {
+      "before": {
+        "ns/op": 1093494.0,
+        "B/op": 624880.0,
+        "allocs/op": 766.0,
+        "ns/op_min": 1071115.0,
+        "ns/op_max": 1149684.0
+      },
+      "after": {
+        "ns/op": 1074726.0,
+        "B/op": 622648.0,
+        "allocs/op": 748.0,
+        "ns/op_min": 1068821.0,
+        "ns/op_max": 1140551.0
+      },
+      "speedup": 1.0174630556997784
+    },
+    "BenchmarkCompilePath/LargeCustom/Decode": {
+      "before": {
+        "ns/op": 4762.0,
+        "B/op": 5624.0,
+        "allocs/op": 38.0,
+        "ns/op_min": 4388.0,
+        "ns/op_max": 4935.0
+      },
+      "after": {
+        "ns/op": 2877.0,
+        "B/op": 3224.0,
+        "allocs/op": 30.0,
+        "ns/op_min": 2801.0,
+        "ns/op_max": 3105.0
+      },
+      "speedup": 1.6551963851233924
+    },
+    "BenchmarkCompilePath/LargeCustom/StandaloneKernel": {
+      "before": {
+        "ns/op": 5837.0,
+        "B/op": 8824.0,
+        "allocs/op": 40.0,
+        "ns/op_min": 5641.0,
+        "ns/op_max": 5914.0
+      },
+      "after": {
+        "ns/op": 4018.0,
+        "B/op": 6424.0,
+        "allocs/op": 32.0,
+        "ns/op_min": 3890.0,
+        "ns/op_max": 4357.0
+      },
+      "speedup": 1.4527127924340468
+    },
+    "BenchmarkCompilePath/LargeCustom/PrepareSource": {
+      "before": {
+        "ns/op": 1073685.0,
+        "B/op": 4247115.0,
+        "allocs/op": 81.0,
+        "ns/op_min": 1058716.0,
+        "ns/op_max": 1140934.0
+      },
+      "after": {
+        "ns/op": 1058479.0,
+        "B/op": 4244710.0,
+        "allocs/op": 73.0,
+        "ns/op_min": 1050148.0,
+        "ns/op_max": 1129012.0
+      },
+      "speedup": 1.0143658967253957
+    },
+    "BenchmarkCompilePath/LargeCustom/NativeOnly": {
+      "before": {
+        "ns/op": 333298.0,
+        "B/op": 2327012.0,
+        "allocs/op": 457.0,
+        "ns/op_min": 320836.0,
+        "ns/op_max": 339156.0
+      },
+      "after": {
+        "ns/op": 331507.0,
+        "B/op": 2327012.0,
+        "allocs/op": 457.0,
+        "ns/op_min": 321071.0,
+        "ns/op_max": 349358.0
+      },
+      "speedup": 1.0054026008500574
+    },
+    "BenchmarkCompilePath/LargeCustom/NativeWithPlugin": {
+      "before": {
+        "ns/op": 2282922.0,
+        "B/op": 6570051.0,
+        "allocs/op": 527.0,
+        "ns/op_min": 2270506.0,
+        "ns/op_max": 2386684.0
+      },
+      "after": {
+        "ns/op": 2305732.0,
+        "B/op": 6567651.0,
+        "allocs/op": 519.0,
+        "ns/op_min": 2272525.0,
+        "ns/op_max": 2396783.0
+      },
+      "speedup": 0.9901072631164419
+    },
+    "BenchmarkCompilePath/LegacyHeavy": {
+      "before": {
+        "ns/op": 4501.0,
+        "B/op": 6944.0,
+        "allocs/op": 18.0,
+        "ns/op_min": 4366.0,
+        "ns/op_max": 4706.0
+      },
+      "after": {
+        "ns/op": 4420.0,
+        "B/op": 6944.0,
+        "allocs/op": 18.0,
+        "ns/op_min": 4078.0,
+        "ns/op_max": 4489.0
+      },
+      "speedup": 1.0183257918552036
+    }
+  },
+  "marshal": {
+    "BenchmarkBufferMarshal/Fresh/1024/profile=false": {
+      "before": {
+        "ns/op": 93675.0,
+        "B/op": 2904.0,
+        "allocs/op": 44.0,
+        "ns/op_min": 87211.0,
+        "ns/op_max": 132179.0
+      },
+      "after": {
+        "ns/op": 78111.0,
+        "B/op": 2984.0,
+        "allocs/op": 37.0,
+        "ns/op_min": 73525.0,
+        "ns/op_max": 96694.0
+      },
+      "speedup": 1.199254906479241
+    },
+    "BenchmarkBufferMarshal/Fresh/1024/profile=true": {
+      "before": {
+        "ns/op": 85500.0,
+        "B/op": 2904.0,
+        "allocs/op": 44.0,
+        "ns/op_min": 84604.0,
+        "ns/op_max": 97242.0
+      },
+      "after": {
+        "ns/op": 83298.0,
+        "B/op": 3136.0,
+        "allocs/op": 41.0,
+        "ns/op_min": 82308.0,
+        "ns/op_max": 88785.0
+      },
+      "speedup": 1.026435208528416
+    },
+    "BenchmarkBufferMarshal/Fresh/16384/profile=false": {
+      "before": {
+        "ns/op": 103625.0,
+        "B/op": 2904.0,
+        "allocs/op": 44.0,
+        "ns/op_min": 102909.0,
+        "ns/op_max": 108948.0
+      },
+      "after": {
+        "ns/op": 93046.0,
+        "B/op": 2984.0,
+        "allocs/op": 37.0,
+        "ns/op_min": 91485.0,
+        "ns/op_max": 95453.0
+      },
+      "speedup": 1.1136964512176772
+    },
+    "BenchmarkBufferMarshal/Fresh/16384/profile=true": {
+      "before": {
+        "ns/op": 102386.0,
+        "B/op": 2904.0,
+        "allocs/op": 44.0,
+        "ns/op_min": 100179.0,
+        "ns/op_max": 115196.0
+      },
+      "after": {
+        "ns/op": 100626.0,
+        "B/op": 3136.0,
+        "allocs/op": 41.0,
+        "ns/op_min": 98768.0,
+        "ns/op_max": 107030.0
+      },
+      "speedup": 1.0174905094110867
+    },
+    "BenchmarkBufferMarshal/Fresh/1000000/profile=false": {
+      "before": {
+        "ns/op": 1324499.0,
+        "B/op": 2904.0,
+        "allocs/op": 44.0,
+        "ns/op_min": 1235547.0,
+        "ns/op_max": 1519307.0
+      },
+      "after": {
+        "ns/op": 1328903.0,
+        "B/op": 2984.0,
+        "allocs/op": 37.0,
+        "ns/op_min": 1262155.0,
+        "ns/op_max": 1345228.0
+      },
+      "speedup": 0.9966859883678493
+    },
+    "BenchmarkBufferMarshal/Fresh/1000000/profile=true": {
+      "before": {
+        "ns/op": 1324261.0,
+        "B/op": 2904.0,
+        "allocs/op": 44.0,
+        "ns/op_min": 1251371.0,
+        "ns/op_max": 1419665.0
+      },
+      "after": {
+        "ns/op": 1325898.0,
+        "B/op": 3136.0,
+        "allocs/op": 41.0,
+        "ns/op_min": 1247292.0,
+        "ns/op_max": 1407787.0
+      },
+      "speedup": 0.9987653650582473
+    },
+    "BenchmarkBufferMarshal/Fresh/10000000/profile=false": {
+      "before": {
+        "ns/op": 12583614.0,
+        "B/op": 3272.0,
+        "allocs/op": 56.0,
+        "ns/op_min": 12417503.0,
+        "ns/op_max": 13838970.0
+      },
+      "after": {
+        "ns/op": 12441788.0,
+        "B/op": 3352.0,
+        "allocs/op": 49.0,
+        "ns/op_min": 12361084.0,
+        "ns/op_max": 13849368.0
+      },
+      "speedup": 1.0113991654575694
+    },
+    "BenchmarkBufferMarshal/Fresh/10000000/profile=true": {
+      "before": {
+        "ns/op": 13011257.0,
+        "B/op": 3272.0,
+        "allocs/op": 56.0,
+        "ns/op_min": 12288488.0,
+        "ns/op_max": 13823330.0
+      },
+      "after": {
+        "ns/op": 12596018.0,
+        "B/op": 3504.0,
+        "allocs/op": 53.0,
+        "ns/op_min": 12368487.0,
+        "ns/op_max": 13743844.0
+      },
+      "speedup": 1.0329658944596618
+    },
+    "BenchmarkBufferMarshal/Patch/1000000": {
+      "before": {
+        "ns/op": 501113.0,
+        "B/op": 3080.0,
+        "allocs/op": 50.0,
+        "ns/op_min": 477473.0,
+        "ns/op_max": 528689.0
+      },
+      "after": {
+        "ns/op": 79094.0,
+        "B/op": 3160.0,
+        "allocs/op": 43.0,
+        "ns/op_min": 76175.0,
+        "ns/op_max": 92923.0
+      },
+      "speedup": 6.335663893594963
+    },
+    "BenchmarkBufferMarshal/Patch/10000000": {
+      "before": {
+        "ns/op": 4058430.0,
+        "B/op": 3080.0,
+        "allocs/op": 50.0,
+        "ns/op_min": 4047309.0,
+        "ns/op_max": 4201355.0
+      },
+      "after": {
+        "ns/op": 78699.0,
+        "B/op": 3160.0,
+        "allocs/op": 43.0,
+        "ns/op_min": 73908.0,
+        "ns/op_max": 96399.0
+      },
+      "speedup": 51.56901612472839
+    },
+    "BenchmarkBufferMarshal/FourInputs/1024": {
+      "before": {
+        "ns/op": 167664.0,
+        "B/op": 4808.0,
+        "allocs/op": 77.0,
+        "ns/op_min": 152444.0,
+        "ns/op_max": 203047.0
+      },
+      "after": {
+        "ns/op": 101978.0,
+        "B/op": 4432.0,
+        "allocs/op": 58.0,
+        "ns/op_min": 96349.0,
+        "ns/op_max": 112051.0
+      },
+      "speedup": 1.6441193198533017
+    },
+    "BenchmarkBufferMarshal/FourInputs/1000000": {
+      "before": {
+        "ns/op": 2821253.0,
+        "B/op": 4808.0,
+        "allocs/op": 77.0,
+        "ns/op_min": 2658218.0,
+        "ns/op_max": 3029482.0
+      },
+      "after": {
+        "ns/op": 2840860.0,
+        "B/op": 4432.0,
+        "allocs/op": 58.0,
+        "ns/op_min": 2829609.0,
+        "ns/op_max": 2906981.0
+      },
+      "speedup": 0.9930982167371852
+    }
+  },
+  "pipeline": {
+    "BenchmarkShaderBuild/FourKernels": {
+      "before": {
+        "ns/op": 128448.0,
+        "WGSL-B": 515.0,
+        "B/op": 177.0,
+        "allocs/op": 6.0,
+        "ns/op_min": 126922.0,
+        "ns/op_max": 156184.0
+      },
+      "after": {
+        "ns/op": 129687.0,
+        "WGSL-B": 515.0,
+        "B/op": 177.0,
+        "allocs/op": 6.0,
+        "ns/op_min": 128477.0,
+        "ns/op_max": 149939.0
+      },
+      "speedup": 0.990446228226422
+    },
+    "BenchmarkShaderBuild/Polynomial": {
+      "before": {
+        "ns/op": 380729.0,
+        "WGSL-B": 3649.0,
+        "B/op": 177.0,
+        "allocs/op": 6.0,
+        "ns/op_min": 327002.0,
+        "ns/op_max": 401351.0
+      },
+      "after": {
+        "ns/op": 377000.0,
+        "WGSL-B": 3649.0,
+        "B/op": 177.0,
+        "allocs/op": 6.0,
+        "ns/op_min": 327723.0,
+        "ns/op_max": 414412.0
+      },
+      "speedup": 1.0098912466843502
+    },
+    "BenchmarkShaderBuild/Mandelbrot": {
+      "before": {
+        "ns/op": 217776.0,
+        "WGSL-B": 1007.0,
+        "B/op": 177.0,
+        "allocs/op": 6.0,
+        "ns/op_min": 165568.0,
+        "ns/op_max": 261437.0
+      },
+      "after": {
+        "ns/op": 195672.0,
+        "WGSL-B": 1007.0,
+        "B/op": 177.0,
+        "allocs/op": 6.0,
+        "ns/op_min": 167708.0,
+        "ns/op_max": 202261.0
+      },
+      "speedup": 1.1129645529253036
+    }
+  }
+}

@@ -164,7 +164,7 @@ func (p *Plugin) transferBuffer(ctx context.Context, deadline time.Time, caller 
 			copy(local, data)
 			b.version++
 			b.cpuCurrent = true
-			b.gpuCurrent = false
+			b.dirty(offset, count)
 			b.lost = false
 			op.GuestSetBytes = uint64(len(data))
 			op.GuestSetCount = 1

@@ -156,32 +156,16 @@ func lowerBufferBodyScratch(m *bufferModule, body []byte, k KernelConfig, scratc
 				return fail(CompileUnsupported, "only buffer intrinsic calls are supported")
 			}
 			imp := m.imports[index]
-			if imp.module != "wago_gpu_v1" {
+			if imp.flags&intrinsicNamespace == 0 {
 				return fail(CompileUnsupported, "call is not a buffer intrinsic")
 			}
-			var descriptor *bufferImport
-			if imp.intrinsic != 0 {
-				descriptor = &bufferImports[imp.intrinsic-1]
-			}
-			sig, ok := m.signature(index)
-			if !ok || descriptor == nil {
+			if imp.intrinsic == 0 {
 				return fail(CompileUnsupported, "unknown intrinsic")
 			}
-			// Wasm binary encodings of public scalar types are fixed here.
-			if len(sig.params) != len(descriptor.params) || len(sig.results) != len(descriptor.results) {
+			if imp.flags&intrinsicBadSignature != 0 {
 				return fail(CompileInvalidContract, "intrinsic signature mismatch")
 			}
-			for i, t := range descriptor.params {
-				if sig.params[i] != wasmType(t) {
-					return fail(CompileInvalidContract, "intrinsic parameter mismatch")
-				}
-			}
-			for i, t := range descriptor.results {
-				if sig.results[i] != wasmType(t) {
-					return fail(CompileInvalidContract, "intrinsic result mismatch")
-				}
-			}
-			if imp.name == "getBuffer" {
+			if imp.flags&intrinsicGet != 0 {
 				slot := pop(0x7f)
 				if slot.kind != valueConstant {
 					return fail(CompileUnsupported, "slot must be constant")
@@ -192,28 +176,18 @@ func lowerBufferBodyScratch(m *bufferModule, body []byte, k KernelConfig, scratc
 				scratch.stack = append(scratch.stack, valueRecord{typ: 0x7f, kind: valueHandle, number: slot.number})
 				break
 			}
-			write := strings.HasPrefix(imp.name, "writeBuffer")
-			read := strings.HasPrefix(imp.name, "readBuffer")
+			write := imp.flags&intrinsicWrite != 0
+			read := imp.flags&intrinsicRead != 0
 			if !read && !write {
 				return fail(CompileUnsupported, "management call in kernel")
 			}
-			prefix := "readBuffer"
-			if write {
-				prefix = "writeBuffer"
-			}
-			suffix := strings.TrimPrefix(imp.name, prefix)
-			var typ ElementType
-			for i, e := range elementSpecs {
-				if e.suffix == suffix {
-					typ = ElementType(i)
-				}
-			}
+			typ := ElementType(imp.element)
 			if typ == 0 || typ >= TypeI64 {
 				return fail(CompileUnsupported, "intrinsic type unsupported on GPU")
 			}
 			var data valueRecord
 			if write {
-				data = pop(wasmType(typ.spec().scalar))
+				data = pop(imp.scalar)
 				if data.kind == valueHandle {
 					return fail(CompileInvalidContract, "buffer handle cannot be stored as data")
 				}

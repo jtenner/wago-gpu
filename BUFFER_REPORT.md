@@ -45,6 +45,15 @@ extend the compiler subset. The report records bounded binding reuse,
 tail-only seeds, CPU transfer and ready-fallback deadline checks without timers, bulk CPU runners,
 all new test logs, and the latest large-image checks.
 
+The [compiler and transfer follow-up](MARSHAL_PERFORMANCE.md) records the current
+changes against commit `07db1f4`: import classification once per module,
+eight-byte import records, bounded dirty uploads, combined input submission,
+and staging-map readback without a duplicate queue wait. Small updates gain
+the most. Whole native module compilation and large fresh transfers change
+little. It records new paired measurements, allocation costs, higher combined
+payload peaks, and all safety and hardware checks. Older tables below remain
+historical measurements.
+
 ## Implemented behavior
 
 - All 34 canonical imports, all 11 CPU element types, and eight GPU element types.
@@ -282,8 +291,11 @@ release-matrix failure can be reproduced on this one GPU.
   instructions in a verified module can use CPU fallback.
 - TinyGo's complete F32 management path passed. It is not a claim that all guest
   languages or GC-aware source compilers can emit accepted kernels.
-- Scratch is reused, but upload/readback resources are still allocated per
-  transfer. Full-output seeding is conservative. The global device lock
+- Charged readback, conversion, parameter, and output scratch are reused.
+  Native upload payloads still require driver-owned copies. Covering stores
+  omit proven unnecessary prefix seeds; read-before-write outputs retain them.
+  Partial CPU writes use one bounded dirty interval on a known GPU base.
+  The global device lock
   serializes plugin work; concurrent instances are safe but do not dispatch
   concurrently on this backend.
 
@@ -302,10 +314,11 @@ experiment.
 
 ## Next three improvements
 
-1. Prove full-output overwrite and absence of old-value reads so eligible
-   kernels can omit seed copies. Measure it with resident chains and prefix work.
-2. Reuse upload/readback storage with the same budget and callback lifetime
-   rules. Add device timestamp queries so compute and transfer costs can be
-   separated from host waits.
+1. Measure a generic read-only Wago source observer with final-source identity
+   and verified artifact adoption. The existing unchanged transform snapshots
+   still limit compilation and disable Wago artifact caching.
+2. Keep longer computations and intermediates on the GPU. Extend the compiler
+   only with separate contract tests. Investigate upload staging reuse and
+   device timestamp queries under the current ownership and budget rules.
 3. Review and upstream the native safety patches, then test a second GPU vendor
    and expand the timeout, loss, and shutdown fault matrix before ABI freeze.

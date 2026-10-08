@@ -1,0 +1,17 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkBufferMarshal/Fresh/1024/profile=false         	      20	     93675 ns/op	    2904 B/op	      44 allocs/op
+BenchmarkBufferMarshal/Fresh/1024/profile=true          	      20	     92791 ns/op	    2906 B/op	      44 allocs/op
+BenchmarkBufferMarshal/Fresh/16384/profile=false        	      20	    108948 ns/op	    2904 B/op	      44 allocs/op
+BenchmarkBufferMarshal/Fresh/16384/profile=true         	      20	    111028 ns/op	    2904 B/op	      44 allocs/op
+BenchmarkBufferMarshal/Fresh/1000000/profile=false      	      20	   1324499 ns/op	    2904 B/op	      44 allocs/op
+BenchmarkBufferMarshal/Fresh/1000000/profile=true       	      20	   1419665 ns/op	    2904 B/op	      44 allocs/op
+BenchmarkBufferMarshal/Fresh/10000000/profile=false     	      20	  13838970 ns/op	    3272 B/op	      56 allocs/op
+BenchmarkBufferMarshal/Fresh/10000000/profile=true      	      20	  13011257 ns/op	    3272 B/op	      56 allocs/op
+BenchmarkBufferMarshal/Patch/1000000                    	      20	    501113 ns/op	    3080 B/op	      50 allocs/op
+BenchmarkBufferMarshal/Patch/10000000                   	      20	   4155222 ns/op	    3080 B/op	      50 allocs/op
+BenchmarkBufferMarshal/FourInputs/1024                  	      20	    167664 ns/op	    4808 B/op	      77 allocs/op
+BenchmarkBufferMarshal/FourInputs/1000000               	      20	   3029482 ns/op	    4810 B/op	      77 allocs/op
+PASS

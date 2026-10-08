@@ -132,7 +132,13 @@ func (b *gpuBackend) AllocateBuffer(size uint64) (deviceBuffer, error) {
 	return &nativeBuffer{buffer: r, owner: b, size: size}, nil
 }
 func (b *gpuBackend) UploadBuffer(ctx context.Context, resource deviceBuffer, data []byte) (resultErr error) {
-	if e := b.queue.TryWriteBuffer(resource.(*nativeBuffer).buffer, 0, data); e != nil {
+	return b.UploadBufferRange(ctx, resource, 0, data)
+}
+func (b *gpuBackend) UploadBufferRange(ctx context.Context, resource deviceBuffer, offset uint64, data []byte) (resultErr error) {
+	if e := ctx.Err(); e != nil {
+		return e
+	}
+	if e := b.queue.TryWriteBuffer(resource.(*nativeBuffer).buffer, offset, data); e != nil {
 		return e
 	}
 	defer func() {
@@ -146,6 +152,15 @@ func (b *gpuBackend) UploadBuffer(ctx context.Context, resource deviceBuffer, da
 	return b.waitIdle(ctx)
 }
 func (b *gpuBackend) submitBuffers(ctx context.Context, encode func(*wgpu.CommandEncoder) error, operations ...*BufferOperation) error {
+	if err := b.submitBufferCommands(ctx, encode, operations...); err != nil {
+		return err
+	}
+	return b.waitIdle(ctx)
+}
+func (b *gpuBackend) submitBufferCommands(ctx context.Context, encode func(*wgpu.CommandEncoder) error, operations ...*BufferOperation) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	e, err := b.device.TryCreateCommandEncoder(nil)
 	if err != nil {
 		return err
@@ -162,10 +177,7 @@ func (b *gpuBackend) submitBuffers(ctx context.Context, encode func(*wgpu.Comman
 	for _, op := range operations {
 		op.HardwareSubmitted = true
 	}
-	if err = b.queue.TrySubmit(c); err != nil {
-		return err
-	}
-	return b.waitIdle(ctx)
+	return b.queue.TrySubmit(c)
 }
 func (b *gpuBackend) AllocateReadback(size uint64) (deviceBuffer, error) {
 	r, e := b.device.TryCreateBuffer(&wgpu.BufferDescriptor{Size: size, Usage: wgpu.BufferUsageMapRead | wgpu.BufferUsageCopyDst})
@@ -184,11 +196,14 @@ func (b *gpuBackend) AllocateUniform(size uint64) (deviceBuffer, error) {
 func (b *gpuBackend) ReadBuffer(ctx context.Context, resource, staging deviceBuffer, size uint64, commit func([]byte)) (resultErr error) {
 	r := staging.(*nativeBuffer).buffer
 	var err error
-	if err = b.submitBuffers(ctx, func(e *wgpu.CommandEncoder) error {
+	if err = b.submitBufferCommands(ctx, func(e *wgpu.CommandEncoder) error {
 		return e.TryCopyBufferToBuffer(resource.(*nativeBuffer).buffer, 0, r, 0, size)
 	}); err != nil {
 		return err
 	}
+	// The map completes only after this staging buffer's submitted copy. The
+	// checked encoder/submission scopes have already completed. A separate queue
+	// completion callback would add a second wait without proving another fact.
 	done := make(chan wgpu.MapAsyncStatus, 1)
 	if err = r.TryMapAsync(wgpu.MapModeRead, 0, size, func(status wgpu.MapAsyncStatus) { done <- status }); err != nil {
 		return err
@@ -228,11 +243,34 @@ func (b *gpuBackend) ReadBuffer(ctx context.Context, resource, staging deviceBuf
 	return nil
 }
 func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline, parameter deviceBuffer, resources []deviceBuffer, seeds []bufferSeed, count uint32, parameterUpload bool, op *BufferOperation) (resultErr error) {
+	return b.executeBuffers(ctx, pipeline, parameter, resources, seeds, nil, count, parameterUpload, op)
+}
+func (b *gpuBackend) ExecuteBuffersWithUploads(ctx context.Context, pipeline bufferPipeline, parameter deviceBuffer, resources []deviceBuffer, seeds []bufferSeed, uploads []bufferUpload, count uint32, parameterUpload bool, op *BufferOperation) error {
+	return b.executeBuffers(ctx, pipeline, parameter, resources, seeds, uploads, count, parameterUpload, op)
+}
+func (b *gpuBackend) executeBuffers(ctx context.Context, pipeline bufferPipeline, parameter deviceBuffer, resources []deviceBuffer, seeds []bufferSeed, uploads []bufferUpload, count uint32, parameterUpload bool, op *BufferOperation) (resultErr error) {
+	if e := ctx.Err(); e != nil {
+		return e
+	}
 	if uint32(len(resources)) > b.limits.MaxStorageBuffersPerShaderStage || uint32(len(resources)+1) > b.limits.MaxBindingsPerBindGroup || b.limits.MaxUniformBuffersPerShaderStage < 1 || b.limits.MaxUniformBufferBindingSize < 16 || b.limits.MaxComputeInvocationsPerWorkgroup < 256 || b.limits.MaxComputeWorkgroupSizeX < 256 || (count+255)/256 > b.limits.MaxComputeWorkgroupsPerDimension {
 		return fmt.Errorf("dispatch device limit")
 	}
 	p := pipeline.(*nativeBufferPipeline)
 	uniform := parameter.(*nativeBuffer).buffer
+	var queuedBytes uint64
+	defer func() {
+		if resultErr != nil {
+			b.retainedBytes += queuedBytes
+		}
+	}()
+	for _, upload := range uploads {
+		// WriteBuffer copies the source synchronously into native queue storage.
+		// The final checked submission orders uploads, seeds, and compute.
+		if e := b.queue.TryWriteBuffer(upload.resource.(*nativeBuffer).buffer, upload.offset, upload.data); e != nil {
+			return e
+		}
+		queuedBytes += uint64(len(upload.data))
+	}
 	parameterQueued := false
 	defer func() {
 		if resultErr != nil && parameterQueued {

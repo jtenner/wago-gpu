@@ -22,6 +22,76 @@ func TestBufferHardwareParameterReuse(t *testing.T) {
 	testBufferParameterReuse(t, true)
 }
 
+func TestBufferHardwareDirtyRanges(t *testing.T) {
+	requireHardware(t)
+	testBufferDirtyRanges(t, true)
+}
+
+func TestBufferHardwareNarrowDirtyRange(t *testing.T) {
+	requireHardware(t)
+	for _, typ := range []ElementType{TypeU8, TypeU16, TypeF16} {
+		t.Run(typ.spec().suffix, func(t *testing.T) {
+			cfg := bufferConfig()
+			cfg.Disabled = false
+			cfg.Kernels = cfg.Kernels[:1]
+			for j := range cfg.Kernels[0].Bindings {
+				cfg.Kernels[0].Bindings[j].Type = typ
+			}
+			source := testModule(`(call $write (call $get (i32.const 1)) (local.get $i)
+ (call $read (call $get (i32.const 0)) (local.get $i)))`)
+			source = strings.ReplaceAll(source, "BufferF32", "Buffer"+typ.spec().suffix)
+			if typ != TypeF16 {
+				source = strings.ReplaceAll(source, "f32", "i32")
+			}
+			rt, p := setup(t, cfg, nil)
+			_, in := instance(t, rt, wat(t, source))
+			const count = 65
+			for slot := uint64(0); slot < 2; slot++ {
+				r, err := in.Invoke("create", uint64(typ), count)
+				if err != nil || r[0]>>32 != 0 {
+					t.Fatal(r, err)
+				}
+				invoke(t, in, "bind", slot, uint64(uint32(r[0])))
+			}
+			if invoke(t, in, "dispatch", 1, count) != V1OK {
+				t.Fatal(p.BufferSnapshot())
+			}
+			word := uint32(123)
+			if typ == TypeF16 {
+				word = 0x3c00 // Exactly 1.0; conversion-only kernel.
+			}
+			in.WriteUint32Le(0, word)
+			if invoke(t, in, "set", 1, 31, 0, 0, 1) != V1OK || invoke(t, in, "dispatch", 1, count) != V1OK {
+				t.Fatal(p.BufferSnapshot())
+			}
+			op := p.BufferSnapshot().Last
+			if op.GPUUploadBytes != 4 || op.LogicalUploadBytes != typ.spec().size || op.UploadCount != 1 {
+				t.Fatal(op)
+			}
+			if invoke(t, in, "copy", 2, 0, 0, 0, count) != V1OK {
+				t.Fatal(p.BufferSnapshot())
+			}
+			for j := uint32(0); j < count; j++ {
+				want := uint32(0)
+				if j == 31 {
+					want = word
+				}
+				if typ.spec().size == 2 {
+					v, _ := in.ReadUint16Le(j * 2)
+					if v != uint16(want) {
+						t.Fatal(j, v)
+					}
+				} else {
+					got, _ := in.ReadUint8(j)
+					if got != byte(want) {
+						t.Fatal(j, got)
+					}
+				}
+			}
+		})
+	}
+}
+
 func TestBufferHardwareStart(t *testing.T) {
 	requireHardware(t)
 	for _, paths := range [][2]bool{{false, false}, {true, false}, {false, true}, {true, true}} {

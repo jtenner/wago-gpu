@@ -21,6 +21,20 @@ type bufferDevice interface {
 	Lost() bool
 	RetainedBytes() uint64
 }
+
+// Optional capabilities. The synchronous interface remains the portable
+// fallback. Queue payloads always use plugin-owned bytes, never a guest borrow.
+type bufferRangeUploader interface {
+	UploadBufferRange(context.Context, deviceBuffer, uint64, []byte) error
+}
+type bufferUploadExecutor interface {
+	ExecuteBuffersWithUploads(context.Context, bufferPipeline, deviceBuffer, []deviceBuffer, []bufferSeed, []bufferUpload, uint32, bool, *BufferOperation) error
+}
+type bufferUpload struct {
+	resource deviceBuffer
+	offset   uint64
+	data     []byte
+}
 type bufferSeed struct {
 	source, destination deviceBuffer
 	size, offset        uint64
@@ -105,6 +119,7 @@ func (p *Plugin) quarantineBuffers(reason string) {
 				b.lost = true
 			}
 			b.gpuCurrent = false
+			b.dirtyStart, b.dirtyEnd = 0, 0
 		}
 	}
 }
@@ -201,20 +216,18 @@ func (p *Plugin) ensureGPU(ctx context.Context, i *bufferInstance, b *bufferStat
 		return V1ContentsLost
 	}
 	d := p.bufferDevice()
-	size := physicalBytes(b)
-	if b.gpu == nil {
-		if !p.reserveBuffer(i, size) {
-			return V1LimitExceeded
-		}
-		resource, e := d.AllocateBuffer(size)
-		if e != nil {
-			p.releaseBufferBytes(i, size)
-			return V1DeviceError
-		}
-		b.gpu = resource
+	startElement, endElement := b.uploadRange()
+	uploader, ranged := d.(bufferRangeUploader)
+	if !ranged {
+		startElement, endElement = 0, b.count
 	}
-	data := b.cpu
-	if b.typ.spec().size != 4 {
+	if status := p.allocateGPU(i, b); status != V1OK {
+		return status
+	}
+	size := uint64(endElement-startElement) * 4
+	stride := b.typ.spec().size
+	data := b.cpu[uint64(startElement)*stride : uint64(endElement)*stride]
+	if stride != 4 {
 		conversionStart := time.Now()
 		var status int32
 		data, status = p.conversionScratch(i, size)
@@ -224,13 +237,12 @@ func (p *Plugin) ensureGPU(ctx context.Context, i *bufferInstance, b *bufferStat
 		// The active payload must not be reclaimed by a later reservation.
 		i.conversion = nil
 		defer func() { i.conversion = data }()
-		stride := b.typ.spec().size
-		for j := uint32(0); j < b.count; j++ {
+		for j := startElement; j < endElement; j++ {
 			v := uint32(b.cpu[uint64(j)*stride])
 			if stride == 2 {
 				v = uint32(binary.LittleEndian.Uint16(b.cpu[uint64(j)*2:]))
 			}
-			binary.LittleEndian.PutUint32(data[uint64(j)*4:], v)
+			binary.LittleEndian.PutUint32(data[uint64(j-startElement)*4:], v)
 		}
 		op.Conversion += time.Since(conversionStart)
 	}
@@ -249,7 +261,13 @@ func (p *Plugin) ensureGPU(ctx context.Context, i *bufferInstance, b *bufferStat
 		return V1Cancelled
 	}
 	start := time.Now()
-	if err := d.UploadBuffer(ctx, b.gpu, data); err != nil {
+	var err error
+	if ranged {
+		err = uploader.UploadBufferRange(ctx, b.gpu, uint64(startElement)*4, data)
+	} else {
+		err = d.UploadBuffer(ctx, b.gpu, data)
+	}
+	if err != nil {
 		p.markTransferUnknown(op)
 		p.quarantineBuffers(err.Error())
 		if ctx.Err() != nil {
@@ -257,9 +275,25 @@ func (p *Plugin) ensureGPU(ctx context.Context, i *bufferInstance, b *bufferStat
 		}
 		return V1DeviceError
 	}
-	b.gpuCurrent = true
-	p.addTransfers(TransferCounters{LogicalUploadBytes: uint64(len(b.cpu)), GPUUploadBytes: size, UploadCount: 1}, op)
+	b.gpuReady()
+	p.addTransfers(TransferCounters{LogicalUploadBytes: uint64(endElement-startElement) * stride, GPUUploadBytes: size, UploadCount: 1}, op)
 	op.Upload += time.Since(start)
+	return V1OK
+}
+
+func (p *Plugin) allocateGPU(i *bufferInstance, b *bufferState) int32 {
+	size := physicalBytes(b)
+	if b.gpu == nil {
+		if !p.reserveBuffer(i, size) {
+			return V1LimitExceeded
+		}
+		resource, e := p.bufferDevice().AllocateBuffer(size)
+		if e != nil {
+			p.releaseBufferBytes(i, size)
+			return V1DeviceError
+		}
+		b.gpu = resource
+	}
 	return V1OK
 }
 func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *kernelContract, count uint32, op *BufferOperation) int32 {
@@ -274,6 +308,8 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 	var resources [8]deviceBuffer
 	var outputs [8]deviceBuffer
 	var seeds [8]bufferSeed
+	var uploads [8]bufferUpload
+	var uploadStates [8]*bufferState
 	used, seedCount := 0, 0
 	for slot := uint32(0); slot < 8; slot++ {
 		if k.lowered.reads[slot] || k.lowered.writes[slot] {
@@ -281,6 +317,31 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			used++
 		}
 	}
+	batched, batch := d.(bufferUploadExecutor)
+	batch = batch && !op.ProfileValid
+	// Narrow conversion uses one reusable workspace. Keep its synchronous path;
+	// F32/I32/U32 queue payloads borrow only immutable plugin CPU storage.
+	for _, slot := range slots[:used] {
+		b := i.buffers[i.bindings[slot]]
+		replace := k.lowered.writes[slot] && !k.lowered.readBeforeWrite[slot] && count == b.count
+		if !replace && !b.gpuCurrent && b.typ.spec().size != 4 {
+			batch = false
+		}
+	}
+	uploadCount := 0
+	var payload, before uint64
+	executed := false
+	defer func() {
+		retained := uint64(0)
+		if executed && d.RetainedBytes() > before {
+			retained = d.RetainedBytes() - before
+		}
+		if retained > payload {
+			panic("backend exceeded queue payload reservation")
+		}
+		i.retiredBytes += retained
+		p.releaseBufferBytes(i, payload-retained)
+	}()
 	defer func() {
 		for slot, r := range outputs {
 			if r != nil {
@@ -299,7 +360,23 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			return V1ContentsLost
 		}
 		if !replace {
-			if status := p.ensureGPU(ctx, i, b, op); status != V1OK {
+			if batch && !b.gpuCurrent {
+				if !b.cpuCurrent {
+					return V1ContentsLost
+				}
+				start, end := b.uploadRange()
+				if status := p.allocateGPU(i, b); status != V1OK {
+					return status
+				}
+				bytes := uint64(end-start) * 4
+				if !p.reserveBuffer(i, bytes) {
+					return V1LimitExceeded
+				}
+				payload += bytes
+				uploads[uploadCount] = bufferUpload{b.gpu, uint64(start) * 4, b.cpu[uint64(start)*4 : uint64(end)*4]}
+				uploadStates[uploadCount] = b
+				uploadCount++
+			} else if status := p.ensureGPU(ctx, i, b, op); status != V1OK {
 				return status
 			}
 		}
@@ -341,30 +418,24 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			}
 		}
 	}()
-	// The persistent parameter buffer has its own charge. Each pending queue
-	// write additionally holds a 16-byte payload until completion. Repeated
-	// counts reuse completed parameter contents; eviction requires a new write.
-	var payload uint64
+	// All queued input and parameter payloads remain charged until completion.
+	// Repeated counts reuse completed parameter contents.
 	if parameterUpload {
-		payload = 16
-	}
-	if !p.reserveBuffer(i, payload) {
-		return V1LimitExceeded
-	}
-	before := d.RetainedBytes()
-	defer func() {
-		if d.RetainedBytes() > before {
-			retained := d.RetainedBytes() - before
-			if retained > payload {
-				panic("backend exceeded uniform reservation")
-			}
-			i.retiredBytes += retained
-			p.releaseBufferBytes(i, payload-retained)
-		} else {
-			p.releaseBufferBytes(i, payload)
+		if !p.reserveBuffer(i, 16) {
+			return V1LimitExceeded
 		}
-	}()
-	err := d.ExecuteBuffers(ctx, k.pipeline.pipeline, uniform, resources[:used], seeds[:seedCount], count, parameterUpload, op)
+		payload += 16
+	}
+	if ctx.Err() != nil {
+		return V1Cancelled
+	}
+	before, executed = d.RetainedBytes(), true
+	var err error
+	if batch && uploadCount != 0 {
+		err = batched.ExecuteBuffersWithUploads(ctx, k.pipeline.pipeline, uniform, resources[:used], seeds[:seedCount], uploads[:uploadCount], count, parameterUpload, op)
+	} else {
+		err = d.ExecuteBuffers(ctx, k.pipeline.pipeline, uniform, resources[:used], seeds[:seedCount], count, parameterUpload, op)
+	}
 	if err != nil {
 		op.TransferCountsComplete = false
 		p.buffers.stats.TotalsComplete = false
@@ -378,6 +449,12 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 	}
 	parametersValid = true
 	delta := TransferCounters{}
+	for j, upload := range uploads[:uploadCount] {
+		uploadStates[j].gpuReady()
+		delta.LogicalUploadBytes += uint64(len(upload.data))
+		delta.GPUUploadBytes += uint64(len(upload.data))
+		delta.UploadCount++
+	}
 	if parameterUpload {
 		delta.ParameterUploadBytes = 16
 		delta.ParameterUploadCount = 1
@@ -406,7 +483,7 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			p.keepBufferScratch(i, b.gpu, physicalBytes(b))
 		}
 		b.gpu = r
-		b.gpuCurrent = true
+		b.gpuReady()
 		b.cpuCurrent = false
 		b.version++
 		outputs[slot] = nil

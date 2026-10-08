@@ -2,7 +2,7 @@
   "scope": "Specification, generated registration, and guest declaration validation; runtime and hardware tests run separately",
   "result": "passed",
   "sha256": {
-    "BUFFER_API_PROPOSAL.md": "73259caf770975c255eaa81e5b4f1fd4c81e4ffd3d3bf453fa48c9576822ba1b",
+    "BUFFER_API_PROPOSAL.md": "22b790538e3946031e040f19bef557512b7b6004c7411cbfae0c646b5c204823",
     "spec/abi_v1.json": "38174bb00c6e782254b1ac145fcba1f9813dbe46cf29b6b3b06f24efb6f70fe4",
     "spec/guest-tinygo.go.txt": "a21062331b33403037525a3999d0fdd8a671c237c800c69407ac895ab0ab1422",
     "spec/check_spec.py": "9c7968aefda7baba336864acb3fa2997b3be89768f2758ddf010c0d20071b167",
