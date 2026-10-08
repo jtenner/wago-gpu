@@ -1461,6 +1461,7 @@ Return slices in stable order for a given set of identities and IDs. Snapshot co
 | Dependency | Version |
 | --- | --- |
 | Wago | `v0.1.0-beta.12.0.20261007220511-7aa401f29a33` |
+| Wago WASI Preview 1 (example hosts) | `v0.3.2-0.20261005152821-e461db531d72` |
 | oliverbestmann WebGPU | `v1.36.0`, local safety repair |
 | `golang.org/x/sys` | `v0.30.0`, indirect |
 
@@ -1498,6 +1499,8 @@ No GPU device or C compiler is required for the `CGO_ENABLED=0` test path. WABT 
 The current demo provides `-cpu-only`, `-require-gpu`, `-kernel`, `-n`, `-sizes`, `-passes`, `-min-elements`, `-bench`, `-reps`, `-profile`, `-separate`, and `-json`. `-require-gpu` MUST fail if required work uses fallback. `-separate` is a transfer-cost control, not a chain-rollback API. The square fixture's demo caps passes at four to keep its inputs in the intended numerical range; the plugin batch limit remains 64.
 
 **Runnable artifacts.** [examples/buffers](examples/buffers/main.go) supplies the Go host, full WAT, and Wasm for section 13, with CPU and require-hardware modes. [examples/tinygo](examples/tinygo/main.go) runs the complete guest-language path. [examples/storage](examples/storage/main.go) provides F16 CPU/GPU execution plus memory64 and GC transfer examples. Proposed snippets alone are not runnable deliverables.
+
+[examples/mandelbrot](examples/mandelbrot/README.md) adds two WASI commands: a direct CPU renderer and a buffer renderer with explicit GPU dispatch and CPU fallback. The selected buffer kernel computes one `z = z*z+c` iteration. The guest controls the loop and checks escape values after readback. This does not extend the shader instruction subset. Both commands write PGM images to WASI stdout. The [example setup helper](examples/internal/runwasm/run.go) keeps compilation and cleanup in one place and permits only source compilation plus WASI imports in their own namespace.
 
 The library MUST NOT install a driver, alter Wago source, or download executable code at runtime. Normal Go module and native-library build dependencies remain build-time concerns. The project SHOULD avoid adding C or C++ source and SHOULD keep the backend behind the existing small private interface.
 

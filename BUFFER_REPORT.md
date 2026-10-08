@@ -16,6 +16,16 @@ The start example also passed both mixed CPU/GPU orders. Wago is an unchanged,
 pinned dependency. GPU code, ownership, compiler logic, and cleanup are in this
 project and its local native dependency patch.
 
+The shorter example hosts now share one setup and cleanup helper. Two new WASI
+Mandelbrot guests provide direct CPU rendering and buffer rendering with explicit
+GPU passes and CPU fallback. At the default 96×64 pixels and 32 iterations, the
+direct Wago CPU, buffer CPU, real GPU, and Wasmtime CPU programs produced identical
+PGM files. The GPU run completed all 32 passes with no fallback on the same
+NVIDIA RTX 4060 Laptop/Vulkan device listed below. This is a correctness check,
+not a Mandelbrot speed measurement. The buffer program reads back both orbit
+buffers after each pass; float results near the set boundary can differ on other
+grids or devices.
+
 ## Implemented behavior
 
 - All 34 canonical imports, all 11 CPU element types, and eight GPU element types.
@@ -50,6 +60,10 @@ It was present for this run.
 | Bounded compiler fuzz test | [fuzz log](results/buffer-fuzz.txt), 127,278 executions in the recorded 10-second run |
 | ABI, WAT, compiled guest, and document checks | [validation report](spec/validation.json), `python3 spec/check_spec.py --tinygo` |
 | Required benchmark cases | [raw JSONL](results/buffer-bench.jsonl), eight cases, full-array result checks after every GPU sample |
+| Simplified hosts and WASI guests, CPU-only | [example CPU log](results/examples-cpu-tests.txt), full `CGO_ENABLED=0` suite |
+| Simplified hosts and WASI guests, CPU race tests | [example CPU race log](results/examples-cpu-race.txt), full suite |
+| Simplified hosts and WASI guests, real GPU race tests | [example hardware log](results/examples-hardware-race.txt), full suite with `WAGO_GPU_TEST=1` |
+| Default WASI Mandelbrot images | [commands and hashes](results/mandelbrot-example-checks.txt), CPU, fallback, real GPU, and Wasmtime |
 
 The tests include invalid ranges, missing/disabled devices, unsupported code,
 public error wrapping, metadata eviction, durable invalid contracts, failed

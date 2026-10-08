@@ -67,21 +67,33 @@ The GPU dependency has local callback and error-reporting repairs. Read
 include a small native Rust patch and C binding changes. No GPU code or patch is
 inside Wago. Native driver calls cannot be forcibly interrupted by a Go context.
 
-## Complete examples
+## Examples
 
-[The WAT start module](examples/buffers/module.wat) creates two F32 buffers,
-computes `B = 2*A`, then `A = B+1`, and copies `[3, 5, 7, 9]` to guest memory.
-Its [Go host](examples/buffers/main.go) checks the result after instantiation.
-Each dispatch can fall back independently:
+See the [short example guide](examples/README.md). The hosts now share one small
+setup helper, so each program shows its kernel settings and result check.
 
 ```sh
-go run -tags webgpu ./examples/buffers -first-cpu
-go run -tags webgpu ./examples/buffers -second-cpu
+go run ./examples/buffers -first-cpu -second-cpu
+go run ./examples/tinygo -cpu
+go run ./examples/storage -kind f16 -cpu
+
+# WASI guests write Mandelbrot images to stdout.
+go run ./examples/mandelbrot > mandelbrot-cpu.pgm
+go run ./examples/mandelbrot -program buffers -cpu > mandelbrot-fallback.pgm
+go run -tags webgpu ./examples/mandelbrot -program buffers -require-gpu > mandelbrot-gpu.pgm
 ```
 
-[The complete TinyGo guest](examples/tinygo/guest.go) uses the single-result
-packed allocation import. It includes allocation, transfer, dispatch, CPU
-fallback, result checks, and cleanup. Rebuild its checked-in Wasm with:
+The [Mandelbrot guide](examples/mandelbrot/README.md) explains image settings,
+rebuild commands, and the CPU/GPU split. The CPU program is a standalone WASI
+command. The buffer program offloads each arithmetic iteration and checks
+escape values in the guest. Its readback costs are part of the example.
+
+[The buffer WAT start module](examples/buffers/module.wat) produces `[3, 5, 7, 9]`.
+Each dispatch can fall back independently; use `-first-cpu` or `-second-cpu` to
+choose a mixed path. The storage example also accepts `-kind memory64` or
+`-kind gc` for checked transfer examples.
+
+Rebuild the [complete TinyGo buffer guest](examples/tinygo/guest.go) with:
 
 ```sh
 tinygo build -target=wasm-unknown -scheduler=none -panic=trap \
@@ -89,21 +101,8 @@ tinygo build -target=wasm-unknown -scheduler=none -panic=trap \
   examples/tinygo/guest.go
 ```
 
-TinyGo 0.42.0 was tested. The tiny guest uses fixed arrays. `-gc=leaking` is a
-build setting for this example, not a requirement for plugin-owned buffers.
-
-Typed storage examples are also available:
-
-```sh
-go run ./examples/storage -kind f16 -cpu
-go run ./examples/storage -kind memory64 -cpu
-go run ./examples/storage -kind gc -cpu
-go run -tags webgpu ./examples/storage -kind f16 -require-gpu
-```
-
-The [storage WAT files](examples/storage/main.go) show F16 upcasting and explicit
-transfers. The memory64 and GC examples test transfers; they do not dispatch GPU
-work. Regeneration needs `wasm-tools`.
+TinyGo 0.42.0 was tested. `-gc=leaking` is a build setting for these bounded
+examples, not a requirement for plugin-owned buffers.
 
 ## Host contract
 
@@ -125,8 +124,9 @@ host, err := wagogpu.NewHost(ctx, wagogpu.Config{
 ```
 
 Then call `host.Compile(wasm)` and `host.Instantiate(ctx, module)`. Close the
-instance, module, and host with an independent cleanup context. See the TinyGo
-host for a complete sequence that returns cleanup errors.
+instance, module, and host with an independent cleanup context. The
+[example setup helper](examples/internal/runwasm/run.go) shows the lower-level
+runtime sequence and returns cleanup errors.
 
 `Host` also offers source preparations with `Compile` and `Close`. It exposes
 no artifact-adoption or import-override route. With the lower-level

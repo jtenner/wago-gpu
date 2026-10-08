@@ -1,0 +1,20 @@
+$ go run ./examples/mandelbrot
+Mandelbrot: direct Wago CPU
+6157 bytes; SHA256 bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43
+
+$ go run ./examples/mandelbrot -program buffers -cpu
+Mandelbrot buffers: GPU passes=0, CPU passes=32
+6157 bytes; SHA256 bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43
+
+$ go run -tags webgpu ./examples/mandelbrot -program buffers -require-gpu
+Mandelbrot buffers: GPU passes=32, CPU passes=0
+6157 bytes; SHA256 bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43
+
+$ wasmtime examples/mandelbrot/cpu.wasm 96 64 32
+Mandelbrot: direct Wago CPU
+6157 bytes; SHA256 bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43
+
+All four default images identical: True
+
+Preview: go run ./examples/mandelbrot -width 320 -height 200 -iterations 64
+Mandelbrot: direct Wago CPU

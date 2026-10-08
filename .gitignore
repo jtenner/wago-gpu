@@ -1,6 +1,7 @@
 # Local executables and build output. Keep source Wasm fixtures under version control.
 /demo
 /buffer-bench
+/mandelbrot*.pgm
 /core
 /bin/
 /dist/
