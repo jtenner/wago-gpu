@@ -12,6 +12,69 @@ without an intermediate guest transfer. The earlier scalar `wago_gpu.run` and
 [specification](BUFFER_API_PROPOSAL.md), [current results](BUFFER_REPORT.md), and
 [canonical ABI table](spec/abi_v1.json).
 
+## Measured findings
+
+Real GPU execution passed the result checks. **Direct Wago CPU execution is
+still faster for all fresh-input array and Mandelbrot cases in this update.**
+The storage changes reduced allocations and removed the high cost of scalar
+host calls from the Mandelbrot CPU fallback.
+
+Measured on 2026-10-08 with an NVIDIA RTX 4060 Laptop GPU, Vulkan driver
+550.163.01, AMD Ryzen 7 8845HS, Debian 13/Linux 6.12, and Go 1.27.1.
+The Mandelbrot table uses **32 iterations**, `GOMAXPROCS=1`, and no stage
+profiling. Values are medians of three samples, each averaging three renders.
+The module, device, and pipeline remain loaded. Each render uses a new WASI
+instance and includes setup, output to `io.Discard`, and cleanup.
+
+| Image | Direct CPU ms | Buffer CPU fallback ms | GPU ms |
+| --- | ---: | ---: | ---: |
+| 512×512 | 5.483 | 27.060 | 31.437 |
+| 1920×1080 | 43.623 | 235.632 | 215.152 |
+| 2560×1440 | 73.169 | 466.488 | 367.325 |
+
+The direct CPU program stops updating pixels after they escape. The buffer
+paths update every pixel on each pass. The GPU path also copies two orbit
+buffers back to the CPU and seeds two output buffers on each pass.
+
+| Measure | Before | After |
+| --- | ---: | ---: |
+| 512×512 CPU fallback, ms | 38,139.107 | 27.060 |
+| 1920×1080 GPU render, ms | 228.052 | 215.152 |
+| 2560×1440 GPU render, ms | 401.087 | 367.325 |
+| Go allocations per large GPU render | 2,887 | 2,480 |
+
+The old CPU fallback value is one sample from a CPU-only build. The new value
+uses the repeated-run method above with GPU execution disabled. GPU clocks were
+not fixed, and temperature was not controlled. Small timing changes can include
+measurement noise. GPU device timestamps are unavailable.
+
+The changes reuse output scratch buffers, a readback buffer, a uniform buffer,
+and a bounded Go conversion slice. Dispatch uses fixed-size arrays. The guest
+allocates its arrays once and uses bulk transfers for CPU fallback. Pixel and
+transfer loops remain linear; no quadratic loop was found. Wago and the public
+plugin ABI were not changed.
+
+Retained scratch uses more memory: the tracked 2560×1440 peak increased from
+140.60 to 154.70 MiB. This remains below the unchanged 256 MiB instance limit.
+Idle storage remains charged and can be released under budget pressure. Go
+allocation counts exclude native driver allocations.
+
+CPU and bulk-fallback images match exactly. GPU float arithmetic is relaxed.
+At 32 iterations, GPU images differ from CPU images at 5 full-HD pixels and
+13 1440p pixels. At the new 64-iteration default, the counts are 198 and 366.
+The full-HD and 1440p GPU runs completed all 64 passes without fallback.
+
+The CPU-only suite, real-GPU race suite, and cgo pointer checks passed. Both
+original array kernels also passed all four sizes, including 10 million
+elements. Their repeated fresh-input GPU runs remained slower than direct CPU
+execution; the largest tracked peak was 228.88 MiB.
+
+See the [full performance report](examples/mandelbrot/PERFORMANCE.md) for raw
+samples, test logs, array timings, and rerun commands. The next useful work is
+to reduce per-pass transfers and move the escape check and loop to the GPU.
+Skipping output seed copies requires a proof that old values are not needed.
+These changes are not implemented.
+
 ## Build and test
 
 Go 1.25 or later is required. The tested Go version is 1.27.1.
@@ -87,6 +150,8 @@ The [Mandelbrot guide](examples/mandelbrot/README.md) explains image settings,
 rebuild commands, and the CPU/GPU split. The CPU program is a standalone WASI
 command. The buffer program offloads each arithmetic iteration and checks
 escape values in the guest. Its readback costs are part of the example.
+Images now default to **1920×1080 and 64 iterations**. The example also supports
+2560×1440, with a limit of 4,194,304 total pixels.
 
 [The buffer WAT start module](examples/buffers/module.wat) produces `[3, 5, 7, 9]`.
 Each dispatch can fall back independently; use `-first-cpu` or `-second-cpu` to
@@ -156,8 +221,8 @@ and typed `readBuffer*` / `writeBuffer*` intrinsics.
 
 Dispatch status 0 means success. Status 1 means the guest must run its original
 CPU runner. Other statuses are errors; do not treat them as fallback.
-`BufferSnapshot().Last` preserves the dispatch record through the CPU loop.
-Scalar intrinsics do not replace it.
+`BufferSnapshot().Last` preserves the dispatch record through a CPU loop that
+uses only scalar intrinsics. Bulk-transfer and management imports update it.
 
 GPU outputs remain private until all checks and completion succeed. A failed
 operation does not publish partial output. Device loss or uncertain completion
@@ -195,9 +260,10 @@ promise of exact arithmetic.
 
 Defaults are 64 buffers per instance, 64 selected kernels, 8 slots per kernel,
 10 million elements per buffer, 256 MiB tracked instance storage, and 512 MiB
-tracked runtime storage. Hosts can lower them. One idle scratch buffer per
-instance can be reused; idle capacity is reclaimed before rejecting a budget
-reservation. Driver overhead is outside these byte counts.
+tracked runtime storage. Hosts can lower them. Each instance can retain up to
+eight output scratch buffers, one readback buffer, one uniform buffer, and one
+bounded Go conversion slice. Idle capacity is reclaimed before rejecting a
+budget reservation. Driver overhead is outside these byte counts.
 
 Snapshots distinguish submission from confirmed execution, guest copies from
 host/device transfers, and device-local seed copies. GPU timestamps are not
