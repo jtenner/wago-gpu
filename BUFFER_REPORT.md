@@ -26,6 +26,10 @@ not a Mandelbrot speed measurement. The buffer program reads back both orbit
 buffers after each pass; float results near the set boundary can differ on other
 grids or devices.
 
+The [Mandelbrot benchmark report](examples/mandelbrot/BENCHMARKS.md) records
+separate setup and repeated-command measurements. These results do not change
+the earlier array-kernel benchmark tables below.
+
 ## Implemented behavior
 
 - All 34 canonical imports, all 11 CPU element types, and eight GPU element types.

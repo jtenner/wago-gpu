@@ -1,0 +1,42 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/mandelbrot
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics     
+BenchmarkMandelbrotSetupAndRender/96x64/cpu         	       3	   1218320 ns/op	         0 different-pixels	  411816 B/op	    1076 allocs/op
+BenchmarkMandelbrotSetupAndRender/96x64/cpu         	       3	   1092128 ns/op	         0 different-pixels	  411816 B/op	    1076 allocs/op
+BenchmarkMandelbrotSetupAndRender/96x64/cpu         	       3	   1034776 ns/op	         0 different-pixels	  411816 B/op	    1076 allocs/op
+BenchmarkMandelbrotSetupAndRender/96x64/gpu         	       3	  95400659 ns/op	         0 different-pixels	  959738 B/op	    4740 allocs/op
+BenchmarkMandelbrotSetupAndRender/96x64/gpu         	       3	  94909122 ns/op	         0 different-pixels	  959717 B/op	    4740 allocs/op
+BenchmarkMandelbrotSetupAndRender/96x64/gpu         	       3	  96838970 ns/op	         0 different-pixels	  959701 B/op	    4739 allocs/op
+BenchmarkMandelbrotSetupAndRender/256x192/cpu       	       3	   2048277 ns/op	         0 different-pixels	  411816 B/op	    1078 allocs/op
+BenchmarkMandelbrotSetupAndRender/256x192/cpu       	       3	   2009210 ns/op	         0 different-pixels	  411816 B/op	    1078 allocs/op
+BenchmarkMandelbrotSetupAndRender/256x192/cpu       	       3	   2063868 ns/op	         0 different-pixels	  411816 B/op	    1078 allocs/op
+BenchmarkMandelbrotSetupAndRender/256x192/gpu       	       3	  98998502 ns/op	         0 different-pixels	 1648029 B/op	    4744 allocs/op
+BenchmarkMandelbrotSetupAndRender/256x192/gpu       	       3	 101125334 ns/op	         0 different-pixels	 1648034 B/op	    4744 allocs/op
+BenchmarkMandelbrotSetupAndRender/256x192/gpu       	       3	  97304521 ns/op	         0 different-pixels	 1648034 B/op	    4744 allocs/op
+BenchmarkMandelbrotSetupAndRender/512x512/cpu       	       3	   6686298 ns/op	         0 different-pixels	  411816 B/op	    1078 allocs/op
+BenchmarkMandelbrotSetupAndRender/512x512/cpu       	       3	   6699737 ns/op	         0 different-pixels	  411816 B/op	    1078 allocs/op
+BenchmarkMandelbrotSetupAndRender/512x512/cpu       	       3	   6519972 ns/op	         0 different-pixels	  411816 B/op	    1078 allocs/op
+BenchmarkMandelbrotSetupAndRender/512x512/gpu       	       3	 128530736 ns/op	         0 different-pixels	 5059053 B/op	    4765 allocs/op
+BenchmarkMandelbrotSetupAndRender/512x512/gpu       	       3	 132875832 ns/op	         0 different-pixels	 5058976 B/op	    4764 allocs/op
+BenchmarkMandelbrotSetupAndRender/512x512/gpu       	       3	 127138690 ns/op	         0 different-pixels	 5058960 B/op	    4763 allocs/op
+BenchmarkMandelbrotReuseModule/96x64/cpu            	       3	    172930 ns/op	         0.8544 compile-ms	         0 different-pixels	         0.2511 first-render-ms	   32034 B/op	     427 allocs/op
+BenchmarkMandelbrotReuseModule/96x64/cpu            	       3	    169477 ns/op	         0.8472 compile-ms	         0 different-pixels	         0.2490 first-render-ms	   32034 B/op	     427 allocs/op
+BenchmarkMandelbrotReuseModule/96x64/cpu            	       3	    177950 ns/op	         0.8385 compile-ms	         0 different-pixels	         0.2489 first-render-ms	   32034 B/op	     427 allocs/op
+BenchmarkMandelbrotReuseModule/96x64/gpu            	       3	   5002561 ns/op	         1.510 compile-ms	        55.90 device-init-ms	         0 different-pixels	        16.00 first-render-ms	         0.2729 pipeline-ms	         1.500 readback-MiB/op	         1.500 seed-copy-MiB/op	         0.2344 tracked-peak-MiB	         0.01899 translate-ms	         0.09375 upload-MiB/op	  267893 B/op	    2880 allocs/op
+BenchmarkMandelbrotReuseModule/96x64/gpu            	       3	   5624881 ns/op	         1.573 compile-ms	        55.05 device-init-ms	         0 different-pixels	        16.32 first-render-ms	         0.2505 pipeline-ms	         1.500 readback-MiB/op	         1.500 seed-copy-MiB/op	         0.2344 tracked-peak-MiB	         0.02272 translate-ms	         0.09375 upload-MiB/op	  267893 B/op	    2880 allocs/op
+BenchmarkMandelbrotReuseModule/96x64/gpu            	       3	   5617324 ns/op	         1.486 compile-ms	        56.71 device-init-ms	         0 different-pixels	        17.74 first-render-ms	         0.2584 pipeline-ms	         1.500 readback-MiB/op	         1.500 seed-copy-MiB/op	         0.2344 tracked-peak-MiB	         0.01826 translate-ms	         0.09375 upload-MiB/op	  267893 B/op	    2880 allocs/op
+BenchmarkMandelbrotReuseModule/256x192/cpu          	       3	   1086638 ns/op	         0.8518 compile-ms	         0 different-pixels	         1.162 first-render-ms	   32040 B/op	     429 allocs/op
+BenchmarkMandelbrotReuseModule/256x192/cpu          	       3	   1062892 ns/op	         0.8285 compile-ms	         0 different-pixels	         1.170 first-render-ms	   32040 B/op	     429 allocs/op
+BenchmarkMandelbrotReuseModule/256x192/cpu          	       3	   1063086 ns/op	         0.8435 compile-ms	         0 different-pixels	         1.168 first-render-ms	   32040 B/op	     429 allocs/op
+BenchmarkMandelbrotReuseModule/256x192/gpu          	       3	   9380174 ns/op	         1.577 compile-ms	        55.47 device-init-ms	         0 different-pixels	        20.52 first-render-ms	         0.2383 pipeline-ms	        12.00 readback-MiB/op	        12.00 seed-copy-MiB/op	         1.875 tracked-peak-MiB	         0.01759 translate-ms	         0.7500 upload-MiB/op	  956152 B/op	    2884 allocs/op
+BenchmarkMandelbrotReuseModule/256x192/gpu          	       3	   9499171 ns/op	         1.619 compile-ms	        56.85 device-init-ms	         0 different-pixels	        19.80 first-render-ms	         0.2818 pipeline-ms	        12.00 readback-MiB/op	        12.00 seed-copy-MiB/op	         1.875 tracked-peak-MiB	         0.01898 translate-ms	         0.7500 upload-MiB/op	  956152 B/op	    2884 allocs/op
+BenchmarkMandelbrotReuseModule/256x192/gpu          	       3	   9390276 ns/op	         1.586 compile-ms	        55.24 device-init-ms	         0 different-pixels	        20.60 first-render-ms	         0.2770 pipeline-ms	        12.00 readback-MiB/op	        12.00 seed-copy-MiB/op	         1.875 tracked-peak-MiB	         0.01685 translate-ms	         0.7500 upload-MiB/op	  956152 B/op	    2884 allocs/op
+BenchmarkMandelbrotReuseModule/512x512/cpu          	       3	   5606052 ns/op	         0.8492 compile-ms	         0 different-pixels	         5.749 first-render-ms	   32040 B/op	     429 allocs/op
+BenchmarkMandelbrotReuseModule/512x512/cpu          	       3	   5451978 ns/op	         0.8017 compile-ms	         0 different-pixels	         5.580 first-render-ms	   32040 B/op	     429 allocs/op
+BenchmarkMandelbrotReuseModule/512x512/cpu          	       3	   5372874 ns/op	         0.7985 compile-ms	         0 different-pixels	         5.484 first-render-ms	   32040 B/op	     429 allocs/op
+BenchmarkMandelbrotReuseModule/512x512/gpu          	       3	  32669579 ns/op	         1.989 compile-ms	        60.63 device-init-ms	         0 different-pixels	        45.56 first-render-ms	         0.2991 pipeline-ms	        64.00 readback-MiB/op	        64.00 seed-copy-MiB/op	        10.00 tracked-peak-MiB	         0.08997 translate-ms	         4.000 upload-MiB/op	 4364274 B/op	    2889 allocs/op
+BenchmarkMandelbrotReuseModule/512x512/gpu          	       3	  33182102 ns/op	         1.949 compile-ms	        56.80 device-init-ms	         0 different-pixels	        45.38 first-render-ms	         0.2369 pipeline-ms	        64.00 readback-MiB/op	        64.00 seed-copy-MiB/op	        10.00 tracked-peak-MiB	         0.02205 translate-ms	         4.000 upload-MiB/op	 4364221 B/op	    2886 allocs/op
+BenchmarkMandelbrotReuseModule/512x512/gpu          	       3	  33348402 ns/op	         1.991 compile-ms	        60.28 device-init-ms	         0 different-pixels	        46.09 first-render-ms	         0.3171 pipeline-ms	        64.00 readback-MiB/op	        64.00 seed-copy-MiB/op	        10.00 tracked-peak-MiB	         0.02116 translate-ms	         4.000 upload-MiB/op	 4364237 B/op	    2887 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/mandelbrot	11.125s

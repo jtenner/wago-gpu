@@ -1,0 +1,2 @@
+ok  	github.com/jtenner/wago-gpu/examples/mandelbrot	2.331s
+ok  	github.com/jtenner/wago-gpu/examples/mandelbrot	2.673s

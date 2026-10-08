@@ -1,0 +1,12 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/mandelbrot
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics     
+BenchmarkMandelbrotSetupAndRender/96x64/fallback         	       1	 859968997 ns/op	         0 different-pixels	  893072 B/op	    2973 allocs/op
+BenchmarkMandelbrotSetupAndRender/256x192/fallback       	       1	6939404832 ns/op	         0 different-pixels	 1581216 B/op	    2975 allocs/op
+BenchmarkMandelbrotSetupAndRender/512x512/fallback       	       1	37767245087 ns/op	         0 different-pixels	 4989520 B/op	    2981 allocs/op
+BenchmarkMandelbrotReuseModule/96x64/fallback            	       1	 859616668 ns/op	         1.220 compile-ms	         0 device-init-ms	         0 different-pixels	       862.5 first-render-ms	         0 pipeline-ms	         0 readback-MiB/op	         0 seed-copy-MiB/op	         0.09375 tracked-peak-MiB	         0.01725 translate-ms	         0 upload-MiB/op	  205024 B/op	    1187 allocs/op
+BenchmarkMandelbrotReuseModule/256x192/fallback          	       1	7566327131 ns/op	         1.123 compile-ms	         0 device-init-ms	         0 different-pixels	      7102 first-render-ms	         0 pipeline-ms	         0 readback-MiB/op	         0 seed-copy-MiB/op	         0.7500 tracked-peak-MiB	         0.01295 translate-ms	         0 upload-MiB/op	  893152 B/op	    1189 allocs/op
+BenchmarkMandelbrotReuseModule/512x512/fallback          	       1	38139107253 ns/op	         1.219 compile-ms	         0 device-init-ms	         0 different-pixels	     37999 first-render-ms	         0 pipeline-ms	         0 readback-MiB/op	         0 seed-copy-MiB/op	         4.000 tracked-peak-MiB	         0.01503 translate-ms	         0 upload-MiB/op	 4301040 B/op	    1189 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/mandelbrot	233.664s

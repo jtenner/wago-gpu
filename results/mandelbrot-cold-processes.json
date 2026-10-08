@@ -1,0 +1,182 @@
+[
+  {
+    "Mode": "cpu",
+    "Trial": 1,
+    "TotalNS": 5052223,
+    "UserSeconds": 0.004987,
+    "SystemSeconds": 0.0,
+    "MaxRSSKiB": 17904,
+    "Command": [
+      ".cache/mandelbrot-bench"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot: direct Wago CPU\n"
+  },
+  {
+    "Mode": "cpu",
+    "Trial": 2,
+    "TotalNS": 5296247,
+    "UserSeconds": 0.0,
+    "SystemSeconds": 0.005264,
+    "MaxRSSKiB": 18032,
+    "Command": [
+      ".cache/mandelbrot-bench"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot: direct Wago CPU\n"
+  },
+  {
+    "Mode": "cpu",
+    "Trial": 3,
+    "TotalNS": 4928700,
+    "UserSeconds": 0.004948999999999999,
+    "SystemSeconds": 0.0,
+    "MaxRSSKiB": 18032,
+    "Command": [
+      ".cache/mandelbrot-bench"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot: direct Wago CPU\n"
+  },
+  {
+    "Mode": "fallback",
+    "Trial": 1,
+    "TotalNS": 1147029828,
+    "UserSeconds": 1.143871,
+    "SystemSeconds": 0.003985,
+    "MaxRSSKiB": 18032,
+    "Command": [
+      ".cache/mandelbrot-bench",
+      "-program",
+      "buffers",
+      "-cpu"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot buffers: GPU passes=0, CPU passes=32\n"
+  },
+  {
+    "Mode": "fallback",
+    "Trial": 2,
+    "TotalNS": 1010113810,
+    "UserSeconds": 1.004654,
+    "SystemSeconds": 0.008005,
+    "MaxRSSKiB": 18032,
+    "Command": [
+      ".cache/mandelbrot-bench",
+      "-program",
+      "buffers",
+      "-cpu"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot buffers: GPU passes=0, CPU passes=32\n"
+  },
+  {
+    "Mode": "fallback",
+    "Trial": 3,
+    "TotalNS": 998240989,
+    "UserSeconds": 0.9935259999999999,
+    "SystemSeconds": 0.00798,
+    "MaxRSSKiB": 18032,
+    "Command": [
+      ".cache/mandelbrot-bench",
+      "-program",
+      "buffers",
+      "-cpu"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot buffers: GPU passes=0, CPU passes=32\n"
+  },
+  {
+    "Mode": "gpu",
+    "Trial": 1,
+    "TotalNS": 208744177,
+    "UserSeconds": 0.035782,
+    "SystemSeconds": 0.14313,
+    "MaxRSSKiB": 213500,
+    "Command": [
+      ".cache/mandelbrot-bench",
+      "-program",
+      "buffers",
+      "-require-gpu"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot buffers: GPU passes=32, CPU passes=0\n"
+  },
+  {
+    "Mode": "gpu",
+    "Trial": 2,
+    "TotalNS": 147219878,
+    "UserSeconds": 0.02846,
+    "SystemSeconds": 0.109774,
+    "MaxRSSKiB": 185140,
+    "Command": [
+      ".cache/mandelbrot-bench",
+      "-program",
+      "buffers",
+      "-require-gpu"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot buffers: GPU passes=32, CPU passes=0\n"
+  },
+  {
+    "Mode": "gpu",
+    "Trial": 3,
+    "TotalNS": 140307509,
+    "UserSeconds": 0.033497,
+    "SystemSeconds": 0.104679,
+    "MaxRSSKiB": 185560,
+    "Command": [
+      ".cache/mandelbrot-bench",
+      "-program",
+      "buffers",
+      "-require-gpu"
+    ],
+    "GOMAXPROCS": 1,
+    "Width": 96,
+    "Height": 64,
+    "Iterations": 32,
+    "StdoutBytes": 6157,
+    "SHA256": "bd5a883484c1d061aac3ddb432f32598fda36426f56a93ee20bc2489284d3d43",
+    "Stderr": "Mandelbrot buffers: GPU passes=32, CPU passes=0\n"
+  }
+]

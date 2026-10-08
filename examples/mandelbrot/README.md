@@ -87,3 +87,42 @@ grids. Real runs also verify the guest freed its handles.
 The default 96×64 image was also checked on an NVIDIA RTX 4060 Laptop GPU using
 Vulkan. All 32 passes ran on the GPU. The CPU, fallback, GPU, and Wasmtime files
 were identical. See the [recorded commands and hashes](../../results/mandelbrot-example-checks.txt).
+
+## Benchmarks
+
+Run the direct CPU and required GPU cases:
+
+```sh
+GOMAXPROCS=1 WAGO_GPU_TEST=1 go test -tags webgpu ./examples/mandelbrot \
+  -run '^$' -bench '^BenchmarkMandelbrot/(96x64|256x192|512x512)/(cpu|gpu)$' \
+  -benchtime=3x -count=3 -benchmem
+```
+
+The buffer CPU fallback makes many host calls and takes much longer. Use one
+sample for its three sizes:
+
+```sh
+GOMAXPROCS=1 CGO_ENABLED=0 go test ./examples/mandelbrot \
+  -run '^$' -bench '^BenchmarkMandelbrot/(96x64|256x192|512x512)/fallback$' \
+  -benchtime=1x -count=1 -benchmem
+```
+
+All cases use 32 iterations. `SetupAndRender` includes new runtime, module,
+device, and instance setup plus cleanup. `ReuseModule` retains the runtime,
+module, device, and pipeline, but creates a new WASI command instance and new
+buffers for each image. Both run in one Go process and send output to
+`io.Discard`. The image comparison runs before timing. The GPU cases fail if
+any pass uses fallback.
+
+See [the measurements and limits](BENCHMARKS.md) for the results.
+
+To measure fresh-process time and maximum RSS on Linux, build the host first.
+The Python helper runs the default image three times in each mode and checks
+that all nine images match:
+
+```sh
+mkdir -p .cache
+go build -tags webgpu -o .cache/mandelbrot-bench ./examples/mandelbrot
+python3 examples/mandelbrot/bench_processes.py .cache/mandelbrot-bench \
+  > .cache/mandelbrot-processes.json
+```

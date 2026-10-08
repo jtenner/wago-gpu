@@ -1,0 +1,51 @@
+Mandelbrot benchmark settings
+Date: 2026-10-08
+Modes: direct Wago CPU; forced buffer CPU fallback; required hardware GPU
+Images: 96x64, 256x192, 512x512; 32 iterations; F32
+CPU/GPU timing: GOMAXPROCS=1; -tags webgpu; -benchtime=3x; -count=3; -benchmem; no race detector
+Fallback timing: GOMAXPROCS=1; CGO_ENABLED=0; -benchtime=1x; -count=1; -benchmem; no race detector
+The first all-mode pilot was stopped because the fallback cases were slow. Only complete subsequent runs are reported.
+Profiling: ProfileStages=false; no device timestamps
+Output: WASI fd_write to io.Discard during timed runs
+Validation: complete image checked before each benchmark; every timed GPU command must report all 32 GPU passes
+SetupAndRender: fresh runtime/device/module/instance and cleanup per command, same Go process
+ReuseModule: runtime/device/module/pipeline retained; fresh instance and buffers per command; one untimed first render
+Memory: Go B/op and allocs/op; tracked plugin peak excludes driver allocations; CLI max RSS separately using Linux wait4; output to temporary files
+Controls: no locked GPU/CPU clocks, no thermal control; local measurements only
+Linux notwindows 6.12.111+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.111-1 (2026-09-28) x86_64 GNU/Linux
+go version go1.27.1 linux/amd64
+name, driver_version, memory.total [MiB], temperature.gpu
+NVIDIA GeForce RTX 4060 Laptop GPU, 550.163.01, 8188 MiB, 34
+Architecture:                            x86_64
+CPU op-mode(s):                          32-bit, 64-bit
+Address sizes:                           48 bits physical, 48 bits virtual
+Byte Order:                              Little Endian
+CPU(s):                                  16
+On-line CPU(s) list:                     0-15
+Vendor ID:                               AuthenticAMD
+Model name:                              AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+CPU family:                              25
+Model:                                   117
+Thread(s) per core:                      2
+Core(s) per socket:                      8
+Socket(s):                               1
+Stepping:                                2
+Frequency boost:                         enabled
+CPU(s) scaling MHz:                      76%
+CPU max MHz:                             5100.0000
+CPU min MHz:                             400.0000
+BogoMIPS:                                7585.90
+Flags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid overflow_recov succor smca fsrm flush_l1d
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+NAME="Debian GNU/Linux"
+VERSION_ID="13"
+VERSION="13 (trixie)"
+VERSION_CODENAME=trixie
+DEBIAN_VERSION_FULL=13.7
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+b4b06516831091bef7c6cd7ac048ff1f1f565004
+c307603ae3ae84d3fe0d5f493f570fbd71ca6b837fadde6b54f874c0d05d90cb  examples/mandelbrot/benchmark_test.go
+7439cc86bcce8997d556dcbba178a80499f201dcd223579d56e1cf57139025c6  .cache/mandelbrot-bench
