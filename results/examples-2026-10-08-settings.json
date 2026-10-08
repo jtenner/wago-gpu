@@ -1,0 +1,83 @@
+{
+  "date_utc": "2026-10-08T19:45:32Z",
+  "implementation_commit": "d8c2d7bf74d9ea62df60e6ac86a369a0f69af43e",
+  "changes": "New example benchmark harness and configurable Mandelbrot benchmark iterations; demo dependency-name metadata correction.",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 550.163.01, 8188 MiB",
+  "gpu_api": "Vulkan; hardware adapter required, software adapters rejected",
+  "cpu": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics",
+  "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.7\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+  "kernel": "6.12.111+deb13-amd64",
+  "go": "go version go1.27.1 linux/amd64",
+  "gomaxprocs": 1,
+  "race_detector": false,
+  "clock_control": false,
+  "runs_serial": true,
+  "small_examples": {
+    "samples": 3,
+    "commands_per_setup_sample": 3,
+    "commands_per_reuse_sample": 100,
+    "checks": "Every timed command checks output and selected execution path. CPU modes disable the GPU device; mixed buffer modes force per-kernel thresholds."
+  },
+  "mandelbrot": {
+    "samples": 3,
+    "images_per_sample": 3,
+    "iterations": 64,
+    "dimensions": [
+      [
+        96,
+        64
+      ],
+      [
+        256,
+        192
+      ],
+      [
+        512,
+        512
+      ],
+      [
+        1920,
+        1080
+      ],
+      [
+        2560,
+        1440
+      ]
+    ],
+    "output": "WASI stdout to io.Discard; image comparison outside timer",
+    "profile_stages": false
+  },
+  "cli_demo": {
+    "repetitions": 9,
+    "sizes": [
+      1024,
+      16384,
+      1000000,
+      10000000
+    ],
+    "kernels": [
+      "twice",
+      "square",
+      "heavy"
+    ],
+    "passes": 1,
+    "profile_stages": false
+  },
+  "cli_buffer_bench": {
+    "repetitions": 9,
+    "sizes": [
+      1024,
+      16384,
+      1000000,
+      10000000
+    ],
+    "kernels": [
+      "twice",
+      "square",
+      "copy",
+      "polynomial"
+    ],
+    "profile_stages": true
+  },
+  "memory": "Go allocated bytes and allocation counts exclude native driver allocations and most Wasm memory; plugin tracked buffer bytes are separate, not RSS."
+}

@@ -16,22 +16,24 @@ without an intermediate guest transfer. The earlier scalar `wago_gpu.run` and
 
 Real GPU execution passed the result checks. The new 32-step arithmetic kernel
 is compiled from actual Wasm. It is faster on the GPU at the larger sizes.
-Copy, twice, square, and Mandelbrot still favor direct Wago CPU execution with
-fresh inputs.
+In the buffer API tests, copy, twice, square, and Mandelbrot still favor direct
+Wago CPU execution with fresh inputs. The scalar import demo has a different
+CPU loop and transfer path; its results are reported separately.
 
 Measured on 2026-10-08 with an NVIDIA RTX 4060 Laptop GPU, Vulkan driver
 550.163.01, AMD Ryzen 7 8845HS, Debian 13/Linux 6.12, and Go 1.27.1.
-The vector table uses median repeated times and `GOMAXPROCS=1`.
+The vector table uses nine repeated calls and `GOMAXPROCS=1`.
 GPU totals include input upload, execution, readback, and guest copies.
+Stage profiling is enabled.
 
 | Compiled Wasm workload | Elements | Direct CPU ms | GPU total ms |
 | --- | ---: | ---: | ---: |
-| 32 multiply/add steps | 16,384 | 0.311 | 0.154 |
-| 32 multiply/add steps | 1,000,000 | 19.141 | 1.597 |
-| 32 multiply/add steps | 10,000,000 | 185.764 | 13.688 |
-| Copy | 10,000,000 | 5.739 | 19.268 |
-| Multiply by two | 10,000,000 | 5.869 | 13.097 |
-| Square plus one | 10,000,000 | 7.912 | 14.829 |
+| 32 multiply/add steps | 16,384 | 0.594 | 0.121 |
+| 32 multiply/add steps | 1,000,000 | 18.791 | 1.436 |
+| 32 multiply/add steps | 10,000,000 | 187.476 | 14.153 |
+| Copy | 10,000,000 | 5.456 | 12.981 |
+| Multiply by two | 10,000,000 | 6.144 | 13.092 |
+| Square plus one | 10,000,000 | 7.820 | 13.476 |
 
 A separate nine-sample size test found the first GPU win at 8,192 elements for
 the 32-step kernel. That is a measured point on this machine, not a general
@@ -63,20 +65,29 @@ The recorded ten-million-element bulk CPU runner took 13.69 ms for twice and
 The change reduces host calls; both loops are linear. Wago and the public
 plugin ABI remain unchanged.
 
-The latest Mandelbrot check uses 32 iterations and three samples of three
-renders. The module stays loaded. Each render creates a WASI instance and
-includes setup, output to `io.Discard`, and cleanup. Stage profiling is disabled.
+All runnable examples were benchmarked, including start sections, both mixed
+CPU/GPU buffer paths, TinyGo, F16, memory64, GC arrays, and both CLI demos.
+See [all example results](examples/BENCHMARKS.md) for full setup times,
+repeated times, allocations, first-run costs, raw data, and rerun commands.
+The small examples are faster on the CPU. GPU full setup took about 82–91 ms.
+With the module retained, the four-value TinyGo command took 0.025 ms on CPU
+and 0.171 ms on GPU.
+
+The latest Mandelbrot run uses the default 64 iterations and three samples
+of three images. The module stays loaded. Each render creates a WASI instance
+and includes setup, output to `io.Discard`, checks, and cleanup.
+Stage profiling is disabled.
 
 | Image | Direct CPU ms | Buffer CPU fallback ms | GPU ms |
 | --- | ---: | ---: | ---: |
-| 512×512 | 5.527 | 22.286 | 29.446 |
-| 1920×1080 | 43.307 | 181.572 | 199.184 |
-| 2560×1440 | 74.683 | 393.347 | 365.723 |
+| 512×512 | 10.380 | 46.169 | 57.663 |
+| 1920×1080 | 77.947 | 364.305 | 387.272 |
+| 2560×1440 | 132.788 | 811.829 | 702.237 |
 
-CPU fallback allocations fell from 1,155 to 763 per render. GPU allocations
-fell from 2,449 to 2,381. The paired run had lower times for all paths,
-including the unchanged direct CPU path. Clocks and temperature were not fixed.
-Device timestamps are unavailable.
+The direct CPU program is faster at all tested sizes. At 1440p the GPU is
+faster than buffer CPU fallback. HD and 1440p images allocate 429 Go objects
+on direct CPU, 923 with buffer fallback, and 4,109 on GPU per repeated render.
+Clocks and temperature were not fixed. Device timestamps are unavailable.
 
 The 1440p GPU tracked peak remains 154.70 MiB, below the 256 MiB instance limit.
 The ten-million-element vector peak remains 228.88 MiB. Idle scratch storage
@@ -90,7 +101,8 @@ needs large orbit readbacks and seeds; moving its loop and escape check to the
 GPU requires a compiler extension.
 
 The CPU suite, real-GPU race suite, cgo pointer checks, and large image checks
-passed. See [the current benchmark report](COMMON_BENCHMARKS.md) for matrix,
+passed. See [all example measurements](examples/BENCHMARKS.md) and
+[the common benchmark report](COMMON_BENCHMARKS.md) for matrix,
 SAXPY, dot, vector, transfer, first-run, allocation, memory, and crossover data.
 It includes raw samples and rerun commands. The
 [previous performance report](examples/mandelbrot/PERFORMANCE_FOLLOWUP.md) and

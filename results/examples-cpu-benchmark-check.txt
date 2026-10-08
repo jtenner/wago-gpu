@@ -1,0 +1,36 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/buffers
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/CPU_CPU/SetupAndExecute         	       1	    336883 ns/op	        32.00 tracked-peak-B	  245336 B/op	    1534 allocs/op
+BenchmarkExample/CPU_CPU/ReuseModule             	       1	     40646 ns/op	         0.1678 compile-ms	         0 device-init-ms	         0.1003 first-command-ms	        32.00 tracked-peak-B	   14192 B/op	     185 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/buffers	0.006s
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/start
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/CPU/SetupAndExecute         	       1	    279926 ns/op	         0 tracked-peak-B	  142816 B/op	    1032 allocs/op
+BenchmarkExample/CPU/ReuseModule             	       1	     72957 ns/op	         0.1044 compile-ms	         0 device-init-ms	         0.08002 first-command-ms	         0 tracked-peak-B	    4368 B/op	      58 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/start	0.005s
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/tinygo
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/CPU/SetupAndExecute         	       1	    415731 ns/op	        32.00 tracked-peak-B	  292680 B/op	    1634 allocs/op
+BenchmarkExample/CPU/ReuseModule             	       1	     36259 ns/op	         0.2505 compile-ms	         0 device-init-ms	         0.08423 first-command-ms	        32.00 tracked-peak-B	   13448 B/op	     189 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/tinygo	0.007s
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/storage
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/f16/CPU/SetupAndExecute         	       1	    329339 ns/op	         2.000 tracked-peak-B	  200368 B/op	    1453 allocs/op
+BenchmarkExample/f16/CPU/ReuseModule             	       1	     82295 ns/op	         0.1382 compile-ms	         0 device-init-ms	         0.07368 first-command-ms	         2.000 tracked-peak-B	   11080 B/op	     164 allocs/op
+BenchmarkExample/memory64/CPU/SetupAndExecute    	       1	    323979 ns/op	         4.000 tracked-peak-B	  158600 B/op	    1173 allocs/op
+BenchmarkExample/memory64/CPU/ReuseModule        	       1	     55584 ns/op	         0.1558 compile-ms	         0 device-init-ms	         0.06888 first-command-ms	         4.000 tracked-peak-B	    7080 B/op	      96 allocs/op
+BenchmarkExample/gc/CPU/SetupAndExecute          	       1	    257163 ns/op	         4.000 tracked-peak-B	  312728 B/op	    1255 allocs/op
+BenchmarkExample/gc/CPU/ReuseModule              	       1	     73308 ns/op	         0.1131 compile-ms	         0 device-init-ms	         0.07896 first-command-ms	         4.000 tracked-peak-B	  155584 B/op	     130 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/storage	0.008s

@@ -143,3 +143,9 @@ go build -tags webgpu -o .cache/mandelbrot-bench ./examples/mandelbrot
 python3 examples/mandelbrot/bench_processes.py .cache/mandelbrot-bench \
   > .cache/mandelbrot-processes.json
 ```
+
+The [complete example benchmark report](../BENCHMARKS.md) has the latest
+64-iteration measurements for all five image sizes, including full HD and
+1440p. It includes full setup, repeated execution, allocations, transfer volume,
+and CPU/GPU image differences. Add `-args -mandelbrot-iterations=64` when running
+the Go benchmarks to use the demonstration's default iteration count.

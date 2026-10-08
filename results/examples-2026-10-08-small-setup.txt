@@ -1,0 +1,42 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/buffers
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/CPU_CPU/SetupAndExecute         	       3	    327211 ns/op	        32.00 tracked-peak-B	  245336 B/op	    1534 allocs/op
+BenchmarkExample/CPU_CPU/SetupAndExecute         	       3	    310854 ns/op	        32.00 tracked-peak-B	  245352 B/op	    1534 allocs/op
+BenchmarkExample/CPU_CPU/SetupAndExecute         	       3	    296063 ns/op	        32.00 tracked-peak-B	  245357 B/op	    1534 allocs/op
+BenchmarkExample/GPU_GPU/SetupAndExecute         	       3	  87448336 ns/op	       112.0 tracked-peak-B	  250725 B/op	    1649 allocs/op
+BenchmarkExample/GPU_GPU/SetupAndExecute         	       3	  83426565 ns/op	       112.0 tracked-peak-B	  250725 B/op	    1649 allocs/op
+BenchmarkExample/GPU_GPU/SetupAndExecute         	       3	  79836159 ns/op	       112.0 tracked-peak-B	  250725 B/op	    1649 allocs/op
+BenchmarkExample/GPU_CPU/SetupAndExecute         	       3	  85430908 ns/op	        96.00 tracked-peak-B	  249509 B/op	    1629 allocs/op
+BenchmarkExample/GPU_CPU/SetupAndExecute         	       3	  80590363 ns/op	        96.00 tracked-peak-B	  249509 B/op	    1629 allocs/op
+BenchmarkExample/GPU_CPU/SetupAndExecute         	       3	  85071089 ns/op	        96.00 tracked-peak-B	  249509 B/op	    1629 allocs/op
+BenchmarkExample/CPU_GPU/SetupAndExecute         	       3	  82977348 ns/op	        96.00 tracked-peak-B	  249509 B/op	    1629 allocs/op
+BenchmarkExample/CPU_GPU/SetupAndExecute         	       3	  87715464 ns/op	        96.00 tracked-peak-B	  249509 B/op	    1629 allocs/op
+BenchmarkExample/CPU_GPU/SetupAndExecute         	       3	  85689207 ns/op	        96.00 tracked-peak-B	  249509 B/op	    1629 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/buffers	4.587s
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/start
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/CPU/SetupAndExecute         	       3	    211705 ns/op	         0 tracked-peak-B	  142656 B/op	    1031 allocs/op
+BenchmarkExample/CPU/SetupAndExecute         	       3	    183826 ns/op	         0 tracked-peak-B	  142336 B/op	    1031 allocs/op
+BenchmarkExample/CPU/SetupAndExecute         	       3	    197474 ns/op	         0 tracked-peak-B	  142336 B/op	    1031 allocs/op
+BenchmarkExample/GPU/SetupAndExecute         	       3	  84796957 ns/op	         0 tracked-peak-B	  144792 B/op	    1089 allocs/op
+BenchmarkExample/GPU/SetupAndExecute         	       3	  81809678 ns/op	         0 tracked-peak-B	  144792 B/op	    1089 allocs/op
+BenchmarkExample/GPU/SetupAndExecute         	       3	  81448495 ns/op	         0 tracked-peak-B	  144792 B/op	    1089 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/start	1.532s
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/tinygo
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/CPU/SetupAndExecute         	       3	    460979 ns/op	        32.00 tracked-peak-B	  292680 B/op	    1634 allocs/op
+BenchmarkExample/CPU/SetupAndExecute         	       3	    362454 ns/op	        32.00 tracked-peak-B	  292680 B/op	    1634 allocs/op
+BenchmarkExample/CPU/SetupAndExecute         	       3	    362828 ns/op	        32.00 tracked-peak-B	  292680 B/op	    1634 allocs/op
+BenchmarkExample/GPU/SetupAndExecute         	       3	  84527240 ns/op	        96.00 tracked-peak-B	  296648 B/op	    1722 allocs/op
+BenchmarkExample/GPU/SetupAndExecute         	       3	  88209118 ns/op	        96.00 tracked-peak-B	  296664 B/op	    1722 allocs/op
+BenchmarkExample/GPU/SetupAndExecute         	       3	  84367907 ns/op	        96.00 tracked-peak-B	  296648 B/op	    1722 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/tinygo	1.618s

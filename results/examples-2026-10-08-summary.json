@@ -1,0 +1,2676 @@
+[
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/CPU_CPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 327211.0,
+        "tracked-peak-B": 32.0,
+        "B/op": 245336.0,
+        "allocs/op": 1534.0
+      },
+      {
+        "ns/op": 310854.0,
+        "tracked-peak-B": 32.0,
+        "B/op": 245352.0,
+        "allocs/op": 1534.0
+      },
+      {
+        "ns/op": 296063.0,
+        "tracked-peak-B": 32.0,
+        "B/op": 245357.0,
+        "allocs/op": 1534.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 310854.0,
+      "tracked-peak-B": 32.0,
+      "B/op": 245352.0,
+      "allocs/op": 1534.0
+    },
+    "min_ns_per_op": 296063.0,
+    "max_ns_per_op": 327211.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/GPU_GPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 87448336.0,
+        "tracked-peak-B": 112.0,
+        "B/op": 250725.0,
+        "allocs/op": 1649.0
+      },
+      {
+        "ns/op": 83426565.0,
+        "tracked-peak-B": 112.0,
+        "B/op": 250725.0,
+        "allocs/op": 1649.0
+      },
+      {
+        "ns/op": 79836159.0,
+        "tracked-peak-B": 112.0,
+        "B/op": 250725.0,
+        "allocs/op": 1649.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 83426565.0,
+      "tracked-peak-B": 112.0,
+      "B/op": 250725.0,
+      "allocs/op": 1649.0
+    },
+    "min_ns_per_op": 79836159.0,
+    "max_ns_per_op": 87448336.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/GPU_CPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 85430908.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 249509.0,
+        "allocs/op": 1629.0
+      },
+      {
+        "ns/op": 80590363.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 249509.0,
+        "allocs/op": 1629.0
+      },
+      {
+        "ns/op": 85071089.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 249509.0,
+        "allocs/op": 1629.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 85071089.0,
+      "tracked-peak-B": 96.0,
+      "B/op": 249509.0,
+      "allocs/op": 1629.0
+    },
+    "min_ns_per_op": 80590363.0,
+    "max_ns_per_op": 85430908.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/CPU_GPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 82977348.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 249509.0,
+        "allocs/op": 1629.0
+      },
+      {
+        "ns/op": 87715464.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 249509.0,
+        "allocs/op": 1629.0
+      },
+      {
+        "ns/op": 85689207.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 249509.0,
+        "allocs/op": 1629.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 85689207.0,
+      "tracked-peak-B": 96.0,
+      "B/op": 249509.0,
+      "allocs/op": 1629.0
+    },
+    "min_ns_per_op": 82977348.0,
+    "max_ns_per_op": 87715464.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/start",
+    "benchmark": "BenchmarkExample/CPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 211705.0,
+        "tracked-peak-B": 0.0,
+        "B/op": 142656.0,
+        "allocs/op": 1031.0
+      },
+      {
+        "ns/op": 183826.0,
+        "tracked-peak-B": 0.0,
+        "B/op": 142336.0,
+        "allocs/op": 1031.0
+      },
+      {
+        "ns/op": 197474.0,
+        "tracked-peak-B": 0.0,
+        "B/op": 142336.0,
+        "allocs/op": 1031.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 197474.0,
+      "tracked-peak-B": 0.0,
+      "B/op": 142336.0,
+      "allocs/op": 1031.0
+    },
+    "min_ns_per_op": 183826.0,
+    "max_ns_per_op": 211705.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/start",
+    "benchmark": "BenchmarkExample/GPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 84796957.0,
+        "tracked-peak-B": 0.0,
+        "B/op": 144792.0,
+        "allocs/op": 1089.0
+      },
+      {
+        "ns/op": 81809678.0,
+        "tracked-peak-B": 0.0,
+        "B/op": 144792.0,
+        "allocs/op": 1089.0
+      },
+      {
+        "ns/op": 81448495.0,
+        "tracked-peak-B": 0.0,
+        "B/op": 144792.0,
+        "allocs/op": 1089.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 81809678.0,
+      "tracked-peak-B": 0.0,
+      "B/op": 144792.0,
+      "allocs/op": 1089.0
+    },
+    "min_ns_per_op": 81448495.0,
+    "max_ns_per_op": 84796957.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/tinygo",
+    "benchmark": "BenchmarkExample/CPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 460979.0,
+        "tracked-peak-B": 32.0,
+        "B/op": 292680.0,
+        "allocs/op": 1634.0
+      },
+      {
+        "ns/op": 362454.0,
+        "tracked-peak-B": 32.0,
+        "B/op": 292680.0,
+        "allocs/op": 1634.0
+      },
+      {
+        "ns/op": 362828.0,
+        "tracked-peak-B": 32.0,
+        "B/op": 292680.0,
+        "allocs/op": 1634.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 362828.0,
+      "tracked-peak-B": 32.0,
+      "B/op": 292680.0,
+      "allocs/op": 1634.0
+    },
+    "min_ns_per_op": 362454.0,
+    "max_ns_per_op": 460979.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/tinygo",
+    "benchmark": "BenchmarkExample/GPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-small-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 84527240.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 296648.0,
+        "allocs/op": 1722.0
+      },
+      {
+        "ns/op": 88209118.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 296664.0,
+        "allocs/op": 1722.0
+      },
+      {
+        "ns/op": 84367907.0,
+        "tracked-peak-B": 96.0,
+        "B/op": 296648.0,
+        "allocs/op": 1722.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 84527240.0,
+      "tracked-peak-B": 96.0,
+      "B/op": 296648.0,
+      "allocs/op": 1722.0
+    },
+    "min_ns_per_op": 84367907.0,
+    "max_ns_per_op": 88209118.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/f16/CPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-storage-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 374981.0,
+        "tracked-peak-B": 2.0,
+        "B/op": 200368.0,
+        "allocs/op": 1453.0
+      },
+      {
+        "ns/op": 277922.0,
+        "tracked-peak-B": 2.0,
+        "B/op": 200368.0,
+        "allocs/op": 1453.0
+      },
+      {
+        "ns/op": 295779.0,
+        "tracked-peak-B": 2.0,
+        "B/op": 200368.0,
+        "allocs/op": 1453.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 295779.0,
+      "tracked-peak-B": 2.0,
+      "B/op": 200368.0,
+      "allocs/op": 1453.0
+    },
+    "min_ns_per_op": 277922.0,
+    "max_ns_per_op": 374981.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/f16/GPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-storage-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 96153969.0,
+        "tracked-peak-B": 46.0,
+        "B/op": 204341.0,
+        "allocs/op": 1542.0
+      },
+      {
+        "ns/op": 89975758.0,
+        "tracked-peak-B": 46.0,
+        "B/op": 204357.0,
+        "allocs/op": 1542.0
+      },
+      {
+        "ns/op": 91045074.0,
+        "tracked-peak-B": 46.0,
+        "B/op": 204341.0,
+        "allocs/op": 1542.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 91045074.0,
+      "tracked-peak-B": 46.0,
+      "B/op": 204341.0,
+      "allocs/op": 1542.0
+    },
+    "min_ns_per_op": 89975758.0,
+    "max_ns_per_op": 96153969.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/memory64/CPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-storage-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 240675.0,
+        "tracked-peak-B": 4.0,
+        "B/op": 158600.0,
+        "allocs/op": 1173.0
+      },
+      {
+        "ns/op": 227721.0,
+        "tracked-peak-B": 4.0,
+        "B/op": 158600.0,
+        "allocs/op": 1173.0
+      },
+      {
+        "ns/op": 231074.0,
+        "tracked-peak-B": 4.0,
+        "B/op": 158600.0,
+        "allocs/op": 1173.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 231074.0,
+      "tracked-peak-B": 4.0,
+      "B/op": 158600.0,
+      "allocs/op": 1173.0
+    },
+    "min_ns_per_op": 227721.0,
+    "max_ns_per_op": 240675.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/gc/CPU/SetupAndExecute",
+    "source": "results/examples-2026-10-08-storage-setup.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 354810.0,
+        "tracked-peak-B": 4.0,
+        "B/op": 312728.0,
+        "allocs/op": 1255.0
+      },
+      {
+        "ns/op": 248654.0,
+        "tracked-peak-B": 4.0,
+        "B/op": 312728.0,
+        "allocs/op": 1255.0
+      },
+      {
+        "ns/op": 232787.0,
+        "tracked-peak-B": 4.0,
+        "B/op": 312728.0,
+        "allocs/op": 1255.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 248654.0,
+      "tracked-peak-B": 4.0,
+      "B/op": 312728.0,
+      "allocs/op": 1255.0
+    },
+    "min_ns_per_op": 232787.0,
+    "max_ns_per_op": 354810.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/CPU_CPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 28437.0,
+        "compile-ms": 0.1971,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.0975,
+        "tracked-peak-B": 32.0,
+        "B/op": 12726.0,
+        "allocs/op": 154.0
+      },
+      {
+        "ns/op": 27800.0,
+        "compile-ms": 0.3203,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.08938,
+        "tracked-peak-B": 32.0,
+        "B/op": 12726.0,
+        "allocs/op": 154.0
+      },
+      {
+        "ns/op": 33505.0,
+        "compile-ms": 0.2139,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.1422,
+        "tracked-peak-B": 32.0,
+        "B/op": 12727.0,
+        "allocs/op": 154.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 28437.0,
+      "compile-ms": 0.2139,
+      "device-init-ms": 0.0,
+      "first-command-ms": 0.0975,
+      "tracked-peak-B": 32.0,
+      "B/op": 12726.0,
+      "allocs/op": 154.0
+    },
+    "min_ns_per_op": 27800.0,
+    "max_ns_per_op": 33505.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/GPU_GPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 213993.0,
+        "compile-ms": 0.9943,
+        "device-init-ms": 68.1,
+        "first-command-ms": 10.22,
+        "tracked-peak-B": 112.0,
+        "B/op": 16302.0,
+        "allocs/op": 225.0
+      },
+      {
+        "ns/op": 213867.0,
+        "compile-ms": 0.6259,
+        "device-init-ms": 61.65,
+        "first-command-ms": 9.457,
+        "tracked-peak-B": 112.0,
+        "B/op": 16303.0,
+        "allocs/op": 225.0
+      },
+      {
+        "ns/op": 330924.0,
+        "compile-ms": 1.194,
+        "device-init-ms": 54.13,
+        "first-command-ms": 10.4,
+        "tracked-peak-B": 112.0,
+        "B/op": 16303.0,
+        "allocs/op": 225.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 213993.0,
+      "compile-ms": 0.9943,
+      "device-init-ms": 61.65,
+      "first-command-ms": 10.22,
+      "tracked-peak-B": 112.0,
+      "B/op": 16303.0,
+      "allocs/op": 225.0
+    },
+    "min_ns_per_op": 213867.0,
+    "max_ns_per_op": 330924.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/GPU_CPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 170167.0,
+        "compile-ms": 0.9774,
+        "device-init-ms": 58.8,
+        "first-command-ms": 9.38,
+        "tracked-peak-B": 96.0,
+        "B/op": 15086.0,
+        "allocs/op": 205.0
+      },
+      {
+        "ns/op": 180171.0,
+        "compile-ms": 0.6365,
+        "device-init-ms": 62.56,
+        "first-command-ms": 9.289,
+        "tracked-peak-B": 96.0,
+        "B/op": 15086.0,
+        "allocs/op": 205.0
+      },
+      {
+        "ns/op": 185817.0,
+        "compile-ms": 0.952,
+        "device-init-ms": 55.26,
+        "first-command-ms": 9.507,
+        "tracked-peak-B": 96.0,
+        "B/op": 15086.0,
+        "allocs/op": 205.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 180171.0,
+      "compile-ms": 0.952,
+      "device-init-ms": 58.8,
+      "first-command-ms": 9.38,
+      "tracked-peak-B": 96.0,
+      "B/op": 15086.0,
+      "allocs/op": 205.0
+    },
+    "min_ns_per_op": 170167.0,
+    "max_ns_per_op": 185817.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/buffers",
+    "benchmark": "BenchmarkExample/CPU_GPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 183934.0,
+        "compile-ms": 0.6822,
+        "device-init-ms": 52.83,
+        "first-command-ms": 9.399,
+        "tracked-peak-B": 96.0,
+        "B/op": 15086.0,
+        "allocs/op": 205.0
+      },
+      {
+        "ns/op": 175802.0,
+        "compile-ms": 0.6513,
+        "device-init-ms": 56.16,
+        "first-command-ms": 9.324,
+        "tracked-peak-B": 96.0,
+        "B/op": 15087.0,
+        "allocs/op": 205.0
+      },
+      {
+        "ns/op": 184584.0,
+        "compile-ms": 0.642,
+        "device-init-ms": 54.11,
+        "first-command-ms": 11.37,
+        "tracked-peak-B": 96.0,
+        "B/op": 15086.0,
+        "allocs/op": 205.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 183934.0,
+      "compile-ms": 0.6513,
+      "device-init-ms": 54.11,
+      "first-command-ms": 9.399,
+      "tracked-peak-B": 96.0,
+      "B/op": 15086.0,
+      "allocs/op": 205.0
+    },
+    "min_ns_per_op": 175802.0,
+    "max_ns_per_op": 184584.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/start",
+    "benchmark": "BenchmarkExample/CPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 10267.0,
+        "compile-ms": 0.09784,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.06867,
+        "tracked-peak-B": 0.0,
+        "B/op": 4461.0,
+        "allocs/op": 45.0
+      },
+      {
+        "ns/op": 12399.0,
+        "compile-ms": 0.1662,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.1645,
+        "tracked-peak-B": 0.0,
+        "B/op": 3972.0,
+        "allocs/op": 44.0
+      },
+      {
+        "ns/op": 9393.0,
+        "compile-ms": 0.08761,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.0628,
+        "tracked-peak-B": 0.0,
+        "B/op": 3972.0,
+        "allocs/op": 44.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 10267.0,
+      "compile-ms": 0.09784,
+      "device-init-ms": 0.0,
+      "first-command-ms": 0.06867,
+      "tracked-peak-B": 0.0,
+      "B/op": 3972.0,
+      "allocs/op": 44.0
+    },
+    "min_ns_per_op": 9393.0,
+    "max_ns_per_op": 12399.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/start",
+    "benchmark": "BenchmarkExample/GPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 85886.0,
+        "compile-ms": 0.5865,
+        "device-init-ms": 59.08,
+        "first-command-ms": 9.213,
+        "tracked-peak-B": 0.0,
+        "B/op": 4540.0,
+        "allocs/op": 59.0
+      },
+      {
+        "ns/op": 84405.0,
+        "compile-ms": 0.4558,
+        "device-init-ms": 56.09,
+        "first-command-ms": 10.09,
+        "tracked-peak-B": 0.0,
+        "B/op": 4540.0,
+        "allocs/op": 59.0
+      },
+      {
+        "ns/op": 86803.0,
+        "compile-ms": 0.4065,
+        "device-init-ms": 52.78,
+        "first-command-ms": 10.88,
+        "tracked-peak-B": 0.0,
+        "B/op": 4540.0,
+        "allocs/op": 59.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 85886.0,
+      "compile-ms": 0.4558,
+      "device-init-ms": 56.09,
+      "first-command-ms": 10.09,
+      "tracked-peak-B": 0.0,
+      "B/op": 4540.0,
+      "allocs/op": 59.0
+    },
+    "min_ns_per_op": 84405.0,
+    "max_ns_per_op": 86803.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/tinygo",
+    "benchmark": "BenchmarkExample/CPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 29614.0,
+        "compile-ms": 0.3098,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.08752,
+        "tracked-peak-B": 32.0,
+        "B/op": 11848.0,
+        "allocs/op": 152.0
+      },
+      {
+        "ns/op": 24575.0,
+        "compile-ms": 0.2537,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.08922,
+        "tracked-peak-B": 32.0,
+        "B/op": 11848.0,
+        "allocs/op": 152.0
+      },
+      {
+        "ns/op": 24327.0,
+        "compile-ms": 0.2414,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.0768,
+        "tracked-peak-B": 32.0,
+        "B/op": 11848.0,
+        "allocs/op": 152.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 24575.0,
+      "compile-ms": 0.2537,
+      "device-init-ms": 0.0,
+      "first-command-ms": 0.08752,
+      "tracked-peak-B": 32.0,
+      "B/op": 11848.0,
+      "allocs/op": 152.0
+    },
+    "min_ns_per_op": 24327.0,
+    "max_ns_per_op": 29614.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/tinygo",
+    "benchmark": "BenchmarkExample/GPU/ReuseModule",
+    "source": "results/examples-2026-10-08-small-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 170592.0,
+        "compile-ms": 0.6436,
+        "device-init-ms": 53.88,
+        "first-command-ms": 10.08,
+        "tracked-peak-B": 96.0,
+        "B/op": 14201.0,
+        "allocs/op": 203.0
+      },
+      {
+        "ns/op": 168393.0,
+        "compile-ms": 0.754,
+        "device-init-ms": 51.41,
+        "first-command-ms": 10.84,
+        "tracked-peak-B": 96.0,
+        "B/op": 14200.0,
+        "allocs/op": 203.0
+      },
+      {
+        "ns/op": 191106.0,
+        "compile-ms": 0.6654,
+        "device-init-ms": 55.78,
+        "first-command-ms": 12.26,
+        "tracked-peak-B": 96.0,
+        "B/op": 14200.0,
+        "allocs/op": 203.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 170592.0,
+      "compile-ms": 0.6654,
+      "device-init-ms": 53.88,
+      "first-command-ms": 10.84,
+      "tracked-peak-B": 96.0,
+      "B/op": 14200.0,
+      "allocs/op": 203.0
+    },
+    "min_ns_per_op": 168393.0,
+    "max_ns_per_op": 191106.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/f16/CPU/ReuseModule",
+    "source": "results/examples-2026-10-08-storage-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 19490.0,
+        "compile-ms": 0.2866,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.08092,
+        "tracked-peak-B": 2.0,
+        "B/op": 9630.0,
+        "allocs/op": 132.0
+      },
+      {
+        "ns/op": 27492.0,
+        "compile-ms": 0.1445,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.06588,
+        "tracked-peak-B": 2.0,
+        "B/op": 9630.0,
+        "allocs/op": 132.0
+      },
+      {
+        "ns/op": 18902.0,
+        "compile-ms": 0.1398,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.06625,
+        "tracked-peak-B": 2.0,
+        "B/op": 9630.0,
+        "allocs/op": 132.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 19490.0,
+      "compile-ms": 0.1445,
+      "device-init-ms": 0.0,
+      "first-command-ms": 0.06625,
+      "tracked-peak-B": 2.0,
+      "B/op": 9630.0,
+      "allocs/op": 132.0
+    },
+    "min_ns_per_op": 18902.0,
+    "max_ns_per_op": 27492.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/f16/GPU/ReuseModule",
+    "source": "results/examples-2026-10-08-storage-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 173985.0,
+        "compile-ms": 0.6978,
+        "device-init-ms": 57.37,
+        "first-command-ms": 9.71,
+        "tracked-peak-B": 46.0,
+        "B/op": 11991.0,
+        "allocs/op": 184.0
+      },
+      {
+        "ns/op": 168256.0,
+        "compile-ms": 0.7591,
+        "device-init-ms": 56.28,
+        "first-command-ms": 9.523,
+        "tracked-peak-B": 46.0,
+        "B/op": 11990.0,
+        "allocs/op": 184.0
+      },
+      {
+        "ns/op": 198924.0,
+        "compile-ms": 0.7534,
+        "device-init-ms": 56.62,
+        "first-command-ms": 10.23,
+        "tracked-peak-B": 46.0,
+        "B/op": 11991.0,
+        "allocs/op": 184.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 173985.0,
+      "compile-ms": 0.7534,
+      "device-init-ms": 56.62,
+      "first-command-ms": 9.71,
+      "tracked-peak-B": 46.0,
+      "B/op": 11991.0,
+      "allocs/op": 184.0
+    },
+    "min_ns_per_op": 168256.0,
+    "max_ns_per_op": 198924.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/memory64/CPU/ReuseModule",
+    "source": "results/examples-2026-10-08-storage-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 15600.0,
+        "compile-ms": 0.1091,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.0552,
+        "tracked-peak-B": 4.0,
+        "B/op": 6517.0,
+        "allocs/op": 78.0
+      },
+      {
+        "ns/op": 13524.0,
+        "compile-ms": 0.1135,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.05504,
+        "tracked-peak-B": 4.0,
+        "B/op": 6517.0,
+        "allocs/op": 78.0
+      },
+      {
+        "ns/op": 17247.0,
+        "compile-ms": 0.1458,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.07692,
+        "tracked-peak-B": 4.0,
+        "B/op": 6517.0,
+        "allocs/op": 78.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 15600.0,
+      "compile-ms": 0.1135,
+      "device-init-ms": 0.0,
+      "first-command-ms": 0.0552,
+      "tracked-peak-B": 4.0,
+      "B/op": 6517.0,
+      "allocs/op": 78.0
+    },
+    "min_ns_per_op": 13524.0,
+    "max_ns_per_op": 17247.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/storage",
+    "benchmark": "BenchmarkExample/gc/CPU/ReuseModule",
+    "source": "results/examples-2026-10-08-storage-reuse.txt",
+    "commands_per_sample": 100,
+    "raw_samples": [
+      {
+        "ns/op": 47947.0,
+        "compile-ms": 0.1223,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.09498,
+        "tracked-peak-B": 4.0,
+        "B/op": 154966.0,
+        "allocs/op": 112.0
+      },
+      {
+        "ns/op": 53850.0,
+        "compile-ms": 0.122,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.08356,
+        "tracked-peak-B": 4.0,
+        "B/op": 154966.0,
+        "allocs/op": 112.0
+      },
+      {
+        "ns/op": 51213.0,
+        "compile-ms": 0.1174,
+        "device-init-ms": 0.0,
+        "first-command-ms": 0.0806,
+        "tracked-peak-B": 4.0,
+        "B/op": 154966.0,
+        "allocs/op": 112.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 51213.0,
+      "compile-ms": 0.122,
+      "device-init-ms": 0.0,
+      "first-command-ms": 0.08356,
+      "tracked-peak-B": 4.0,
+      "B/op": 154966.0,
+      "allocs/op": 112.0
+    },
+    "min_ns_per_op": 47947.0,
+    "max_ns_per_op": 53850.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/96x64/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 1353600.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1076.0
+      },
+      {
+        "ns/op": 1207288.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1076.0
+      },
+      {
+        "ns/op": 1250152.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1076.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 1250152.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 411816.0,
+      "allocs/op": 1076.0
+    },
+    "min_ns_per_op": 1207288.0,
+    "max_ns_per_op": 1353600.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/96x64/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 2777943.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 936117.0,
+        "allocs/op": 2746.0
+      },
+      {
+        "ns/op": 2697989.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 936101.0,
+        "allocs/op": 2746.0
+      },
+      {
+        "ns/op": 2822884.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 936101.0,
+        "allocs/op": 2746.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 2777943.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 936101.0,
+      "allocs/op": 2746.0
+    },
+    "min_ns_per_op": 2697989.0,
+    "max_ns_per_op": 2822884.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/96x64/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 92403850.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 1094000.0,
+        "allocs/op": 5966.0
+      },
+      {
+        "ns/op": 93127727.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 1094000.0,
+        "allocs/op": 5966.0
+      },
+      {
+        "ns/op": 96193785.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 1094000.0,
+        "allocs/op": 5966.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 93127727.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 1094000.0,
+      "allocs/op": 5966.0
+    },
+    "min_ns_per_op": 92403850.0,
+    "max_ns_per_op": 96193785.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/256x192/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 2894165.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 2842821.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 2798562.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1078.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 2842821.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 411816.0,
+      "allocs/op": 1078.0
+    },
+    "min_ns_per_op": 2798562.0,
+    "max_ns_per_op": 2894165.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/256x192/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 9350779.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 1624296.0,
+        "allocs/op": 2749.0
+      },
+      {
+        "ns/op": 9545034.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 1624280.0,
+        "allocs/op": 2749.0
+      },
+      {
+        "ns/op": 9855224.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 1624333.0,
+        "allocs/op": 2749.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 9545034.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 1624296.0,
+      "allocs/op": 2749.0
+    },
+    "min_ns_per_op": 9350779.0,
+    "max_ns_per_op": 9855224.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/256x192/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 110653550.0,
+        "different-pixels": 4.0,
+        "iterations/image": 64.0,
+        "B/op": 1782533.0,
+        "allocs/op": 5973.0
+      },
+      {
+        "ns/op": 109521470.0,
+        "different-pixels": 4.0,
+        "iterations/image": 64.0,
+        "B/op": 1782448.0,
+        "allocs/op": 5972.0
+      },
+      {
+        "ns/op": 100616261.0,
+        "different-pixels": 4.0,
+        "iterations/image": 64.0,
+        "B/op": 1782448.0,
+        "allocs/op": 5972.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 109521470.0,
+      "different-pixels": 4.0,
+      "iterations/image": 64.0,
+      "B/op": 1782448.0,
+      "allocs/op": 5972.0
+    },
+    "min_ns_per_op": 100616261.0,
+    "max_ns_per_op": 110653550.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/512x512/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 10921988.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 10876045.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 10856062.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411816.0,
+        "allocs/op": 1078.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 10876045.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 411816.0,
+      "allocs/op": 1078.0
+    },
+    "min_ns_per_op": 10856062.0,
+    "max_ns_per_op": 10921988.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/512x512/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 45723982.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 5035029.0,
+        "allocs/op": 2763.0
+      },
+      {
+        "ns/op": 48333652.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 5035029.0,
+        "allocs/op": 2763.0
+      },
+      {
+        "ns/op": 47600835.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 5035029.0,
+        "allocs/op": 2763.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 47600835.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 5035029.0,
+      "allocs/op": 2763.0
+    },
+    "min_ns_per_op": 45723982.0,
+    "max_ns_per_op": 48333652.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/512x512/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 151068754.0,
+        "different-pixels": 20.0,
+        "iterations/image": 64.0,
+        "B/op": 5193242.0,
+        "allocs/op": 5990.0
+      },
+      {
+        "ns/op": 144033836.0,
+        "different-pixels": 20.0,
+        "iterations/image": 64.0,
+        "B/op": 5193216.0,
+        "allocs/op": 5988.0
+      },
+      {
+        "ns/op": 147009160.0,
+        "different-pixels": 20.0,
+        "iterations/image": 64.0,
+        "B/op": 5194645.0,
+        "allocs/op": 5996.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 147009160.0,
+      "different-pixels": 20.0,
+      "iterations/image": 64.0,
+      "B/op": 5193242.0,
+      "allocs/op": 5990.0
+    },
+    "min_ns_per_op": 144033836.0,
+    "max_ns_per_op": 151068754.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/1920x1080/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 76628506.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411866.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 76534640.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411866.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 76416718.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411866.0,
+        "allocs/op": 1078.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 76534640.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 411866.0,
+      "allocs/op": 1078.0
+    },
+    "min_ns_per_op": 76416718.0,
+    "max_ns_per_op": 76628506.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/1920x1080/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 390711731.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 34034709.0,
+        "allocs/op": 2763.0
+      },
+      {
+        "ns/op": 372969731.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 34034709.0,
+        "allocs/op": 2763.0
+      },
+      {
+        "ns/op": 358562274.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 34034709.0,
+        "allocs/op": 2763.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 372969731.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 34034709.0,
+      "allocs/op": 2763.0
+    },
+    "min_ns_per_op": 358562274.0,
+    "max_ns_per_op": 390711731.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/1920x1080/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 489887943.0,
+        "different-pixels": 198.0,
+        "iterations/image": 64.0,
+        "B/op": 34192901.0,
+        "allocs/op": 5988.0
+      },
+      {
+        "ns/op": 478975246.0,
+        "different-pixels": 198.0,
+        "iterations/image": 64.0,
+        "B/op": 34192901.0,
+        "allocs/op": 5988.0
+      },
+      {
+        "ns/op": 483288120.0,
+        "different-pixels": 198.0,
+        "iterations/image": 64.0,
+        "B/op": 34192901.0,
+        "allocs/op": 5988.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 483288120.0,
+      "different-pixels": 198.0,
+      "iterations/image": 64.0,
+      "B/op": 34192901.0,
+      "allocs/op": 5988.0
+    },
+    "min_ns_per_op": 478975246.0,
+    "max_ns_per_op": 489887943.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/2560x1440/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 135753045.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411866.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 135054746.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411866.0,
+        "allocs/op": 1078.0
+      },
+      {
+        "ns/op": 136414073.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 411866.0,
+        "allocs/op": 1078.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 135753045.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 411866.0,
+      "allocs/op": 1078.0
+    },
+    "min_ns_per_op": 135054746.0,
+    "max_ns_per_op": 136414073.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/2560x1440/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 792578054.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 59823125.0,
+        "allocs/op": 2763.0
+      },
+      {
+        "ns/op": 797431290.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 59823125.0,
+        "allocs/op": 2763.0
+      },
+      {
+        "ns/op": 795841162.0,
+        "different-pixels": 0.0,
+        "iterations/image": 64.0,
+        "B/op": 59823125.0,
+        "allocs/op": 2763.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 795841162.0,
+      "different-pixels": 0.0,
+      "iterations/image": 64.0,
+      "B/op": 59823125.0,
+      "allocs/op": 2763.0
+    },
+    "min_ns_per_op": 792578054.0,
+    "max_ns_per_op": 797431290.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotSetupAndRender/2560x1440/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 810780216.0,
+        "different-pixels": 366.0,
+        "iterations/image": 64.0,
+        "B/op": 59981317.0,
+        "allocs/op": 5988.0
+      },
+      {
+        "ns/op": 827033078.0,
+        "different-pixels": 366.0,
+        "iterations/image": 64.0,
+        "B/op": 59981317.0,
+        "allocs/op": 5988.0
+      },
+      {
+        "ns/op": 823653229.0,
+        "different-pixels": 366.0,
+        "iterations/image": 64.0,
+        "B/op": 59981322.0,
+        "allocs/op": 5988.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 823653229.0,
+      "different-pixels": 366.0,
+      "iterations/image": 64.0,
+      "B/op": 59981317.0,
+      "allocs/op": 5988.0
+    },
+    "min_ns_per_op": 810780216.0,
+    "max_ns_per_op": 827033078.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/96x64/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 267639.0,
+        "compile-ms": 0.8684,
+        "different-pixels": 0.0,
+        "first-render-ms": 0.3712,
+        "iterations/image": 64.0,
+        "B/op": 32034.0,
+        "allocs/op": 427.0
+      },
+      {
+        "ns/op": 262376.0,
+        "compile-ms": 0.8303,
+        "different-pixels": 0.0,
+        "first-render-ms": 0.338,
+        "iterations/image": 64.0,
+        "B/op": 32034.0,
+        "allocs/op": 427.0
+      },
+      {
+        "ns/op": 266340.0,
+        "compile-ms": 0.8401,
+        "different-pixels": 0.0,
+        "first-render-ms": 0.3407,
+        "iterations/image": 64.0,
+        "B/op": 32034.0,
+        "allocs/op": 427.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 266340.0,
+      "compile-ms": 0.8401,
+      "different-pixels": 0.0,
+      "first-render-ms": 0.3407,
+      "iterations/image": 64.0,
+      "B/op": 32034.0,
+      "allocs/op": 427.0
+    },
+    "min_ns_per_op": 262376.0,
+    "max_ns_per_op": 267639.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/96x64/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 1201751.0,
+        "compile-ms": 1.28,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 1.269,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 3.047,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 0.09375,
+        "translate-ms": 0.01082,
+        "upload-MiB/op": 0.0,
+        "B/op": 207232.0,
+        "allocs/op": 921.0
+      },
+      {
+        "ns/op": 1245754.0,
+        "compile-ms": 1.368,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 1.257,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 3.047,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 0.09375,
+        "translate-ms": 0.01299,
+        "upload-MiB/op": 0.0,
+        "B/op": 207232.0,
+        "allocs/op": 921.0
+      },
+      {
+        "ns/op": 1239900.0,
+        "compile-ms": 1.164,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 1.264,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 3.047,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 0.09375,
+        "translate-ms": 0.01078,
+        "upload-MiB/op": 0.0,
+        "B/op": 207232.0,
+        "allocs/op": 921.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 1239900.0,
+      "compile-ms": 1.28,
+      "device-init-ms": 0.0,
+      "different-pixels": 0.0,
+      "first-render-ms": 1.264,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 3.047,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 0.0,
+      "pipeline-ms": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 0.09375,
+      "translate-ms": 0.01082,
+      "upload-MiB/op": 0.0,
+      "B/op": 207232.0,
+      "allocs/op": 921.0
+    },
+    "min_ns_per_op": 1201751.0,
+    "max_ns_per_op": 1245754.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/96x64/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 8926482.0,
+        "compile-ms": 1.633,
+        "device-init-ms": 63.16,
+        "different-pixels": 0.0,
+        "first-render-ms": 17.73,
+        "guest-copy-MiB/op": 3.0,
+        "guest-set-MiB/op": 0.04688,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.3139,
+        "readback-MiB/op": 3.0,
+        "seed-copy-MiB/op": 3.0,
+        "tracked-peak-MiB": 0.2578,
+        "translate-ms": 0.01964,
+        "upload-MiB/op": 0.09375,
+        "B/op": 363490.0,
+        "allocs/op": 4104.0
+      },
+      {
+        "ns/op": 8868587.0,
+        "compile-ms": 2.157,
+        "device-init-ms": 59.31,
+        "different-pixels": 0.0,
+        "first-render-ms": 18.27,
+        "guest-copy-MiB/op": 3.0,
+        "guest-set-MiB/op": 0.04688,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.3864,
+        "readback-MiB/op": 3.0,
+        "seed-copy-MiB/op": 3.0,
+        "tracked-peak-MiB": 0.2578,
+        "translate-ms": 0.02833,
+        "upload-MiB/op": 0.09375,
+        "B/op": 363490.0,
+        "allocs/op": 4104.0
+      },
+      {
+        "ns/op": 9600619.0,
+        "compile-ms": 2.447,
+        "device-init-ms": 56.58,
+        "different-pixels": 0.0,
+        "first-render-ms": 16.64,
+        "guest-copy-MiB/op": 3.0,
+        "guest-set-MiB/op": 0.04688,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.3434,
+        "readback-MiB/op": 3.0,
+        "seed-copy-MiB/op": 3.0,
+        "tracked-peak-MiB": 0.2578,
+        "translate-ms": 0.02965,
+        "upload-MiB/op": 0.09375,
+        "B/op": 363490.0,
+        "allocs/op": 4104.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 8926482.0,
+      "compile-ms": 2.157,
+      "device-init-ms": 59.31,
+      "different-pixels": 0.0,
+      "first-render-ms": 17.73,
+      "guest-copy-MiB/op": 3.0,
+      "guest-set-MiB/op": 0.04688,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 1.0,
+      "pipeline-ms": 0.3434,
+      "readback-MiB/op": 3.0,
+      "seed-copy-MiB/op": 3.0,
+      "tracked-peak-MiB": 0.2578,
+      "translate-ms": 0.02833,
+      "upload-MiB/op": 0.09375,
+      "B/op": 363490.0,
+      "allocs/op": 4104.0
+    },
+    "min_ns_per_op": 8868587.0,
+    "max_ns_per_op": 9600619.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/256x192/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 1939371.0,
+        "compile-ms": 0.9591,
+        "different-pixels": 0.0,
+        "first-render-ms": 2.147,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 2371272.0,
+        "compile-ms": 0.8773,
+        "different-pixels": 0.0,
+        "first-render-ms": 1.939,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 1880363.0,
+        "compile-ms": 1.007,
+        "different-pixels": 0.0,
+        "first-render-ms": 1.954,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 1939371.0,
+      "compile-ms": 0.9591,
+      "different-pixels": 0.0,
+      "first-render-ms": 1.954,
+      "iterations/image": 64.0,
+      "B/op": 32040.0,
+      "allocs/op": 429.0
+    },
+    "min_ns_per_op": 1880363.0,
+    "max_ns_per_op": 2371272.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/256x192/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 8805254.0,
+        "compile-ms": 1.36,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 9.176,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 24.38,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 0.75,
+        "translate-ms": 0.01448,
+        "upload-MiB/op": 0.0,
+        "B/op": 895370.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 8627400.0,
+        "compile-ms": 1.279,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 8.915,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 24.38,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 0.75,
+        "translate-ms": 0.01397,
+        "upload-MiB/op": 0.0,
+        "B/op": 895370.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 8970983.0,
+        "compile-ms": 1.567,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 9.329,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 24.38,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 0.75,
+        "translate-ms": 0.01887,
+        "upload-MiB/op": 0.0,
+        "B/op": 895370.0,
+        "allocs/op": 923.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 8805254.0,
+      "compile-ms": 1.36,
+      "device-init-ms": 0.0,
+      "different-pixels": 0.0,
+      "first-render-ms": 9.176,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 24.38,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 0.0,
+      "pipeline-ms": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 0.75,
+      "translate-ms": 0.01448,
+      "upload-MiB/op": 0.0,
+      "B/op": 895370.0,
+      "allocs/op": 923.0
+    },
+    "min_ns_per_op": 8627400.0,
+    "max_ns_per_op": 8970983.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/256x192/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 17780653.0,
+        "compile-ms": 1.809,
+        "device-init-ms": 59.67,
+        "different-pixels": 4.0,
+        "first-render-ms": 25.86,
+        "guest-copy-MiB/op": 24.0,
+        "guest-set-MiB/op": 0.375,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.3813,
+        "readback-MiB/op": 24.0,
+        "seed-copy-MiB/op": 24.0,
+        "tracked-peak-MiB": 2.063,
+        "translate-ms": 0.02073,
+        "upload-MiB/op": 0.75,
+        "B/op": 1051640.0,
+        "allocs/op": 4106.0
+      },
+      {
+        "ns/op": 19228522.0,
+        "compile-ms": 1.917,
+        "device-init-ms": 71.42,
+        "different-pixels": 4.0,
+        "first-render-ms": 31.13,
+        "guest-copy-MiB/op": 24.0,
+        "guest-set-MiB/op": 0.375,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.4813,
+        "readback-MiB/op": 24.0,
+        "seed-copy-MiB/op": 24.0,
+        "tracked-peak-MiB": 2.063,
+        "translate-ms": 0.0201,
+        "upload-MiB/op": 0.75,
+        "B/op": 1051640.0,
+        "allocs/op": 4106.0
+      },
+      {
+        "ns/op": 16514259.0,
+        "compile-ms": 1.723,
+        "device-init-ms": 60.15,
+        "different-pixels": 4.0,
+        "first-render-ms": 26.3,
+        "guest-copy-MiB/op": 24.0,
+        "guest-set-MiB/op": 0.375,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.3216,
+        "readback-MiB/op": 24.0,
+        "seed-copy-MiB/op": 24.0,
+        "tracked-peak-MiB": 2.063,
+        "translate-ms": 0.01895,
+        "upload-MiB/op": 0.75,
+        "B/op": 1051640.0,
+        "allocs/op": 4106.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 17780653.0,
+      "compile-ms": 1.809,
+      "device-init-ms": 60.15,
+      "different-pixels": 4.0,
+      "first-render-ms": 26.3,
+      "guest-copy-MiB/op": 24.0,
+      "guest-set-MiB/op": 0.375,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 1.0,
+      "pipeline-ms": 0.3813,
+      "readback-MiB/op": 24.0,
+      "seed-copy-MiB/op": 24.0,
+      "tracked-peak-MiB": 2.063,
+      "translate-ms": 0.0201,
+      "upload-MiB/op": 0.75,
+      "B/op": 1051640.0,
+      "allocs/op": 4106.0
+    },
+    "min_ns_per_op": 16514259.0,
+    "max_ns_per_op": 19228522.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/512x512/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 10613880.0,
+        "compile-ms": 1.142,
+        "different-pixels": 0.0,
+        "first-render-ms": 10.08,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 10042816.0,
+        "compile-ms": 0.9885,
+        "different-pixels": 0.0,
+        "first-render-ms": 10.34,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 10379840.0,
+        "compile-ms": 1.049,
+        "different-pixels": 0.0,
+        "first-render-ms": 10.16,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 10379840.0,
+      "compile-ms": 1.049,
+      "different-pixels": 0.0,
+      "first-render-ms": 10.16,
+      "iterations/image": 64.0,
+      "B/op": 32040.0,
+      "allocs/op": 429.0
+    },
+    "min_ns_per_op": 10042816.0,
+    "max_ns_per_op": 10613880.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/512x512/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 46169123.0,
+        "compile-ms": 1.436,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 44.26,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 130.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 4.0,
+        "translate-ms": 0.02043,
+        "upload-MiB/op": 0.0,
+        "B/op": 4303242.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 44525354.0,
+        "compile-ms": 1.756,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 44.45,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 130.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 4.0,
+        "translate-ms": 0.02109,
+        "upload-MiB/op": 0.0,
+        "B/op": 4303242.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 46287595.0,
+        "compile-ms": 1.31,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 48.6,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 130.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 4.0,
+        "translate-ms": 0.01424,
+        "upload-MiB/op": 0.0,
+        "B/op": 4303242.0,
+        "allocs/op": 923.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 46169123.0,
+      "compile-ms": 1.436,
+      "device-init-ms": 0.0,
+      "different-pixels": 0.0,
+      "first-render-ms": 44.45,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 130.0,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 0.0,
+      "pipeline-ms": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 4.0,
+      "translate-ms": 0.02043,
+      "upload-MiB/op": 0.0,
+      "B/op": 4303242.0,
+      "allocs/op": 923.0
+    },
+    "min_ns_per_op": 44525354.0,
+    "max_ns_per_op": 46287595.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/512x512/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 57662945.0,
+        "compile-ms": 1.975,
+        "device-init-ms": 61.87,
+        "different-pixels": 20.0,
+        "first-render-ms": 67.94,
+        "guest-copy-MiB/op": 128.0,
+        "guest-set-MiB/op": 2.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.5315,
+        "readback-MiB/op": 128.0,
+        "seed-copy-MiB/op": 128.0,
+        "tracked-peak-MiB": 11.0,
+        "translate-ms": 0.01921,
+        "upload-MiB/op": 4.0,
+        "B/op": 4459778.0,
+        "allocs/op": 4111.0
+      },
+      {
+        "ns/op": 56704287.0,
+        "compile-ms": 2.354,
+        "device-init-ms": 73.24,
+        "different-pixels": 20.0,
+        "first-render-ms": 75.03,
+        "guest-copy-MiB/op": 128.0,
+        "guest-set-MiB/op": 2.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.4012,
+        "readback-MiB/op": 128.0,
+        "seed-copy-MiB/op": 128.0,
+        "tracked-peak-MiB": 11.0,
+        "translate-ms": 0.02932,
+        "upload-MiB/op": 4.0,
+        "B/op": 4459709.0,
+        "allocs/op": 4108.0
+      },
+      {
+        "ns/op": 59544951.0,
+        "compile-ms": 2.166,
+        "device-init-ms": 67.88,
+        "different-pixels": 20.0,
+        "first-render-ms": 70.43,
+        "guest-copy-MiB/op": 128.0,
+        "guest-set-MiB/op": 2.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.4387,
+        "readback-MiB/op": 128.0,
+        "seed-copy-MiB/op": 128.0,
+        "tracked-peak-MiB": 11.0,
+        "translate-ms": 0.02797,
+        "upload-MiB/op": 4.0,
+        "B/op": 4459757.0,
+        "allocs/op": 4111.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 57662945.0,
+      "compile-ms": 2.166,
+      "device-init-ms": 67.88,
+      "different-pixels": 20.0,
+      "first-render-ms": 70.43,
+      "guest-copy-MiB/op": 128.0,
+      "guest-set-MiB/op": 2.0,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 1.0,
+      "pipeline-ms": 0.4387,
+      "readback-MiB/op": 128.0,
+      "seed-copy-MiB/op": 128.0,
+      "tracked-peak-MiB": 11.0,
+      "translate-ms": 0.02797,
+      "upload-MiB/op": 4.0,
+      "B/op": 4459757.0,
+      "allocs/op": 4111.0
+    },
+    "min_ns_per_op": 56704287.0,
+    "max_ns_per_op": 59544951.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/1920x1080/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 78305672.0,
+        "compile-ms": 1.189,
+        "different-pixels": 0.0,
+        "first-render-ms": 80.03,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 77946604.0,
+        "compile-ms": 0.9838,
+        "different-pixels": 0.0,
+        "first-render-ms": 77.33,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 76065369.0,
+        "compile-ms": 1.045,
+        "different-pixels": 0.0,
+        "first-render-ms": 76.21,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 77946604.0,
+      "compile-ms": 1.045,
+      "different-pixels": 0.0,
+      "first-render-ms": 77.33,
+      "iterations/image": 64.0,
+      "B/op": 32040.0,
+      "allocs/op": 429.0
+    },
+    "min_ns_per_op": 76065369.0,
+    "max_ns_per_op": 78305672.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/1920x1080/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 368710086.0,
+        "compile-ms": 1.277,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 374.3,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 1028.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 31.64,
+        "translate-ms": 0.01495,
+        "upload-MiB/op": 0.0,
+        "B/op": 33302922.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 359840456.0,
+        "compile-ms": 1.326,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 367.9,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 1028.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 31.64,
+        "translate-ms": 0.01389,
+        "upload-MiB/op": 0.0,
+        "B/op": 33302922.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 364304655.0,
+        "compile-ms": 1.276,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 380.2,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 1028.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 31.64,
+        "translate-ms": 0.01402,
+        "upload-MiB/op": 0.0,
+        "B/op": 33302922.0,
+        "allocs/op": 923.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 364304655.0,
+      "compile-ms": 1.277,
+      "device-init-ms": 0.0,
+      "different-pixels": 0.0,
+      "first-render-ms": 374.3,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 1028.0,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 0.0,
+      "pipeline-ms": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 31.64,
+      "translate-ms": 0.01402,
+      "upload-MiB/op": 0.0,
+      "B/op": 33302922.0,
+      "allocs/op": 923.0
+    },
+    "min_ns_per_op": 359840456.0,
+    "max_ns_per_op": 368710086.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/1920x1080/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 382696542.0,
+        "compile-ms": 1.602,
+        "device-init-ms": 57.69,
+        "different-pixels": 198.0,
+        "first-render-ms": 403.5,
+        "guest-copy-MiB/op": 1012.0,
+        "guest-set-MiB/op": 15.82,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.3334,
+        "readback-MiB/op": 1012.0,
+        "seed-copy-MiB/op": 1012.0,
+        "tracked-peak-MiB": 87.01,
+        "translate-ms": 0.02047,
+        "upload-MiB/op": 31.64,
+        "B/op": 33459410.0,
+        "allocs/op": 4109.0
+      },
+      {
+        "ns/op": 387272491.0,
+        "compile-ms": 2.063,
+        "device-init-ms": 57.4,
+        "different-pixels": 198.0,
+        "first-render-ms": 402.1,
+        "guest-copy-MiB/op": 1012.0,
+        "guest-set-MiB/op": 15.82,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.2839,
+        "readback-MiB/op": 1012.0,
+        "seed-copy-MiB/op": 1012.0,
+        "tracked-peak-MiB": 87.01,
+        "translate-ms": 0.03379,
+        "upload-MiB/op": 31.64,
+        "B/op": 33459410.0,
+        "allocs/op": 4109.0
+      },
+      {
+        "ns/op": 389814975.0,
+        "compile-ms": 1.541,
+        "device-init-ms": 61.76,
+        "different-pixels": 198.0,
+        "first-render-ms": 401.8,
+        "guest-copy-MiB/op": 1012.0,
+        "guest-set-MiB/op": 15.82,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.2589,
+        "readback-MiB/op": 1012.0,
+        "seed-copy-MiB/op": 1012.0,
+        "tracked-peak-MiB": 87.01,
+        "translate-ms": 0.01849,
+        "upload-MiB/op": 31.64,
+        "B/op": 33459432.0,
+        "allocs/op": 4109.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 387272491.0,
+      "compile-ms": 1.602,
+      "device-init-ms": 57.69,
+      "different-pixels": 198.0,
+      "first-render-ms": 402.1,
+      "guest-copy-MiB/op": 1012.0,
+      "guest-set-MiB/op": 15.82,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 1.0,
+      "pipeline-ms": 0.2839,
+      "readback-MiB/op": 1012.0,
+      "seed-copy-MiB/op": 1012.0,
+      "tracked-peak-MiB": 87.01,
+      "translate-ms": 0.02047,
+      "upload-MiB/op": 31.64,
+      "B/op": 33459410.0,
+      "allocs/op": 4109.0
+    },
+    "min_ns_per_op": 382696542.0,
+    "max_ns_per_op": 389814975.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/2560x1440/cpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 133022242.0,
+        "compile-ms": 1.181,
+        "different-pixels": 0.0,
+        "first-render-ms": 134.5,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 132085264.0,
+        "compile-ms": 1.214,
+        "different-pixels": 0.0,
+        "first-render-ms": 133.0,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      },
+      {
+        "ns/op": 132787508.0,
+        "compile-ms": 0.9849,
+        "different-pixels": 0.0,
+        "first-render-ms": 132.6,
+        "iterations/image": 64.0,
+        "B/op": 32040.0,
+        "allocs/op": 429.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 132787508.0,
+      "compile-ms": 1.181,
+      "different-pixels": 0.0,
+      "first-render-ms": 133.0,
+      "iterations/image": 64.0,
+      "B/op": 32040.0,
+      "allocs/op": 429.0
+    },
+    "min_ns_per_op": 132085264.0,
+    "max_ns_per_op": 133022242.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/2560x1440/fallback",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 813995777.0,
+        "compile-ms": 1.283,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 813.9,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 1828.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 56.25,
+        "translate-ms": 0.01366,
+        "upload-MiB/op": 0.0,
+        "B/op": 59091338.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 811828999.0,
+        "compile-ms": 1.331,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 805.9,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 1828.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 56.25,
+        "translate-ms": 0.01504,
+        "upload-MiB/op": 0.0,
+        "B/op": 59091338.0,
+        "allocs/op": 923.0
+      },
+      {
+        "ns/op": 805262362.0,
+        "compile-ms": 1.253,
+        "device-init-ms": 0.0,
+        "different-pixels": 0.0,
+        "first-render-ms": 781.9,
+        "guest-copy-MiB/op": 0.0,
+        "guest-set-MiB/op": 1828.0,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 0.0,
+        "pipeline-ms": 0.0,
+        "readback-MiB/op": 0.0,
+        "seed-copy-MiB/op": 0.0,
+        "tracked-peak-MiB": 56.25,
+        "translate-ms": 0.01387,
+        "upload-MiB/op": 0.0,
+        "B/op": 59091338.0,
+        "allocs/op": 923.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 811828999.0,
+      "compile-ms": 1.283,
+      "device-init-ms": 0.0,
+      "different-pixels": 0.0,
+      "first-render-ms": 805.9,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 1828.0,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 0.0,
+      "pipeline-ms": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 56.25,
+      "translate-ms": 0.01387,
+      "upload-MiB/op": 0.0,
+      "B/op": 59091338.0,
+      "allocs/op": 923.0
+    },
+    "min_ns_per_op": 805262362.0,
+    "max_ns_per_op": 813995777.0
+  },
+  {
+    "package": "github.com/jtenner/wago-gpu/examples/mandelbrot",
+    "benchmark": "BenchmarkMandelbrotReuseModule/2560x1440/gpu",
+    "source": "results/examples-2026-10-08-mandelbrot64.txt",
+    "commands_per_sample": 3,
+    "raw_samples": [
+      {
+        "ns/op": 696860611.0,
+        "compile-ms": 1.903,
+        "device-init-ms": 91.04,
+        "different-pixels": 366.0,
+        "first-render-ms": 721.0,
+        "guest-copy-MiB/op": 1800.0,
+        "guest-set-MiB/op": 28.12,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.4258,
+        "readback-MiB/op": 1800.0,
+        "seed-copy-MiB/op": 1800.0,
+        "tracked-peak-MiB": 154.7,
+        "translate-ms": 0.02105,
+        "upload-MiB/op": 56.25,
+        "B/op": 59247869.0,
+        "allocs/op": 4109.0
+      },
+      {
+        "ns/op": 702236824.0,
+        "compile-ms": 1.611,
+        "device-init-ms": 57.93,
+        "different-pixels": 366.0,
+        "first-render-ms": 716.4,
+        "guest-copy-MiB/op": 1800.0,
+        "guest-set-MiB/op": 28.12,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.2553,
+        "readback-MiB/op": 1800.0,
+        "seed-copy-MiB/op": 1800.0,
+        "tracked-peak-MiB": 154.7,
+        "translate-ms": 0.0245,
+        "upload-MiB/op": 56.25,
+        "B/op": 59247848.0,
+        "allocs/op": 4109.0
+      },
+      {
+        "ns/op": 725606438.0,
+        "compile-ms": 2.305,
+        "device-init-ms": 59.75,
+        "different-pixels": 366.0,
+        "first-render-ms": 715.3,
+        "guest-copy-MiB/op": 1800.0,
+        "guest-set-MiB/op": 28.12,
+        "iterations/image": 64.0,
+        "parameter-writes/op": 1.0,
+        "pipeline-ms": 0.3872,
+        "readback-MiB/op": 1800.0,
+        "seed-copy-MiB/op": 1800.0,
+        "tracked-peak-MiB": 154.7,
+        "translate-ms": 0.02688,
+        "upload-MiB/op": 56.25,
+        "B/op": 59247869.0,
+        "allocs/op": 4109.0
+      }
+    ],
+    "sample_count": 3,
+    "median": {
+      "ns/op": 702236824.0,
+      "compile-ms": 1.903,
+      "device-init-ms": 59.75,
+      "different-pixels": 366.0,
+      "first-render-ms": 716.4,
+      "guest-copy-MiB/op": 1800.0,
+      "guest-set-MiB/op": 28.12,
+      "iterations/image": 64.0,
+      "parameter-writes/op": 1.0,
+      "pipeline-ms": 0.3872,
+      "readback-MiB/op": 1800.0,
+      "seed-copy-MiB/op": 1800.0,
+      "tracked-peak-MiB": 154.7,
+      "translate-ms": 0.0245,
+      "upload-MiB/op": 56.25,
+      "B/op": 59247869.0,
+      "allocs/op": 4109.0
+    },
+    "min_ns_per_op": 696860611.0,
+    "max_ns_per_op": 725606438.0
+  }
+]

@@ -1,0 +1,27 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu/examples/storage
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkExample/f16/CPU/ReuseModule         	     100	     19490 ns/op	         0.2866 compile-ms	         0 device-init-ms	         0.08092 first-command-ms	         2.000 tracked-peak-B	    9630 B/op	     132 allocs/op
+BenchmarkExample/f16/CPU/ReuseModule         	     100	     27492 ns/op	         0.1445 compile-ms	         0 device-init-ms	         0.06588 first-command-ms	         2.000 tracked-peak-B	    9630 B/op	     132 allocs/op
+BenchmarkExample/f16/CPU/ReuseModule         	     100	     18902 ns/op	         0.1398 compile-ms	         0 device-init-ms	         0.06625 first-command-ms	         2.000 tracked-peak-B	    9630 B/op	     132 allocs/op
+BenchmarkExample/f16/GPU/ReuseModule         	     100	    173985 ns/op	         0.6978 compile-ms	        57.37 device-init-ms	         9.710 first-command-ms	        46.00 tracked-peak-B	   11991 B/op	     184 allocs/op
+--- BENCH: BenchmarkExample/f16/GPU/ReuseModule
+    bench.go:74: device: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    bench.go:74: device: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkExample/f16/GPU/ReuseModule         	     100	    168256 ns/op	         0.7591 compile-ms	        56.28 device-init-ms	         9.523 first-command-ms	        46.00 tracked-peak-B	   11990 B/op	     184 allocs/op
+--- BENCH: BenchmarkExample/f16/GPU/ReuseModule
+    bench.go:74: device: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    bench.go:74: device: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkExample/f16/GPU/ReuseModule         	     100	    198924 ns/op	         0.7534 compile-ms	        56.62 device-init-ms	        10.23 first-command-ms	        46.00 tracked-peak-B	   11991 B/op	     184 allocs/op
+--- BENCH: BenchmarkExample/f16/GPU/ReuseModule
+    bench.go:74: device: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    bench.go:74: device: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkExample/memory64/CPU/ReuseModule    	     100	     15600 ns/op	         0.1091 compile-ms	         0 device-init-ms	         0.05520 first-command-ms	         4.000 tracked-peak-B	    6517 B/op	      78 allocs/op
+BenchmarkExample/memory64/CPU/ReuseModule    	     100	     13524 ns/op	         0.1135 compile-ms	         0 device-init-ms	         0.05504 first-command-ms	         4.000 tracked-peak-B	    6517 B/op	      78 allocs/op
+BenchmarkExample/memory64/CPU/ReuseModule    	     100	     17247 ns/op	         0.1458 compile-ms	         0 device-init-ms	         0.07692 first-command-ms	         4.000 tracked-peak-B	    6517 B/op	      78 allocs/op
+BenchmarkExample/gc/CPU/ReuseModule          	     100	     47947 ns/op	         0.1223 compile-ms	         0 device-init-ms	         0.09498 first-command-ms	         4.000 tracked-peak-B	  154966 B/op	     112 allocs/op
+BenchmarkExample/gc/CPU/ReuseModule          	     100	     53850 ns/op	         0.1220 compile-ms	         0 device-init-ms	         0.08356 first-command-ms	         4.000 tracked-peak-B	  154966 B/op	     112 allocs/op
+BenchmarkExample/gc/CPU/ReuseModule          	     100	     51213 ns/op	         0.1174 compile-ms	         0 device-init-ms	         0.08060 first-command-ms	         4.000 tracked-peak-B	  154966 B/op	     112 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/storage	0.636s

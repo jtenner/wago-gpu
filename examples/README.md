@@ -24,3 +24,11 @@ fails if any required computation uses fallback.
 The [Mandelbrot examples](mandelbrot/README.md) show WASI arguments, stdout,
 CPU execution, and explicit GPU iteration with CPU fallback. The earlier
 [start example](start/main.go) still demonstrates a real Wasm start function.
+
+## Benchmarks
+
+[Measured results for all examples](BENCHMARKS.md) include CPU, GPU, mixed
+execution, full setup, repeated commands, and Go allocations. The report also
+includes 64-iteration WASI Mandelbrot images up to 2560×1440 and both CLI demos.
+All GPU measurements used real hardware. The report has raw data and commands
+for a new run. Memory64 and GC transfer examples have no GPU kernel.

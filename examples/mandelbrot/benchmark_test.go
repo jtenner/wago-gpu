@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -13,9 +14,12 @@ import (
 	"time"
 
 	gpu "github.com/jtenner/wago-gpu"
+	"github.com/jtenner/wago-gpu/examples/mandelbrot/internal/settings"
 	wago "github.com/wago-org/wago"
 	"github.com/wago-org/wasi/p1"
 )
+
+var benchmarkIterations = flag.Uint("mandelbrot-iterations", 32, "iteration count for Mandelbrot benchmarks (1..128)")
 
 var benchmarkSizes = [][2]uint32{{96, 64}, {256, 192}, {512, 512}, {1920, 1080}, {2560, 1440}}
 
@@ -25,6 +29,10 @@ func BenchmarkMandelbrotSetupAndRender(b *testing.B) { benchmarkMandelbrot(b, fa
 func BenchmarkMandelbrotReuseModule(b *testing.B)    { benchmarkMandelbrot(b, true) }
 
 func benchmarkMandelbrot(b *testing.B, reuse bool) {
+	if *benchmarkIterations == 0 || *benchmarkIterations > settings.MaxIterations {
+		b.Fatal("mandelbrot-iterations must be in 1..128")
+	}
+	iterations := uint32(*benchmarkIterations)
 	for _, size := range benchmarkSizes {
 		for _, mode := range []string{"cpu", "fallback", "gpu"} {
 			b.Run(fmt.Sprintf("%dx%d/%s", size[0], size[1], mode), func(b *testing.B) {
@@ -32,14 +40,14 @@ func benchmarkMandelbrot(b *testing.B, reuse bool) {
 					b.Skip("set WAGO_GPU_TEST=1 and build with -tags webgpu to require hardware")
 				}
 				var reference, actual bytes.Buffer
-				if e := run("cpu", false, false, size[0], size[1], 32, &reference, io.Discard); e != nil {
+				if e := run("cpu", false, false, size[0], size[1], iterations, &reference, io.Discard); e != nil {
 					b.Fatal(e)
 				}
 				program := "cpu"
 				if mode != "cpu" {
 					program = "buffers"
 				}
-				if e := run(program, mode == "fallback", mode == "gpu", size[0], size[1], 32, &actual, io.Discard); e != nil {
+				if e := run(program, mode == "fallback", mode == "gpu", size[0], size[1], iterations, &actual, io.Discard); e != nil {
 					b.Fatal(e)
 				}
 				if actual.Len() != reference.Len() {
@@ -55,12 +63,12 @@ func benchmarkMandelbrot(b *testing.B, reuse bool) {
 					b.Fatal("CPU images differ")
 				}
 				invoke := func() error {
-					return run(program, mode == "fallback", mode == "gpu", size[0], size[1], 32, io.Discard, io.Discard)
+					return run(program, mode == "fallback", mode == "gpu", size[0], size[1], iterations, io.Discard, io.Discard)
 				}
 				var plugin *gpu.Plugin
 				var compile, first time.Duration
 				if reuse {
-					invoke, plugin, compile = reusedCommand(b, mode, size)
+					invoke, plugin, compile = reusedCommand(b, mode, size, iterations)
 					start := time.Now()
 					if e := invoke(); e != nil {
 						b.Fatal(e)
@@ -76,6 +84,7 @@ func benchmarkMandelbrot(b *testing.B, reuse bool) {
 				}
 				b.StopTimer()
 				b.ReportMetric(float64(different), "different-pixels")
+				b.ReportMetric(float64(iterations), "iterations/image")
 				if reuse {
 					b.ReportMetric(float64(compile)/1e6, "compile-ms")
 					b.ReportMetric(float64(first)/1e6, "first-render-ms")
@@ -102,7 +111,7 @@ func benchmarkMandelbrot(b *testing.B, reuse bool) {
 	}
 }
 
-func reusedCommand(b *testing.B, mode string, size [2]uint32) (func() error, *gpu.Plugin, time.Duration) {
+func reusedCommand(b *testing.B, mode string, size [2]uint32, iterations uint32) (func() error, *gpu.Plugin, time.Duration) {
 	b.Helper()
 	rt := wago.NewRuntime()
 	b.Cleanup(func() {
@@ -143,7 +152,7 @@ func reusedCommand(b *testing.B, mode string, size [2]uint32) (func() error, *gp
 		}
 	})
 	return func() (result error) {
-		imports := p1.Imports(p1.Config{Args: []string{"mandelbrot", strconv.Itoa(int(size[0])), strconv.Itoa(int(size[1])), "32"}, Stdin: strings.NewReader(""), Stdout: io.Discard, Stderr: io.Discard})
+		imports := p1.Imports(p1.Config{Args: []string{"mandelbrot", strconv.Itoa(int(size[0])), strconv.Itoa(int(size[1])), strconv.Itoa(int(iterations))}, Stdin: strings.NewReader(""), Stdout: io.Discard, Stderr: io.Discard})
 		instance, e := rt.Instantiate(context.Background(), module, wago.WithImports(imports))
 		if e != nil {
 			return e
@@ -164,7 +173,7 @@ func reusedCommand(b *testing.B, mode string, size [2]uint32) (func() error, *gp
 			if e != nil {
 				return e
 			}
-			if len(passes) != 1 || passes[0] != 32 {
+			if len(passes) != 1 || passes[0] != uint64(iterations) {
 				return fmt.Errorf("required %s passes did not run: %v", mode, passes)
 			}
 			s := plugin.BufferSnapshot()

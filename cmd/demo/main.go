@@ -91,7 +91,7 @@ func run() error {
 			switch d.Path {
 			case "github.com/wago-org/wago":
 				r.Wago = d.Version
-			case "github.com/cogentcore/webgpu":
+			case "github.com/oliverbestmann/webgpu":
 				r.WebGPU = d.Version
 			}
 		}
