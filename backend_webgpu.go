@@ -1,28 +1,31 @@
-//go:build webgpu && cgo
+//go:build webgpu && cgo && linux
 
 package wagogpu
 
 import (
 	"context"
 	"fmt"
+	"sync/atomic"
 	"time"
 
-	"github.com/cogentcore/webgpu/wgpu"
+	"github.com/oliverbestmann/webgpu/wgpu"
 )
 
 type gpuBackend struct {
-	instance *wgpu.Instance
-	adapter  *wgpu.Adapter
-	device   *wgpu.Device
-	queue    *wgpu.Queue
-	info     string
-	limits   wgpu.Limits
+	instance      *wgpu.Instance
+	adapter       *wgpu.Adapter
+	device        *wgpu.Device
+	queue         *wgpu.Queue
+	info          string
+	limits        wgpu.Limits
+	lost          atomic.Bool
+	retired       []*wgpu.Buffer
+	retainedBytes uint64
 }
 
 func openBackend() (backend, error) {
 	b := &gpuBackend{}
-	// v0.23.0 does not initialize all fields in its optional instance extras.
-	// The native default descriptor is complete and avoids that binding defect.
+	// Use the native default descriptor.
 	b.instance = wgpu.CreateInstance(nil)
 	a, err := b.instance.RequestAdapter(&wgpu.RequestAdapterOptions{PowerPreference: wgpu.PowerPreferenceHighPerformance})
 	if err != nil {
@@ -34,22 +37,27 @@ func openBackend() (backend, error) {
 	// A software Vulkan adapter must never be reported as real GPU execution.
 	if info.AdapterType != wgpu.AdapterTypeDiscreteGPU && info.AdapterType != wgpu.AdapterTypeIntegratedGPU {
 		b.Close()
-		return nil, fmt.Errorf("no hardware GPU: adapter %s (%s)", info.Name, info.AdapterType)
+		return nil, fmt.Errorf("no hardware GPU: adapter %s (%s)", info.Device, info.AdapterType)
 	}
-	b.info = fmt.Sprintf("%s; %s; %s; %s", info.Name, info.DriverDescription, info.AdapterType, info.BackendType)
-	// The optional device-loss callback also violates cgo pointer rules in this
-	// binding version. Use error returns and the readback completion status.
-	b.device, err = a.RequestDevice(nil)
+	b.info = fmt.Sprintf("%s; %s; %s; %s", info.Device, info.Description, info.AdapterType, info.BackendType)
+	// The local binding pins callback storage until native ownership ends.
+	b.device, err = a.RequestDevice(&wgpu.DeviceDescriptor{DeviceLostCallback: func(_ wgpu.DeviceLostReason, _ string) { b.lost.Store(true) }})
 	if err != nil {
 		b.Close()
 		return nil, err
 	}
 	b.queue = b.device.GetQueue()
-	b.limits = b.device.GetLimits().Limits
+	b.limits = b.device.GetLimits()
 	return b, nil
 }
 func (b *gpuBackend) Info() string { return b.info }
 func (b *gpuBackend) Close() {
+	for _, r := range b.retired {
+		r.Destroy()
+		r.Release()
+	}
+	b.retired = nil
+	b.retainedBytes = 0
 	if b.queue != nil {
 		b.queue.Release()
 		b.queue = nil
@@ -68,16 +76,24 @@ func (b *gpuBackend) Close() {
 	}
 }
 func (b *gpuBackend) Compile(source string) (program, error) {
-	s, err := b.device.CreateShaderModule(&wgpu.ShaderModuleDescriptor{WGSLDescriptor: &wgpu.ShaderModuleWGSLDescriptor{Code: source}})
+	s, err := b.device.TryCreateShaderModule(&wgpu.ShaderModuleDescriptor{WGSLSource: &wgpu.ShaderSourceWGSL{Code: source}})
 	if err != nil {
 		return nil, err
 	}
 	defer s.Release()
-	p, err := b.device.CreateComputePipeline(&wgpu.ComputePipelineDescriptor{Compute: wgpu.ProgrammableStageDescriptor{Module: s, EntryPoint: "main"}})
+	p, err := b.device.TryCreateComputePipeline(&wgpu.ComputePipelineDescriptor{Compute: wgpu.ProgrammableStageDescriptor{Module: s, EntryPoint: "main"}})
 	if err != nil {
 		return nil, err
 	}
-	return &gpuProgram{backend: b, pipeline: p, layout: p.GetBindGroupLayout(0)}, nil
+	var layout *wgpu.BindGroupLayout
+	if err = b.device.Check(func() error { layout = p.GetBindGroupLayout(0); return nil }); err != nil {
+		p.Release()
+		if layout != nil {
+			layout.Release()
+		}
+		return nil, err
+	}
+	return &gpuProgram{backend: b, pipeline: p, layout: layout}, nil
 }
 
 type gpuProgram struct {
@@ -125,11 +141,11 @@ func (p *gpuProgram) buffers(size uint64) error {
 		capacity := min(max(size, p.capacity*2), uint64(DefaultMaxElements)*4, p.backend.limits.MaxBufferSize, p.backend.limits.MaxStorageBufferBindingSize)
 		p.freeBuffers()
 		var err error
-		p.storage, err = d.CreateBuffer(&wgpu.BufferDescriptor{Size: capacity, Usage: wgpu.BufferUsageStorage | wgpu.BufferUsageCopyDst | wgpu.BufferUsageCopySrc})
+		p.storage, err = d.TryCreateBuffer(&wgpu.BufferDescriptor{Size: capacity, Usage: wgpu.BufferUsageStorage | wgpu.BufferUsageCopyDst | wgpu.BufferUsageCopySrc})
 		if err != nil {
 			return err
 		}
-		p.readback, err = d.CreateBuffer(&wgpu.BufferDescriptor{Size: capacity, Usage: wgpu.BufferUsageMapRead | wgpu.BufferUsageCopyDst})
+		p.readback, err = d.TryCreateBuffer(&wgpu.BufferDescriptor{Size: capacity, Usage: wgpu.BufferUsageMapRead | wgpu.BufferUsageCopyDst})
 		if err != nil {
 			p.freeBuffers()
 			return err
@@ -143,7 +159,7 @@ func (p *gpuProgram) buffers(size uint64) error {
 		}
 		p.bound = 0
 		var err error
-		p.group, err = d.CreateBindGroup(&wgpu.BindGroupDescriptor{Layout: p.layout, Entries: []wgpu.BindGroupEntry{{Binding: 0, Buffer: p.storage, Size: size}}})
+		p.group, err = d.TryCreateBindGroup(&wgpu.BindGroupDescriptor{Layout: p.layout, Entries: []wgpu.BindGroupEntry{{Binding: 0, Buffer: p.storage, Size: size}}})
 		if err != nil {
 			return err
 		}
@@ -153,21 +169,20 @@ func (p *gpuProgram) buffers(size uint64) error {
 }
 func (p *gpuProgram) submit(encode func(*wgpu.CommandEncoder) error) error {
 	b := p.backend
-	e, err := b.device.CreateCommandEncoder(nil)
+	e, err := b.device.TryCreateCommandEncoder(nil)
 	if err != nil {
 		return err
 	}
 	defer e.Release()
-	if err = encode(e); err != nil {
+	if err = b.device.Check(func() error { return encode(e) }); err != nil {
 		return err
 	}
-	c, err := e.Finish(nil)
+	c, err := e.TryFinish(nil)
 	if err != nil {
 		return err
 	}
 	defer c.Release()
-	b.queue.Submit(c)
-	return nil
+	return b.queue.TrySubmit(c)
 }
 func (p *gpuProgram) compute(e *wgpu.CommandEncoder, n, passes uint32) error {
 	for j := uint32(0); j < passes; j++ {
@@ -176,7 +191,7 @@ func (p *gpuProgram) compute(e *wgpu.CommandEncoder, n, passes uint32) error {
 		pass.SetPipeline(p.pipeline)
 		pass.SetBindGroup(0, p.group, nil)
 		pass.DispatchWorkgroups((n+255)/256, 1, 1)
-		err := pass.End()
+		err := pass.TryEnd()
 		pass.Release()
 		if err != nil {
 			return err
@@ -185,8 +200,27 @@ func (p *gpuProgram) compute(e *wgpu.CommandEncoder, n, passes uint32) error {
 	return nil
 }
 func (b *gpuBackend) waitIdle(ctx context.Context) error {
-	return waitGPU(ctx, func() (bool, error) { return b.device.Poll(false, nil), nil })
+	done := make(chan wgpu.QueueWorkDoneStatus, 1)
+	b.queue.OnSubmittedWorkDone(func(status wgpu.QueueWorkDoneStatus) { done <- status })
+	return waitGPU(ctx, func() (bool, error) {
+		if err := b.poll(); err != nil {
+			return false, err
+		}
+		if b.lost.Load() {
+			return false, fmt.Errorf("device lost")
+		}
+		select {
+		case status := <-done:
+			if status != wgpu.QueueWorkDoneStatusSuccess {
+				return false, fmt.Errorf("queue completion: %s", status)
+			}
+			return true, nil
+		default:
+			return false, nil
+		}
+	})
 }
+
 func (p *gpuProgram) Run(ctx context.Context, input []byte, commit func([]byte), opts runOptions) (t Timing, err error) {
 	b := p.backend
 	size := uint64(len(input))
@@ -203,15 +237,24 @@ func (p *gpuProgram) Run(ctx context.Context, input []byte, commit func([]byte),
 	}
 	t.Passes = opts.passes
 	start := time.Now()
-	if err = b.queue.WriteBuffer(p.storage, 0, input); err != nil {
+	if err = b.queue.TryWriteBuffer(p.storage, 0, input); err != nil {
 		return t, err
 	}
+	uploadComplete := false
+	defer func() {
+		if err != nil && !uploadComplete {
+			b.retainedBytes += size
+		}
+	}()
 	t.UploadBytes = size
 	if opts.profile {
-		b.queue.Submit()
+		if err = b.queue.TrySubmit(); err != nil {
+			return t, err
+		}
 		if err = b.waitIdle(ctx); err != nil {
 			return t, err
 		}
+		uploadComplete = true
 		t.Upload = time.Since(start)
 		start = time.Now()
 		if err = p.submit(func(e *wgpu.CommandEncoder) error { return p.compute(e, n, opts.passes) }); err != nil {
@@ -229,22 +272,30 @@ func (p *gpuProgram) Run(ctx context.Context, input []byte, commit func([]byte),
 				return err
 			}
 		}
-		return e.CopyBufferToBuffer(p.storage, 0, p.readback, 0, size)
+		return e.TryCopyBufferToBuffer(p.storage, 0, p.readback, 0, size)
 	}); err != nil {
+		return t, err
+	}
+	if err = b.waitIdle(ctx); err != nil {
 		return t, err
 	}
 	// A buffered channel lets a late cancellation callback finish. It retains
 	// neither guest input nor commit, and no polling goroutine outlives this call.
-	done := make(chan wgpu.BufferMapAsyncStatus, 1)
-	if err = p.readback.MapAsync(wgpu.MapModeRead, 0, size, func(s wgpu.BufferMapAsyncStatus) { done <- s }); err != nil {
+	done := make(chan wgpu.MapAsyncStatus, 1)
+	if err = p.readback.TryMapAsync(wgpu.MapModeRead, 0, size, func(s wgpu.MapAsyncStatus) { done <- s }); err != nil {
 		return t, err
 	}
-	defer p.readback.Unmap() // Also aborts a pending map on timeout.
+	defer p.readback.TryUnmap() // Also aborts a pending map on timeout.
 	err = waitGPU(ctx, func() (bool, error) {
-		b.device.Poll(false, nil)
+		if err := b.poll(); err != nil {
+			return false, err
+		}
+		if b.lost.Load() {
+			return false, fmt.Errorf("device lost")
+		}
 		select {
 		case status := <-done:
-			if status != wgpu.BufferMapAsyncStatusSuccess {
+			if status != wgpu.MapAsyncStatusSuccess {
 				return false, fmt.Errorf("GPU readback: %s", status)
 			}
 			return true, nil
@@ -255,7 +306,11 @@ func (p *gpuProgram) Run(ctx context.Context, input []byte, commit func([]byte),
 	if err != nil {
 		return t, err
 	}
-	result := p.readback.GetMappedRange(0, uint(size))
+	uploadComplete = true
+	var result []byte
+	if err = b.device.Check(func() error { result = p.readback.GetMappedRange(0, uint(size)); return nil }); err != nil {
+		return t, err
+	}
 	if uint64(len(result)) != size {
 		return t, fmt.Errorf("GPU readback length mismatch")
 	}
@@ -270,4 +325,16 @@ func (p *gpuProgram) Run(ctx context.Context, input []byte, commit func([]byte),
 	commit(result)
 	t.Commit = time.Since(start)
 	return t, nil
+}
+
+func (p *gpuProgram) PeakBufferBytes(size uint64) uint64 {
+	capacity := p.capacity
+	if size > capacity {
+		capacity = min(max(size, capacity*2), uint64(DefaultMaxElements)*4, p.backend.limits.MaxBufferSize, p.backend.limits.MaxStorageBufferBindingSize)
+	}
+	return max(p.BufferBytes(), 2*capacity+size)
+}
+
+func (b *gpuBackend) poll() error {
+	return b.device.Check(func() error { b.device.Poll(false, nil); return nil })
 }

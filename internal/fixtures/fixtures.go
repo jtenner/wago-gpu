@@ -106,3 +106,8 @@ func VerifyKernel(in *wago.Instance, n uint32, kernel string, passes uint32) (fl
 	}
 	return largest, nil
 }
+
+//go:generate python3 generate_buffers.py
+//go:generate wat2wasm buffer_work.wat -o buffer_work.wasm
+//go:embed buffer_work.wasm
+var BufferWork []byte

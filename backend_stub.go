@@ -1,4 +1,4 @@
-//go:build !webgpu || !cgo
+//go:build !webgpu || !cgo || !linux
 
 package wagogpu
 

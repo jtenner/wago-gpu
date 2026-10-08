@@ -1,14 +1,21 @@
 # Wago GPU plugin specification
 
+> Implementation update (2026-10-07): the buffer contract below now has an
+> implementation, CPU tests, fake-backend tests, and hardware evidence. The ABI
+> remains provisional for publication review. “Proposed” in retained design text
+> identifies the provisional contract, not current implementation absence. See
+> [BUFFER_REPORT.md](BUFFER_REPORT.md) for current support and limits. Sections
+> that describe the original binding or earlier runs are historical evidence.
+
 Status: Revised draft; `wago_gpu_v1` is not frozen. Date: 2026-10-07.
 
 This revision addresses both boundary reviews in section 31. Confirmed dependency defects and untested requirements are release gates. Historical arithmetic runs do not prove that those gates have passed.
 
-This document specifies the complete `wago-gpu` plugin contract. It includes the existing scalar interface and the proposed buffer interface. It retains its original filename so existing links continue to work. It does not claim that the proposed features are implemented.
+This document specifies the complete `wago-gpu` plugin contract. It includes the existing scalar interface and the proposed buffer interface. It retains its original filename so existing links continue to work. Implementation evidence is reported separately in BUFFER_REPORT.md.
 
 `MUST` identifies a requirement. `SHOULD` identifies a preferred implementation. `MAY` identifies an allowed choice. Sections marked **Existing** describe the inspected code. Sections marked **Proposed**, and the buffer requirements in sections 1–17, define the intended extension. Where the code and a proposed requirement differ, the proposal is a development requirement, not a claim about current behavior.
 
-The current implementation and recorded hardware results are described in [README.md](README.md), [REPORT.md](REPORT.md), and [IMPROVEMENTS.md](IMPROVEMENTS.md). No implementation or benchmark was changed to create this specification.
+The current implementation is described in [README.md](README.md) and [BUFFER_REPORT.md](BUFFER_REPORT.md). [REPORT.md](REPORT.md) and [IMPROVEMENTS.md](IMPROVEMENTS.md) retain the earlier scalar measurements.
 
 ## Document map
 
@@ -36,9 +43,9 @@ The plugin MUST remain an optional Go project outside Wago. It MUST own GPU devi
 
 Version 1 accelerates independent elementwise operations. Reductions, matrix products, scans, and stencils are outside its GPU subset. Version 1 uses explicit GPU calls. It does not replace ordinary function calls automatically. It does not include a general Wasm compiler, full SSA, a large optimizer, textures, arbitrary pointers in shaders, or automatic recovery through kernel replay.
 
-### Current and proposed behavior
+### Scalar and buffer interfaces
 
-| Item | Current implementation | Proposed extension |
+| Item | Legacy scalar interface | Buffer interface |
 | --- | --- | --- |
 | Kernel selection | One selected export per module | Explicit table of named kernel exports |
 | Kernel signature | `(f32) -> f32` | `(index: i32) -> ()` for buffer kernels |
@@ -47,7 +54,7 @@ Version 1 accelerates independent elementwise operations. Reductions, matrix pro
 | Data between passes | Same kernel, retained during a batch | Different kernels, retained between calls |
 | Element types | `f32` | Typed integer and float access |
 | Guest storage on the GPU path | Unshared wasm32 memory | Checked wasm32, wasm64, and numeric GC-array transfers |
-| New buffer API tested on hardware | No | Required before implementation is accepted |
+| Buffer hardware evidence | Not applicable | Recorded in BUFFER_REPORT.md; release limits remain |
 
 The existing imports, signatures, and status codes MUST remain unchanged. The new imports use module name `wago_gpu_v1`. An import module version identifies its contract; it is not a Wago version.
 
@@ -510,7 +517,7 @@ This module has a real Wasm start function. It creates two buffers, sends `[1, 2
 
 The first kernel computes `2 * x`. The second computes `x + 1`. When both use the GPU, the intermediate buffer stays on the GPU. The export table in section 3 and relaxed float consent are required host configuration.
 
-**This example describes the proposed imports. It cannot run against the current plugin.** The current runnable start example is [examples/start/module.wat](examples/start/module.wat).
+**This example runs against the buffer plugin.** Its complete host and fixtures are in [examples/buffers/main.go](examples/buffers/main.go). The earlier scalar start example remains in [examples/start/module.wat](examples/start/module.wat).
 
 ```wat
 (module
@@ -978,7 +985,7 @@ Use `errors.As(err, &compileErr)` where `compileErr` is `*wagogpu.CompileError`.
 
 ### 20.2 Complete proposed buffer host
 
-This is a complete **proposed** Go host for the WAT module in section 13. It does not build against the current plugin because `Kernels`, the named type constants, and the buffer imports are not implemented. Compile that WAT as `module.wasm` beside the future host. The WAT saves each dispatch status at byte 32 or 36 before it takes the fallback branch.
+This is a complete **proposed** Go host for the WAT module in section 13. It now builds against the plugin. The runnable copy is [examples/buffers/main.go](examples/buffers/main.go). Compile that WAT as `module.wasm` beside the future host. The WAT saves each dispatch status at byte 32 or 36 before it takes the fallback branch.
 
 ```go
 package main
@@ -1197,13 +1204,13 @@ The host SHOULD use `Runtime.CloseContext` when it needs to wait for cleanup. Th
 
 ### 23.1 Device support
 
-**Existing.** The backend is built only with `webgpu && cgo`. It uses `github.com/cogentcore/webgpu/wgpu` v0.23.0. The other build path uses the CPU fallback stub. The project has no C or C++ source of its own; the binding uses native libraries and CGO.
+**Implemented.** The backend is built with `webgpu && cgo && linux`. It uses the local repaired `github.com/oliverbestmann/webgpu/wgpu` v1.36.0 binding and pinned native patch described in section 31.2. Other builds use the CPU fallback stub. The binding uses C glue and CGO; the native repair is Rust. Wago remains unchanged.
 
 The backend requests the default native adapter with a high-performance preference. It accepts integrated or discrete hardware adapters and rejects software adapters. It requests a device, reads its limits, and records adapter and driver information. Only Linux/amd64 with the recorded NVIDIA Vulkan device has hardware evidence in this project.
 
 **Proposed requirement.** Device selection MUST never label software execution as a real GPU result. Missing features and limits MUST be checked before submission. Device initialization MUST consider eligible buffer kernels as well as the legacy float setting; a false legacy `RelaxedFloat` value must not disable an eligible integer buffer kernel.
 
-The pinned Go wrapper does wire `DeviceLostCallback` in `adapter.go`. The current backend calls `RequestDevice(nil)` and does not register it. Its code records a Go pointer-check failure on that optional path; source inspection also finds unpinned retained callback context there. The implementation currently uses returned errors and completion status. Device timestamps are unavailable. A replacement backend MUST establish correct host/device memory visibility, callback lifetime, feature negotiation, limits, and completion reporting before it replaces the tested backend. Passing arithmetic examples alone is insufficient.
+The original cogentcore wrapper wired `DeviceLostCallback`, but the original backend did not register it. Source review found unsafe callback contexts. The repaired backend now registers loss notification with pinned context storage. Device timestamps remain unavailable. A replacement backend MUST establish host/device memory visibility, callback lifetime, feature negotiation, limits, and completed error reporting. Arithmetic examples alone are insufficient evidence.
 
 ### 23.2 Scalar device storage
 
@@ -1241,15 +1248,15 @@ Readback MUST include the required device-to-host synchronization. Map completio
 
 ### 23.5 Confirmed callback defect and backend acceptance gate
 
-Source inspection confirms that the pinned binding's `Queue.OnSubmittedWorkDone` and `Buffer.MapAsync` pass the address of a local `cgo.Handle` to native asynchronous callbacks without pinning or C-owned context storage. The C bridge forwards that address. The handle roots its associated value, not the separate Go variable whose address is retained. This violates the retained-pointer rule; no crash was reproduced in this review. See [queue.go](https://github.com/cogentcore/webgpu/blob/v0.23.0/wgpu/queue.go#L43), [buffer.go](https://github.com/cogentcore/webgpu/blob/v0.23.0/wgpu/buffer.go#L60), and [Go's handle lifetime rule](https://go.dev/pkg/runtime/cgo/#Handle).
+Historical source inspection confirmed that the original cogentcore binding's `Queue.OnSubmittedWorkDone` and `Buffer.MapAsync` pass the address of a local `cgo.Handle` to native asynchronous callbacks without pinning or C-owned context storage. The C bridge forwards that address. The handle roots its associated value, not the separate Go variable whose address is retained. This violates the retained-pointer rule; no crash was reproduced in this review. See [queue.go](https://github.com/cogentcore/webgpu/blob/v0.23.0/wgpu/queue.go#L43), [buffer.go](https://github.com/cogentcore/webgpu/blob/v0.23.0/wgpu/buffer.go#L60), and [Go's handle lifetime rule](https://go.dev/pkg/runtime/cgo/#Handle).
 
 Before GPU acceptance, use a repaired binding with C-owned callback context or explicitly pinned Go context. Pair handle deletion, context release, and unpinning with proof that native access has ended. Timeout, instance close, or guest cancellation alone is not that proof. If a callback will not run, backend cancellation/destruction must provide an equivalent ownership acknowledgment. Otherwise retain and charge the context until safe retirement. A buffered Go channel does not fix an invalid native callback pointer.
 
 Review all completion, error-scope, adapter, and device-loss callback paths, including wrappers that delete a handle on Go return while assuming an error callback is synchronous. Test delayed callbacks under GC and allocation pressure, timeout, instance close, and runtime close. Use Go pointer-check modes where available. Test exactly one release and no access after release.
 
-`Queue.Submit` returns a submission index without a general error result. Existing scoped wrappers do not provide a complete asynchronous no-error completion interface. The backend must expose the completed error protocol in section 23.4; polling an idle queue is not a substitute.
+The original `Queue.Submit` returned a submission index without a general error result. Its scoped wrappers did not provide a complete asynchronous no-error completion interface. The backend must expose the completed error protocol in section 23.4; polling an idle queue is not a substitute.
 
-The [current upstream README](https://raw.githubusercontent.com/cogentcore/webgpu/main/README.md) states that CogentCore's repository will not receive updates and points to `oliverbestmann/webgpu`. The maintenance decision is to evaluate that maintained fork first, or pin a reviewed repair if it cannot meet these gates. This revision changes no dependency and claims no replacement is accepted. Retain historical measurements, but do not use them to waive callback or error-reporting tests.
+The [current upstream README](https://raw.githubusercontent.com/cogentcore/webgpu/main/README.md) states that CogentCore's repository will not receive updates and points to `oliverbestmann/webgpu`. That review led to the local oliverbestmann fork and native patch in section 31.2. Current test evidence and remaining limits are in BUFFER_REPORT.md. Retain historical measurements, but do not use them to waive callback or error-reporting tests.
 
 ## 24. Detailed operation semantics
 
@@ -1337,6 +1344,7 @@ The outer Wago call time includes overhead and lock waiting not included in `Las
 
 ```go
 type BufferSnapshot struct {
+    PeakRuntimeBufferBytes      uint64
     State, Reason               string
     DeviceState                 string
     Last                        BufferOperation
@@ -1381,6 +1389,7 @@ type TransferCounters struct {
 }
 
 type KernelDiagnostic struct {
+    Translate, Pipeline time.Duration
     Module           wago.ModuleIdentity
     KernelID         uint32
     State, Reason    string
@@ -1388,6 +1397,7 @@ type KernelDiagnostic struct {
 }
 
 type InstanceDiagnostic struct {
+    PeakBytes uint64
     Instance wago.InstanceIdentity
     Buffers, CPUCurrent, GPUCurrent, BothCurrent, ContentsLost uint32
     LogicalBytes, CPUBytes, GPUBytes, StagingBytes, ScratchBytes uint64
@@ -1446,12 +1456,12 @@ Return slices in stable order for a given set of identities and IDs. Snapshot co
 
 ## 26. Build, distribution, and runnable artifacts
 
-**Existing dependencies.** `go.mod` declares Go 1.22 and pins:
+**Current dependencies.** `go.mod` declares Go 1.25 and pins:
 
 | Dependency | Version |
 | --- | --- |
 | Wago | `v0.1.0-beta.12.0.20261007220511-7aa401f29a33` |
-| cogentcore WebGPU | `v0.23.0` |
+| oliverbestmann WebGPU | `v1.36.0`, local safety repair |
 | `golang.org/x/sys` | `v0.30.0`, indirect |
 
 The tested toolchain is Go 1.27.1 on Linux/amd64. The module's declared Go version is not evidence that every dependency and backend was tested with that toolchain minimum. Pin changes require the relevant CPU and hardware checks.
@@ -1464,7 +1474,8 @@ CGO_ENABLED=0 go test ./...
 CGO_ENABLED=0 go run ./cmd/demo -cpu-only
 CGO_ENABLED=0 go run ./examples/start -cpu-only
 
-# GPU examples. CGO, a C toolchain, native binding support, and a driver are required.
+# GPU examples. Build the pinned native patch first; Rust/Cargo is required.
+./native/build.sh
 go run -tags webgpu ./cmd/demo -require-gpu
 go run -tags webgpu ./examples/start -require-gpu
 
@@ -1486,7 +1497,7 @@ No GPU device or C compiler is required for the `CGO_ENABLED=0` test path. WABT 
 
 The current demo provides `-cpu-only`, `-require-gpu`, `-kernel`, `-n`, `-sizes`, `-passes`, `-min-elements`, `-bench`, `-reps`, `-profile`, `-separate`, and `-json`. `-require-gpu` MUST fail if required work uses fallback. `-separate` is a transfer-cost control, not a chain-rollback API. The square fixture's demo caps passes at four to keep its inputs in the intended numerical range; the plugin batch limit remains 64.
 
-**Proposed artifacts.** The buffer implementation MUST add a runnable Go host, a full WAT module, and its generated Wasm fixture for section 13. It MUST include CPU-only and require-hardware modes. It MUST also add typed F16, GC-transfer, and memory64 examples when those stages are claimed as implemented. Proposed snippets in a document are not runnable deliverables.
+**Runnable artifacts.** [examples/buffers](examples/buffers/main.go) supplies the Go host, full WAT, and Wasm for section 13, with CPU and require-hardware modes. [examples/tinygo](examples/tinygo/main.go) runs the complete guest-language path. [examples/storage](examples/storage/main.go) provides F16 CPU/GPU execution plus memory64 and GC transfer examples. Proposed snippets alone are not runnable deliverables.
 
 The library MUST NOT install a driver, alter Wago source, or download executable code at runtime. Normal Go module and native-library build dependencies remain build-time concerns. The project SHOULD avoid adding C or C++ source and SHOULD keep the backend behind the existing small private interface.
 
@@ -1560,7 +1571,7 @@ Small workloads were slower on the GPU. First-call costs, device creation, stage
 
 Recorded CPU, GPU, race, repeated-execution, cleanup, fallback, and fuzz tests passed for the existing interface. Direct device timestamps, a usable device-loss callback, physical device-removal recovery, and a hard driver-hang timeout were not established. The later source review confirmed callback-context lifetime and error-reporting gaps in the retained binding. Those gaps were not disproved by the recorded arithmetic tests. Only the stated hardware platform has evidence here.
 
-The named buffer kernels, typed handles, persistent inter-kernel buffers, F16 conversion imports, memory64 transfers, and GC transfers specified here remain proposed. No current hardware result demonstrates them. No Wago core API change has been required for the existing plugin. The proposed implementation must still test the cleanup and storage cases listed in this document.
+The named buffer kernels, typed handles, persistent buffers, F16 conversions, memory64 transfers, and GC transfers are now implemented. Current test and hardware evidence is in [BUFFER_REPORT.md](BUFFER_REPORT.md). No Wago source change was needed. The earlier measurements above remain historical scalar results.
 
 ## 30. Specification validation
 
@@ -1568,7 +1579,7 @@ The complete proposed WAT module in section 13 MUST pass `wat2wasm` and `wasm-va
 
 Document maintenance MUST check local links, import signatures, result order, unique type and status IDs, and agreement between the host manifest and the WAT example. Run `python3 spec/check_spec.py` from the project root with Python 3, Go/gofmt, WABT, and wasm-tools installed. The all-import declaration check uses wasm-tools for `anyref`; the installed WABT does not parse that GC type. The non-GC complete example still uses WABT. It checks every proposed ABI signature in a generated WAT import module, the example's imported subset, type/status tables, packed-result bit layout, local links, Go snippet syntax, and TinyGo source import declarations. It writes [spec/validation.json](spec/validation.json) with the exact scope and file hashes. `--tinygo` also recompiles and inspects the guest probe.
 
-The checker cannot compare an unimplemented plugin registration table or unimplemented generated guest bindings. Those comparisons, runtime cleanup/cancellation tests, fake-backend state tests, and hardware execution remain acceptance work. The report MUST list them as not run. A generated import-only module is a declaration check, not a functioning guest or a hardware test.
+The generated registration table is now checked against the canonical ABI by `TestCanonicalABI`. Runtime tests, the complete TinyGo guest, and hardware evidence are separate from this document checker. The implementation report lists their results and remaining limits. A generated import-only module is a declaration check, not a functioning guest or a hardware test.
 
  When an interface is implemented, update its status and add the corresponding test evidence. Do not silently replace historical benchmark values with new runs.
 
@@ -1611,10 +1622,33 @@ This revision incorporates both supplied reviews and checks the source-identity 
 | Host cleanup | Independent context and joined close errors | Cancel work or inject Stop error; cleanup still starts and error is returned |
 | Exact float records | Arithmetic materialization leaves saved exact bits intact | One F32 read feeds relaxed arithmetic and an exact-copy output |
 
-The source checks found a **plugin-view** metadata gap, not a total absence of public host metadata APIs. The device-loss callback exists in the binding, but the current backend does not register it. The asynchronous context defect was confirmed by source inspection; no crash was reproduced. Historical successful GPU results remain recorded observations, not proof of callback safety or complete error reporting.
+The source checks found a **plugin-view** metadata gap, not a total absence of public host metadata APIs. The original binding had a device-loss callback that the original backend did not register. The repaired backend now registers it and consumes loss notifications under the plugin lock. The asynchronous context defect was confirmed by source inspection; no crash was reproduced. Historical successful GPU results remain recorded observations, not proof of callback safety or complete error reporting.
 
-The current upstream maintenance notice was checked separately from the pinned release source. No replacement binding has been accepted, no Wago source was changed, and no proposed buffer execution ran during this document revision. The compile-only TinyGo probe and WAT validation are stated separately from runtime tests.
+The earlier document review did not accept a replacement binding or execute buffers. The implementation now uses a local copy of oliverbestmann/webgpu v1.36.0 plus a pinned native error-reporting patch; see [dependency patch notes](third_party/webgpu/PATCHES.md). Wago remains unchanged. The compile-only TinyGo probe and WAT validation are stated separately from runtime tests.
 
 Do not freeze the import contract until the full guest-language path passes. Do not accept the GPU buffer phase until callback ownership and the completed error protocol pass. An implementation agent can begin the bounded CPU and fake-backend work under this draft; it cannot label an untested backend or missing metadata path conforming.
 
 The third review adds five local clarifications: exact Last-recording imports, public CompileError categories, alias checks over all declared slots, read-before-write seed requirements, and adoption restrictions for CPU metadata as well as GPU use. These requirements apply to implementation and tests B21 and B33–B36.
+
+
+### 31.2 Implementation evidence
+
+The local implementation uses all 34 canonical imports. `NewHost` prevents
+artifact adoption and intrinsic overrides by construction. The lower-level
+PluginSet still requires the host obligations in section 22.1.1.
+
+The native build is restricted to Linux with the patched dependency. Its error
+sink has validation, allocation, and device-loss categories. The plugin checks
+all three supported paths; it does not request the unsupported Internal scope.
+Submission, polling, and mapped-range errors use the patched native error sink.
+A real test rejects a resource destroyed after command encoding, then receives
+a successful queue notification without reporting the failed dispatch as a
+successful execution.
+
+`KernelDiagnostic.Translate` and `Pipeline` report build wall times.
+`PeakRuntimeBufferBytes` and `InstanceDiagnostic.PeakBytes` report tracked
+reservation peaks. They exclude unknown driver overhead, as do the other budget
+fields. The benchmark records process RSS separately.
+
+Current evidence, commands, numerical results, and untested hardware conditions
+are in [BUFFER_REPORT.md](BUFFER_REPORT.md). The ABI is not a published release.

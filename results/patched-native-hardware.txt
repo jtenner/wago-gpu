@@ -1,0 +1,23 @@
+=== RUN   TestBufferHardwareStart
+=== RUN   TestBufferHardwareStart/gpu_gpu
+=== RUN   TestBufferHardwareStart/cpu_gpu
+=== RUN   TestBufferHardwareStart/gpu_cpu
+=== RUN   TestBufferHardwareStart/cpu_cpu
+--- PASS: TestBufferHardwareStart (0.64s)
+    --- PASS: TestBufferHardwareStart/gpu_gpu (0.37s)
+    --- PASS: TestBufferHardwareStart/cpu_gpu (0.11s)
+    --- PASS: TestBufferHardwareStart/gpu_cpu (0.09s)
+    --- PASS: TestBufferHardwareStart/cpu_cpu (0.07s)
+=== RUN   TestBindingRejectsInvalidCommand
+--- PASS: TestBindingRejectsInvalidCommand (0.07s)
+=== RUN   TestBindingDelayedCallbacksGC
+--- PASS: TestBindingDelayedCallbacksGC (0.09s)
+=== RUN   TestHardware
+    hardware_test.go:26: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestHardware/twice
+=== RUN   TestHardware/square
+--- PASS: TestHardware (0.13s)
+    --- PASS: TestHardware/twice (0.03s)
+    --- PASS: TestHardware/square (0.02s)
+PASS
+ok  	wago-gpu	0.936s

@@ -21,9 +21,12 @@ const (
 // Config selects one export per module. RelaxedFloat must be an explicit opt-in:
 // GPU f32 can fuse operations and flush subnormals (see README).
 type Config struct {
-	KernelExport string
-	RelaxedFloat bool
-	Disabled     bool
+	Kernels                                                          []KernelConfig
+	MaxBuffersPerInstance, MaxKernelsPerModule, MaxBindingsPerKernel uint32
+	MaxInstanceBufferBytes, MaxRuntimeBufferBytes                    uint64
+	KernelExport                                                     string
+	RelaxedFloat                                                     bool
+	Disabled                                                         bool
 	// ProfileStages adds queue waits to measure each stage. Leave false for use.
 	ProfileStages bool
 	MaxElements   uint32
@@ -97,6 +100,8 @@ type pendingBuild struct {
 // cached buffers can be reused. Wago controls calls within a single instance.
 type Plugin struct {
 	mu                  sync.Mutex
+	compileMu           sync.Mutex
+	buffers             *bufferEngine
 	config              Config
 	registered, stopped bool
 	open                func() (backend, error)
@@ -115,7 +120,7 @@ type Plugin struct {
 }
 
 func New(config Config) (*Plugin, error) {
-	if config.KernelExport == "" {
+	if config.KernelExport == "" && len(config.Kernels) == 0 {
 		return nil, fmt.Errorf("KernelExport must select a function")
 	}
 	if config.MaxElements == 0 {
@@ -133,7 +138,10 @@ func New(config Config) (*Plugin, error) {
 	if config.MaxElements > DefaultMaxElements {
 		return nil, fmt.Errorf("MaxElements exceeds %d", DefaultMaxElements)
 	}
-	return &Plugin{config: config, open: openBackend, pending: make(map[wago.CompilationIdentity]pendingBuild), compiled: make(map[wago.CompilationIdentity]wago.ModuleIdentity), modules: make(map[wago.ModuleIdentity]*moduleState), instances: make(map[wago.InstanceIdentity]*moduleState), cache: make(map[string]*cachedProgram)}, nil
+	if err := validateBufferConfig(&config); err != nil {
+		return nil, err
+	}
+	return &Plugin{buffers: newBufferEngine(), config: config, open: openBackend, pending: make(map[wago.CompilationIdentity]pendingBuild), compiled: make(map[wago.CompilationIdentity]wago.ModuleIdentity), modules: make(map[wago.ModuleIdentity]*moduleState), instances: make(map[wago.InstanceIdentity]*moduleState), cache: make(map[string]*cachedProgram)}, nil
 }
 
 func definition() wago.PluginDefinition {
@@ -143,7 +151,7 @@ func definition() wago.PluginDefinition {
 	for _, a := range []wago.Authority{wago.AuthorityHostImportDefine, wago.AuthorityHostCallerIdentify, wago.AuthorityModuleSourceTransform, wago.AuthorityModuleCompileObserve, wago.AuthorityModuleCloseObserve, wago.AuthorityInstanceInstantiateIntercept, wago.AuthorityInstanceCloseObserve} {
 		r := wago.AuthorityRequest{Name: a, Mode: wago.AuthorityRequired, Reason: "connect the selected kernel to checked guest calls and release its resources"}
 		if a == wago.AuthorityHostImportDefine {
-			r.Scope = wago.AuthorityScope{Modules: []string{"wago_gpu"}}
+			r.Scope = wago.AuthorityScope{Modules: []string{"wago_gpu", "wago_gpu_v1"}}
 		}
 		d.Authorities = append(d.Authorities, r)
 	}
@@ -183,6 +191,9 @@ func (p *Plugin) Register(reg *wago.Registrar) error {
 	}
 	i.HostFunc("wago_gpu", "run", p.run).Params(wago.ValI32, wago.ValI32, wago.ValI32).Results(wago.ValI32).Docs("run(input byte offset, output byte offset, f32 count): 0 success, 1 CPU fallback, 2 invalid range")
 	i.HostFunc("wago_gpu", "run_batch", p.runBatch).Params(wago.ValI32, wago.ValI32, wago.ValI32, wago.ValI32).Results(wago.ValI32).Docs("run the selected kernel 1..64 times with one upload and one download")
+	if err := p.registerBuffers(reg); err != nil {
+		return err
+	}
 	t, err := reg.ModuleSourceTransformer()
 	if err != nil {
 		return err
@@ -214,6 +225,7 @@ func (p *Plugin) Register(reg *wago.Registrar) error {
 	if err = a.After(func(e wago.InstantiationEvent) error {
 		p.mu.Lock()
 		defer p.mu.Unlock()
+		p.buffers.instantiate(e.Instance, e.Module.Identity())
 		if s := p.modules[e.Module.Identity()]; s != nil {
 			s.instances++
 			p.instances[e.Instance] = s
@@ -229,6 +241,7 @@ func (p *Plugin) Register(reg *wago.Registrar) error {
 	if err = x.After(func(e wago.InstanceCloseEvent) {
 		p.mu.Lock()
 		defer p.mu.Unlock()
+		p.closeBufferInstance(e.Instance)
 		if s := p.instances[e.Instance]; s != nil {
 			delete(p.instances, e.Instance)
 			s.instances--
@@ -249,7 +262,7 @@ func (p *Plugin) start(context.Context) error {
 		p.stats.Reason = "GPU disabled"
 		return nil
 	}
-	if !p.config.RelaxedFloat {
+	if !p.config.RelaxedFloat && len(p.config.Kernels) == 0 {
 		p.stats.Reason = "relaxed f32 behavior was not accepted"
 		return nil
 	}
@@ -265,6 +278,15 @@ func (p *Plugin) start(context.Context) error {
 	return nil
 }
 func (p *Plugin) transform(ctx wago.ModuleSourceContext, source []byte) ([]byte, error) {
+	p.compileMu.Lock()
+	defer p.compileMu.Unlock()
+	p.mu.Lock()
+	stopped := p.stopped
+	p.mu.Unlock()
+	if stopped {
+		return source, nil
+	}
+	p.inspectBuffers(ctx, source)
 	start := time.Now()
 	shader, err := CompileWGSL(source, p.config.KernelExport)
 	b := pendingBuild{shader: shader, digest: wago.DigestModuleSource(source), elapsed: time.Since(start)}
@@ -272,6 +294,10 @@ func (p *Plugin) transform(ctx wago.ModuleSourceContext, source []byte) ([]byte,
 		b.reason = err.Error()
 	}
 	p.mu.Lock()
+	if p.stopped {
+		p.mu.Unlock()
+		return source, nil
+	}
 	delete(p.pending, p.pendingOrder[p.pendingNext])
 	p.pendingOrder[p.pendingNext] = ctx.Compilation
 	p.pendingNext = (p.pendingNext + 1) % len(p.pendingOrder)
@@ -282,6 +308,7 @@ func (p *Plugin) transform(ctx wago.ModuleSourceContext, source []byte) ([]byte,
 func (p *Plugin) onCompiled(e wago.ModuleCompiledEvent) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+	p.attachBufferModule(e)
 	b, ok := p.pending[e.Compilation]
 	delete(p.pending, e.Compilation)
 	s := &moduleState{compilation: e.Compilation, reason: b.reason}
@@ -305,6 +332,10 @@ func (p *Plugin) onCompiled(e wago.ModuleCompiledEvent) {
 		s.cache = c
 		return
 	}
+	if len(p.cache)+len(p.buffers.pipelines) >= 256 {
+		s.reason = "pipeline count limit"
+		return
+	}
 	start := time.Now()
 	program, err := p.device.Compile(b.shader)
 	p.stats.Build.Pipeline = time.Since(start)
@@ -321,11 +352,19 @@ func (p *Plugin) onCompileError(e wago.ModuleCompileErrorEvent) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	delete(p.pending, e.Compilation)
+	delete(p.buffers.pending, e.Compilation)
 	if id, ok := p.compiled[e.Compilation]; ok {
 		p.closeModule(id)
 	}
 }
 func (p *Plugin) closeModule(id wago.ModuleIdentity) {
+	if m := p.buffers.modules[id]; m != nil {
+		m.closed = true
+		if m.instances == 0 {
+			p.releaseBufferModule(m)
+		}
+		delete(p.buffers.modules, id)
+	}
 	if s := p.modules[id]; s != nil {
 		delete(p.modules, id)
 		delete(p.compiled, s.compilation)
@@ -339,7 +378,7 @@ func (p *Plugin) release(s *moduleState) {
 	if c := s.cache; c != nil {
 		s.cache = nil
 		c.refs--
-		if c.refs == 0 {
+		if c.refs == 0 && !p.stats.GPUFailed {
 			c.program.Close()
 			delete(p.cache, c.shader)
 		}
@@ -352,6 +391,19 @@ func (p *Plugin) stop(context.Context) error {
 		return nil
 	}
 	p.stopped = true
+	for id := range p.buffers.instances {
+		p.closeBufferInstance(id)
+	}
+	for _, m := range p.buffers.modules {
+		p.releaseBufferModule(m)
+	}
+	for _, r := range p.buffers.retired {
+		r.resource.Close()
+		p.buffers.bytes -= r.size
+	}
+	p.buffers.retired = nil
+	clear(p.buffers.modules)
+	clear(p.buffers.pending)
 	for _, c := range p.cache {
 		c.program.Close()
 	}
@@ -362,6 +414,9 @@ func (p *Plugin) stop(context.Context) error {
 	clear(p.modules)
 	clear(p.instances)
 	if p.device != nil {
+		if d := p.bufferDevice(); d != nil {
+			p.buffers.bytes -= d.RetainedBytes()
+		}
 		p.device.Close()
 		p.device = nil
 	}
@@ -454,11 +509,31 @@ func (p *Plugin) runPasses(caller wago.Caller, call wago.HostCall, passes uint32
 			p.stats.Reason = e.Error()
 			return nil
 		}
+		if budgeted, ok := state.cache.program.(interface{ PeakBufferBytes(uint64) uint64 }); ok {
+			used := p.buffers.bytes
+			for _, cache := range p.cache {
+				if cache != state.cache {
+					used += cache.program.BufferBytes()
+				}
+			}
+			peak := budgeted.PeakBufferBytes(n * 4)
+			if used > p.config.MaxRuntimeBufferBytes || peak > p.config.MaxRuntimeBufferBytes-used {
+				p.stats.Reason = "runtime memory budget exceeded"
+				return nil
+			}
+		}
+		retainedBefore := uint64(0)
+		if d := p.bufferDevice(); d != nil {
+			retainedBefore = d.RetainedBytes()
+		}
 		timing, e := state.cache.program.Run(ctx, input, func(data []byte) { copy(output, data) }, runOptions{passes: passes, profile: p.config.ProfileStages})
 		p.stats.Last = timing
+		if d := p.bufferDevice(); d != nil {
+			p.buffers.bytes += d.RetainedBytes() - retainedBefore
+		}
 		if e != nil {
 			p.stats.Reason = e.Error()
-			p.stats.GPUFailed = true // Never reuse buffers or a device after uncertain completion.
+			p.quarantineBuffers(e.Error()) // One device-wide failure transition for both ABIs.
 			return nil
 		}
 		status = Success

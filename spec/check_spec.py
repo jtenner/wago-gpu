@@ -108,7 +108,7 @@ def main():
             else:
                 source = 'package doccheck\n' + block + '\n'
             run(['gofmt'], input=source)
-        checks.append('All Go snippets parse. This does not type-check unimplemented plugin APIs.')
+        checks.append('All Go snippets parse. This syntax check does not type-check their API use.')
 
         formula = abi['packed_result']['go_encoding']
         check(formula == '(uint64(uint32(status)) << 32) | uint64(uint32(handle))' and formula in doc, 'packed formula')
@@ -153,6 +153,19 @@ func main() {
             check('(param i32)' in body and '(local f32)' in body, 'TinyGo kernel signature/locals')
             checks.append('TinyGo probe rebuilt and validated; inspected selected body has the expected compatible form. No plugin execution ran.')
 
+    # Check actual generated registration and the complete compiled guest separately.
+    run(['go', 'test', '-run', '^TestCanonicalABI$', '.'], cwd=ROOT)
+    checks.append('Generated production registration descriptors match all 34 canonical imports.')
+    full_wat = run(['wasm2wat', str(ROOT / 'examples/tinygo/guest.wasm')])
+    types = {}
+    for index, params, results in re.findall(r'\(type \(;([0-9]+);\) \(func(?: \(param ([^)]*)\))?(?: \(result ([^)]*)\))?\)\)', full_wat):
+        types[index] = (params.split(), results.split())
+    full_imports = re.findall(r'\(import "wago_gpu_v1" "(\w+)" \(func [^ ]+ \(type ([0-9]+)\)\)\)', full_wat)
+    check(len(full_imports) == 9, 'complete guest import count')
+    for name, index in full_imports:
+        check(types[index] == (imports[name]['params'], imports[name]['results']), 'compiled complete guest import: ' + name)
+    checks.append('All nine imports in the complete compiled TinyGo management guest match the canonical ABI; this checker does not execute it.')
+
     report = json.loads((ROOT / 'results/improvements-single.json').read_text())
     rows = re.findall(r'^\| `(2\*x|x\*x\+1)` \| ([\d,]+) \| ([\d.]+) \| ([\d.]+) \|$', doc, re.M)
     check(len(rows) == 8, 'historical benchmark row count')
@@ -160,14 +173,14 @@ func main() {
         case = next(c for c in report['Cases'] if c['Kernel'] == {'2*x': 'twice', 'x*x+1': 'square'}[name] and c['Elements'] == int(size.replace(',', '')))
         check(f"{case['CPU']['MedianNS']/1e6:.4f}" == cpu and f"{case['GPU']['MedianNS']/1e6:.4f}" == gpu, 'historical figures')
     checks.append('Eight historical benchmark rows match the saved JSON. No benchmark was rerun.')
-    files = ['BUFFER_API_PROPOSAL.md', 'spec/abi_v1.json', 'spec/guest-tinygo.go.txt', 'spec/check_spec.py']
+    files = ['BUFFER_API_PROPOSAL.md', 'spec/abi_v1.json', 'spec/guest-tinygo.go.txt', 'spec/check_spec.py', 'abi_generated.go', 'examples/tinygo/guest.go', 'examples/tinygo/guest.wasm']
     evidence = {
-        'scope': 'Draft specification validation; no proposed plugin runtime or hardware acceptance',
+        'scope': 'Specification, generated registration, and guest declaration validation; runtime and hardware tests run separately',
         'result': 'passed',
         'sha256': {f: hashlib.sha256((ROOT / f).read_bytes()).hexdigest() for f in files},
         'tools': {'go': run(['go', 'version']).strip(), 'wabt': run(['wat2wasm', '--version']).strip(), 'wasm_tools': run(['wasm-tools', '--version']).strip()},
         'checks': checks,
-        'not_run': ['Production v1 host registration and generated guest-binding comparison: not implemented.', 'Proposed buffer CPU/fake-backend and real Wago interaction tests.', 'Native callback repair/error-protocol tests.', 'Full guest management execution.', 'Real GPU execution and new benchmarks.'],
+        'not_run': ['Buffer CPU/fake-backend and real Wago interaction tests (run separately).' , 'Native callback repair/error-protocol tests.', 'Full guest management execution.', 'Real GPU execution and new benchmarks.'],
     }
     if args.tinygo:
         evidence['tools']['tinygo'] = run(['tinygo', 'version']).strip()

@@ -1,0 +1,9 @@
+{
+  "exit_code": 0,
+  "wall_seconds": 38.16179418563843,
+  "max_rss_kib": 501876,
+  "user_seconds": 37.564117,
+  "system_seconds": 1.244751,
+  "platform": "Linux-6.12.111+deb13-amd64-x86_64-with-glibc2.41",
+  "command": ".cache/buffer-bench -repeats 3"
+}

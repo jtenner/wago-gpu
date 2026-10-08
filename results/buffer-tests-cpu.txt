@@ -1,0 +1,9 @@
+ok  	wago-gpu	0.130s
+?   	wago-gpu/cmd/buffer-bench	[no test files]
+?   	wago-gpu/cmd/demo	[no test files]
+ok  	wago-gpu/examples/buffers	0.003s
+ok  	wago-gpu/examples/start	0.003s
+ok  	wago-gpu/examples/storage	0.004s
+ok  	wago-gpu/examples/tinygo	0.003s
+?   	wago-gpu/internal/fixtures	[no test files]
+?   	wago-gpu/internal/genabi	[no test files]

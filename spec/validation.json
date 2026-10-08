@@ -1,11 +1,14 @@
 {
-  "scope": "Draft specification validation; no proposed plugin runtime or hardware acceptance",
+  "scope": "Specification, generated registration, and guest declaration validation; runtime and hardware tests run separately",
   "result": "passed",
   "sha256": {
-    "BUFFER_API_PROPOSAL.md": "f111b7f33712c6d5341397d61aaf12ca4f9769e29eb0c43f3cfdf613bd59f396",
+    "BUFFER_API_PROPOSAL.md": "0d886c4c7f6e578072d3a82f63b5e64007945560426750dd44de56e3effbfeb4",
     "spec/abi_v1.json": "38174bb00c6e782254b1ac145fcba1f9813dbe46cf29b6b3b06f24efb6f70fe4",
     "spec/guest-tinygo.go.txt": "a21062331b33403037525a3999d0fdd8a671c237c800c69407ac895ab0ab1422",
-    "spec/check_spec.py": "4de61c5ed8665b5a654fa5e64701050f9dc690c4fad9df2f297ef5b53555cdd6"
+    "spec/check_spec.py": "9c7968aefda7baba336864acb3fa2997b3be89768f2758ddf010c0d20071b167",
+    "abi_generated.go": "e88f7af3758a61dd38210531ed4397eb4b07580a3c5ff88aa40b80f4ac36dd35",
+    "examples/tinygo/guest.go": "5728215651de316451b00354aa335a9d91657c0f56cb87a567d569a70eee6dc9",
+    "examples/tinygo/guest.wasm": "6f91d141719710718470b0c6b323977373fdb8cbbfb88358ae858d9c40982baa"
   },
   "tools": {
     "go": "go version go1.27.1 linux/amd64",
@@ -18,15 +21,16 @@
     "Local links, heading anchor, code fences, whitespace, and sections 1-31 pass.",
     "All 34 proposed signatures form a valid import-only Wasm module, including GC reference and multi-result types.",
     "Complete proposed WAT example passes syntax/type validation; all nine imports match the canonical ABI.",
-    "All Go snippets parse. This does not type-check unimplemented plugin APIs.",
+    "All Go snippets parse. This syntax check does not type-check their API use.",
     "Canonical packed-result Go formula round-trips sign-bit handles and failure statuses.",
     "Four TinyGo source import declarations match the canonical ABI.",
     "TinyGo probe rebuilt and validated; inspected selected body has the expected compatible form. No plugin execution ran.",
+    "Generated production registration descriptors match all 34 canonical imports.",
+    "All nine imports in the complete compiled TinyGo management guest match the canonical ABI; this checker does not execute it.",
     "Eight historical benchmark rows match the saved JSON. No benchmark was rerun."
   ],
   "not_run": [
-    "Production v1 host registration and generated guest-binding comparison: not implemented.",
-    "Proposed buffer CPU/fake-backend and real Wago interaction tests.",
+    "Buffer CPU/fake-backend and real Wago interaction tests (run separately).",
     "Native callback repair/error-protocol tests.",
     "Full guest management execution.",
     "Real GPU execution and new benchmarks."

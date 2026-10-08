@@ -1,0 +1,9 @@
+=== RUN   TestHardware
+    hardware_test.go:26: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestHardware/twice
+=== RUN   TestHardware/square
+--- PASS: TestHardware (0.21s)
+    --- PASS: TestHardware/twice (0.05s)
+    --- PASS: TestHardware/square (0.03s)
+PASS
+ok  	wago-gpu	0.217s

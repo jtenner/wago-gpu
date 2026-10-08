@@ -1,0 +1,59 @@
+diff --git a/src/lib.rs b/src/lib.rs
+index 7488e58..7ced8dc 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -189,7 +189,7 @@ impl Drop for WGPUDeviceImpl {
+             // pre v27 this would wait for 60 seconds instead of waiting indefinitely
+             match context.device_poll(self.id, wgt::PollType::wait_indefinitely()) {
+                 Ok(_) => (),
+-                Err(err) => handle_error_fatal(err, "WGPUDeviceImpl::drop"),
++                Err(err) => log::error!("WGPUDeviceImpl::drop: {err}"),
+             }
+ 
+             context.device_drop(self.id);
+@@ -972,7 +972,7 @@ pub unsafe extern "C" fn wgpuBufferGetConstMappedRange(
+         },
+     ) {
+         Ok((ptr, _)) => ptr,
+-        Err(err) => handle_error_fatal(err, "wgpuBufferGetConstMappedRange"),
++        Err(err) => { handle_error(&buffer.as_ref().unwrap().error_sink, err, None, "wgpuBufferGetConstMappedRange"); return std::ptr::null(); },
+     };
+ 
+     buf.as_ptr()
+@@ -998,7 +998,7 @@ pub unsafe extern "C" fn wgpuBufferGetMappedRange(
+         },
+     ) {
+         Ok((ptr, _)) => ptr,
+-        Err(err) => handle_error_fatal(err, "wgpuBufferGetMappedRange"),
++        Err(err) => { handle_error(&buffer.as_ref().unwrap().error_sink, err, None, "wgpuBufferGetMappedRange"); return std::ptr::null_mut(); },
+     };
+ 
+     buf.as_ptr()
+@@ -3032,7 +3032,7 @@ pub unsafe extern "C" fn wgpuQueueSubmit(
+         .collect::<SmallVec<[_; 4]>>();
+ 
+     if let Err(cause) = context.queue_submit(queue_id, &command_buffers) {
+-        handle_error_fatal(cause.1, "wgpuQueueSubmit");
++        handle_error(&queue.as_ref().unwrap().error_sink, cause.1, None, "wgpuQueueSubmit");
+     }
+ }
+ 
+@@ -4421,7 +4421,7 @@ pub unsafe extern "C" fn wgpuQueueSubmitForIndex(
+ 
+     match context.queue_submit(queue_id, &command_buffers) {
+         Ok(submission_index) => submission_index,
+-        Err(cause) => handle_error_fatal(cause.1, "wgpuQueueSubmitForIndex"),
++        Err(cause) => { handle_error(&queue.as_ref().unwrap().error_sink, cause.1, None, "wgpuQueueSubmitForIndex"); 0 },
+     }
+ }
+ 
+@@ -4452,7 +4452,8 @@ pub unsafe extern "C" fn wgpuDevicePoll(
+         Ok(wgt::PollStatus::QueueEmpty) => true,
+         Ok(_) => false,
+         Err(cause) => {
+-            handle_error_fatal(cause, "wgpuDevicePoll");
++            handle_error(&device.as_ref().unwrap().error_sink, cause, None, "wgpuDevicePoll");
++ false
+         }
+     }
+ }

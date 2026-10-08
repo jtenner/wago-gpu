@@ -229,7 +229,7 @@ func (r *reader) u32() uint32 {
 func (r *reader) count() uint32 {
 	n := r.u32()
 	if n > maxEntries {
-		r.err = fmt.Errorf("section entry limit exceeded")
+		r.err = compileError(CompileLimit, "section entry limit exceeded")
 		return 0
 	}
 	return n

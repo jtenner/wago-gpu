@@ -1,0 +1,30 @@
+$ go run ./examples/buffers -first-cpu -second-cpu
+kernel 1: status 1 (0=GPU, 1=CPU fallback)
+kernel 2: status 1 (0=GPU, 1=CPU fallback)
+verified: [3 5 7 9]
+$ go run ./examples/tinygo -cpu
+TinyGo result verified: [2 4 6 8]; dispatch status 1
+$ go run -tags webgpu ./examples/buffers -require-gpu
+kernel 1: status 0 (0=GPU, 1=CPU fallback)
+kernel 2: status 0 (0=GPU, 1=CPU fallback)
+verified: [3 5 7 9]
+$ go run -tags webgpu ./examples/buffers -first-cpu
+kernel 1: status 1 (0=GPU, 1=CPU fallback)
+kernel 2: status 0 (0=GPU, 1=CPU fallback)
+verified: [3 5 7 9]
+$ go run -tags webgpu ./examples/buffers -second-cpu
+kernel 1: status 0 (0=GPU, 1=CPU fallback)
+kernel 2: status 1 (0=GPU, 1=CPU fallback)
+verified: [3 5 7 9]
+$ go run -tags webgpu ./examples/tinygo -require-gpu
+TinyGo result verified: [2 4 6 8]; dispatch status 0
+$ go run ./examples/storage -kind f16 -cpu
+F16 dispatch status 1 (0=GPU, 1=CPU)
+f16 result verified: 2
+$ go run ./examples/storage -kind memory64 -cpu
+memory64 result verified: 7
+$ go run ./examples/storage -kind gc -cpu
+gc result verified: 7
+$ go run -tags webgpu ./examples/storage -kind f16 -require-gpu
+F16 dispatch status 0 (0=GPU, 1=CPU)
+f16 result verified: 2

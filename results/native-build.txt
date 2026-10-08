@@ -1,0 +1,9 @@
+   Compiling ash v0.38.0+1.3.281
+   Compiling naga v29.0.1
+   Compiling wgpu-naga-bridge v29.0.1
+   Compiling gpu-allocator v0.28.0
+   Compiling wgpu-hal v29.0.1
+   Compiling wgpu-core-deps-windows-linux-android v29.0.0
+   Compiling wgpu-core v29.0.1
+   Compiling wgpu-native v0.0.0 (/home/jtenner/Documents/Codex/2026-10-07-experiment-wago-gpu-compiler-plugin-work/wago-gpu/native/build)
+    Finished `release` profile [optimized] target(s) in 21.11s

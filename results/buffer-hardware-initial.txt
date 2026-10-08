@@ -1,0 +1,16 @@
+=== RUN   TestBufferHardwareStart
+=== RUN   TestBufferHardwareStart/gpu_gpu
+=== RUN   TestBufferHardwareStart/cpu_gpu
+=== RUN   TestBufferHardwareStart/gpu_cpu
+=== RUN   TestBufferHardwareStart/cpu_cpu
+--- PASS: TestBufferHardwareStart (0.42s)
+    --- PASS: TestBufferHardwareStart/gpu_gpu (0.16s)
+    --- PASS: TestBufferHardwareStart/cpu_gpu (0.10s)
+    --- PASS: TestBufferHardwareStart/gpu_cpu (0.09s)
+    --- PASS: TestBufferHardwareStart/cpu_cpu (0.07s)
+=== RUN   TestBindingRejectsInvalidCommand
+--- PASS: TestBindingRejectsInvalidCommand (0.07s)
+=== RUN   TestBindingDelayedCallbacksGC
+--- PASS: TestBindingDelayedCallbacksGC (0.09s)
+PASS
+ok  	wago-gpu	0.592s
