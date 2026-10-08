@@ -5,24 +5,17 @@ import (
 	"errors"
 	"fmt"
 	wago "github.com/wago-org/wago"
-	"sort"
 	"strings"
 )
 
 type loweredKernel struct {
 	shader        string
-	reads, writes map[uint32]bool
+	reads, writes [8]bool
 	// Accepted bodies are straight-line and every access uses the invocation
 	// index. A read before the first store is the only need for old contents
 	// within that invocation. Partial dispatches must still preserve the tail.
 	readBeforeWrite [8]bool
 	float           bool
-}
-type valueRecord struct {
-	text   string
-	typ    byte
-	kind   byte
-	number uint32
 }
 
 const (
@@ -51,16 +44,26 @@ func CompileBufferWGSL(source []byte, kernel KernelConfig) (string, error) {
 	return l.shader, e
 }
 func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKernel, error) {
-	out := loweredKernel{reads: map[uint32]bool{}, writes: map[uint32]bool{}}
+	var scratch lowerScratch
+	return lowerBufferBodyScratch(m, body, k, &scratch)
+}
+func lowerBufferBodyScratch(m *bufferModule, body []byte, k KernelConfig, scratch *lowerScratch) (loweredKernel, error) {
+	scratch.reset()
+	out := loweredKernel{}
 	fail := func(kind CompileErrorKind, msg string) (loweredKernel, error) {
 		return out, compileError(kind, "%s", msg)
 	}
 	if len(body) > maxKernelBytes {
 		return fail(CompileLimit, "kernel byte limit")
 	}
-	bindings := map[uint32]BindingConfig{}
+	var bindings [8]BindingConfig
+	var declared [8]bool
 	for _, b := range k.Bindings {
+		if b.Slot >= 8 {
+			return fail(CompileInvalidContract, "invalid slot")
+		}
 		bindings[b.Slot] = b
+		declared[b.Slot] = true
 		if b.Type == TypeF16 || b.Type == TypeF32 || b.Type == TypeF64 {
 			out.float = true
 		}
@@ -69,11 +72,11 @@ func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKerne
 		}
 	}
 	r := reader{b: body}
-	locals := []valueRecord{{text: "index", typ: 0x7f, kind: valueIndex}}
+	scratch.locals = append(scratch.locals, valueRecord{typ: 0x7f, kind: valueIndex})
 	for n := r.count(); n > 0 && r.err == nil; n-- {
 		count := r.u32()
 		t := r.byte()
-		if count > 4096-uint32(len(locals)) {
+		if count > 4096-uint32(len(scratch.locals)) {
 			return fail(CompileLimit, "expanded local limit")
 		}
 		if t != 0x7f && t != 0x7d {
@@ -83,76 +86,70 @@ func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKerne
 			out.float = true
 		}
 		for j := uint32(0); j < count; j++ {
-			locals = append(locals, valueRecord{text: "0u", typ: t, kind: valueConstant})
+			scratch.locals = append(scratch.locals, valueRecord{typ: t, kind: valueConstant})
 		}
 	}
-	var code strings.Builder
-	stack := make([]valueRecord, 0, 16)
-	values := 0
+
 	var lowerErr error
 	pop := func(t byte) valueRecord {
-		if len(stack) == 0 {
+		if len(scratch.stack) == 0 {
 			lowerErr = compileError(CompileInvalidContract, "operand stack underflow")
 			return valueRecord{}
 		}
-		v := stack[len(stack)-1]
-		stack = stack[:len(stack)-1]
+		v := scratch.stack[len(scratch.stack)-1]
+		scratch.stack = scratch.stack[:len(scratch.stack)-1]
 		if v.typ != t {
 			lowerErr = compileError(CompileInvalidContract, "operand type mismatch")
 		}
 		return v
 	}
-	emit := func(expr string, t byte) valueRecord {
-		v := valueRecord{text: fmt.Sprintf("v%d", values), typ: t}
-		fmt.Fprintf(&code, "  let %s: u32 = %s;\n", v.text, expr)
-		values++
-		return v
-	}
 	done := false
 	for pc := 0; len(r.b) > 0 && r.err == nil && lowerErr == nil; pc++ {
-		if pc >= 4096 || values >= 8192 || len(stack) > 4096 || code.Len() > 1<<20 {
+		if pc >= 4096 || len(scratch.nodes) >= 8192 || len(scratch.stack) > 4096 || len(scratch.code) > 1<<20 {
 			return fail(CompileLimit, "kernel workspace limit")
 		}
 		op := r.byte()
 		switch op {
 		case 0x0b:
-			if len(stack) != 0 || len(r.b) != 0 {
+			if len(scratch.stack) != 0 || len(r.b) != 0 {
 				return fail(CompileInvalidContract, "nonempty final stack or trailing code")
 			}
 			done = true
 		case 0x0f:
-			if len(stack) != 0 || len(r.b) != 1 || r.byte() != 0x0b {
+			if len(scratch.stack) != 0 || len(r.b) != 1 || r.byte() != 0x0b {
 				return fail(CompileUnsupported, "return must directly precede final end")
 			}
 			done = true
 		case 0x20, 0x21, 0x22:
 			idx := r.u32()
-			if idx >= uint32(len(locals)) {
+			if idx >= uint32(len(scratch.locals)) {
 				return fail(CompileInvalidContract, "local index out of range")
 			}
 			if op == 0x20 {
-				stack = append(stack, locals[idx])
+				scratch.stack = append(scratch.stack, scratch.locals[idx])
 			} else {
-				v := pop(locals[idx].typ)
-				locals[idx] = v
+				v := pop(scratch.locals[idx].typ)
+				scratch.locals[idx] = v
 				if op == 0x22 {
-					stack = append(stack, v)
+					scratch.stack = append(scratch.stack, v)
 				}
 			}
 		case 0x41:
 			n := uint32(r.leb(32, true))
-			stack = append(stack, valueRecord{fmt.Sprintf("0x%08xu", n), 0x7f, valueConstant, n})
+			scratch.stack = append(scratch.stack, valueRecord{number: n, typ: 0x7f, kind: valueConstant})
 		case 0x43:
 			b := r.take(4)
 			if r.err != nil {
 				break
 			}
 			out.float = true
-			stack = append(stack, valueRecord{fmt.Sprintf("0x%08xu", binary.LittleEndian.Uint32(b)), 0x7d, valueConstant, 0})
+			scratch.stack = append(scratch.stack, valueRecord{number: binary.LittleEndian.Uint32(b), typ: 0x7d, kind: valueConstant})
 		case 0x92, 0x93, 0x94:
 			right, left := pop(0x7d), pop(0x7d)
 			out.float = true
-			stack = append(stack, emit(fmt.Sprintf("bitcast<u32>(bitcast<f32>(%s) %c bitcast<f32>(%s))", left.text, "+-*"[op-0x92], right.text), 0x7d))
+			if lowerErr == nil {
+				scratch.stack = append(scratch.stack, scratch.arithmetic(op, left, right))
+			}
 		case 0x10:
 			index := r.u32()
 			if index >= uint32(len(m.imports)) {
@@ -163,11 +160,8 @@ func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKerne
 				return fail(CompileUnsupported, "call is not a buffer intrinsic")
 			}
 			var descriptor *bufferImport
-			for i := range bufferImports {
-				if bufferImports[i].name == imp.name {
-					descriptor = &bufferImports[i]
-					break
-				}
+			if imp.intrinsic != 0 {
+				descriptor = &bufferImports[imp.intrinsic-1]
 			}
 			sig, ok := m.signature(index)
 			if !ok || descriptor == nil {
@@ -192,10 +186,10 @@ func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKerne
 				if slot.kind != valueConstant {
 					return fail(CompileUnsupported, "slot must be constant")
 				}
-				if _, ok := bindings[slot.number]; !ok {
+				if slot.number >= 8 || !declared[slot.number] {
 					return fail(CompileInvalidContract, "undeclared slot")
 				}
-				stack = append(stack, valueRecord{typ: 0x7f, kind: valueHandle, number: slot.number})
+				scratch.stack = append(scratch.stack, valueRecord{typ: 0x7f, kind: valueHandle, number: slot.number})
 				break
 			}
 			write := strings.HasPrefix(imp.name, "writeBuffer")
@@ -231,45 +225,25 @@ func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKerne
 			if element.kind != valueIndex {
 				return fail(CompileUnsupported, "element must be the original invocation index")
 			}
-			b, ok := bindings[handle.number]
-			if !ok || b.Type != typ {
+			if lowerErr != nil {
+				break
+			}
+			b := bindings[handle.number]
+			if !declared[handle.number] || b.Type != typ {
 				return fail(CompileInvalidContract, "intrinsic type does not match declared slot")
 			}
 			if write && b.Access == AccessRead || read && b.Access == AccessWrite {
 				return fail(CompileInvalidContract, "intrinsic violates slot access")
 			}
-			access := fmt.Sprintf("slot%d[index]", b.Slot)
 			if write {
 				out.writes[b.Slot] = true
-				expr := data.text
-				switch typ {
-				case TypeI8, TypeU8:
-					expr = "(" + expr + " & 255u)"
-				case TypeI16, TypeU16:
-					expr = "(" + expr + " & 65535u)"
-				case TypeF16:
-					expr = "f32_to_half(" + expr + ")"
-				}
-				fmt.Fprintf(&code, "  %s = %s;\n", access, expr)
+				scratch.store(b.Slot, typ, data)
 			} else {
 				if !out.writes[b.Slot] {
 					out.readBeforeWrite[b.Slot] = true
 				}
 				out.reads[b.Slot] = true
-				expr := access
-				switch typ {
-				case TypeI8:
-					expr = "bitcast<u32>(bitcast<i32>(" + expr + " << 24u) >> 24u)"
-				case TypeU8:
-					expr = "(" + expr + " & 255u)"
-				case TypeI16:
-					expr = "bitcast<u32>(bitcast<i32>(" + expr + " << 16u) >> 16u)"
-				case TypeU16:
-					expr = "(" + expr + " & 65535u)"
-				case TypeF16:
-					expr = "half_to_f32(" + expr + ")"
-				}
-				stack = append(stack, emit(expr, wasmType(typ.spec().scalar)))
+				scratch.stack = append(scratch.stack, scratch.load(b.Slot, typ))
 			}
 		default:
 			return fail(CompileUnsupported, fmt.Sprintf("unsupported opcode 0x%02x", op))
@@ -292,29 +266,36 @@ func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKerne
 		return fail(CompileInvalidContract, "missing function end")
 	}
 	var shader strings.Builder
-	shader.WriteString("struct Params { count: u32, pad0: u32, pad1: u32, pad2: u32 }\n@group(0) @binding(0) var<uniform> params: Params;\n")
-	slots := make([]int, 0, len(bindings))
-	for slot := range bindings {
-		if out.reads[slot] || out.writes[slot] {
-			slots = append(slots, int(slot))
-		}
-	}
-	sort.Ints(slots)
-	for i, slot := range slots {
-		mode := "read"
-		if out.writes[uint32(slot)] {
-			mode = "read_write"
-		}
-		fmt.Fprintf(&shader, "@group(0) @binding(%d) var<storage, %s> slot%d: array<u32>;\n", i+1, mode, slot)
-	}
+	helper := ""
 	for _, b := range bindings {
 		if b.Type == TypeF16 {
-			shader.WriteString(halfWGSL)
+			helper = halfWGSL
 			break
 		}
 	}
+	shader.Grow(len(scratch.code) + len(helper) + 1024)
+	shader.WriteString("struct Params { count: u32, pad0: u32, pad1: u32, pad2: u32 }\n@group(0) @binding(0) var<uniform> params: Params;\n")
+	physical := 1
+	for slot := 0; slot < 8; slot++ {
+		if !out.reads[slot] && !out.writes[slot] {
+			continue
+		}
+		mode := "read"
+		if out.writes[slot] {
+			mode = "read_write"
+		}
+		shader.WriteString("@group(0) @binding(")
+		writeNumber(&shader, uint32(physical))
+		shader.WriteString(") var<storage, ")
+		shader.WriteString(mode)
+		shader.WriteString("> slot")
+		writeNumber(&shader, uint32(slot))
+		shader.WriteString(": array<u32>;\n")
+		physical++
+	}
+	shader.WriteString(helper)
 	shader.WriteString("@compute @workgroup_size(256)\nfn main(@builtin(global_invocation_id) id: vec3<u32>) {\n  let index = id.x;\n  if (index >= params.count) { return; }\n")
-	shader.WriteString(code.String())
+	shader.Write(scratch.code)
 	shader.WriteString("}\n")
 	if shader.Len() > 512<<10 {
 		return fail(CompileLimit, "WGSL byte limit")

@@ -14,6 +14,31 @@ without an intermediate guest transfer. The earlier scalar `wago_gpu.run` and
 
 ## Measured findings
 
+The compiler now uses compact symbolic values and one forward pass, based on
+the Valent-Block design. It emits each arithmetic value at most once and reuses
+private scratch between kernels. Saved loads and exact float copies keep their
+original values. Wago and the public plugin API are unchanged.
+
+Five paired before/after runs measured these compilation costs on the machine
+listed below. Device startup is excluded. Times are medians in microseconds.
+
+| Compilation work | Before µs | After µs | Before → after Go allocations |
+| --- | ---: | ---: | ---: |
+| Translate twice kernel, including module decode | 9.229 | 5.689 | 124 → 40 |
+| Translate 32-step kernel, including module decode | 39.508 | 14.883 | 636 → 46 |
+| Translate Mandelbrot step, including module decode | 17.942 | 6.719 | 210 → 45 |
+| Prepare source and translate four selected kernels | 64.996 | 32.065 | 765 → 79 |
+| Complete Wago compilation with four-kernel plugin | 310.693 | 252.974 | 1,209 → 523 |
+| Complete Wago compilation with 2 MiB custom section | 3,289.544 | 2,363.804 | 1,213 → 527 |
+
+Repeated native GPU pipeline construction also improved: the 32-step shader
+took 387.553 µs, down from 495.640 µs. The Mandelbrot step took 191.635 µs, down
+from 240.378 µs. Driver caches were not cleared. These gains do not remove the
+82–91 ms GPU full-setup cost measured earlier. Native CPU compilation and Wago's
+required source snapshots still cost time. See the
+[compilation report](COMPILE_PERFORMANCE.md) for all cases, controls, raw paired
+data, memory use, safety checks, and remaining work.
+
 Real GPU execution passed the result checks. The new 32-step arithmetic kernel
 is compiled from actual Wasm. It is faster on the GPU at the larger sizes.
 In the buffer API tests, copy, twice, square, and Mandelbrot still favor direct

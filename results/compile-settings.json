@@ -1,0 +1,36 @@
+{
+  "date_utc": "2026-10-08T20:37:23.154877+00:00",
+  "baseline_commit": "a6c242b1ef7f554b2338a4562684b58d6403bfd4",
+  "samples": 5,
+  "cpu_iterations": 500,
+  "gpu_iterations": 100,
+  "gomaxprocs": 1,
+  "cpu_cgo": false,
+  "gpu_tags": "webgpu",
+  "gpu_cgo": true,
+  "order": "alternate before/after then after/before per pair",
+  "device_initialization_timed": false,
+  "clocks_fixed": false,
+  "binaries": {
+    "before-cpu": "0df7384b230dfdc98650b81f284123d324a6c0621ae3bbe9ba2a00c4f057174f",
+    "after-cpu": "94ed35b11b3420b2bbe4900fa2d01ca61ead51b28ffee2a390c93224156bde27",
+    "before-gpu": "2ca4d168332e8a3aaf2a6419aa23b9a7a6f93c0b3aa5e3bed3ffc9a1c28fbf7b",
+    "after-gpu": "ba9367d9e265752bbdf08891ba0ffeaf7574d178453860e75da17fd37b0c3f90"
+  },
+  "go_version": "go version go1.27.1 linux/amd64",
+  "operating_system": "13.7",
+  "kernel": "Linux 6.12.111+deb13-amd64",
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 550.163.01, 8188 MiB",
+  "wago": "v0.1.0-beta.12.0.20261007220511-7aa401f29a33",
+  "prepared_cacheable_with_plugin": false,
+  "prepared_cacheable_without_plugin": true,
+  "driver_cache_cleared": false,
+  "cpu_gc": "default GOGC; fresh process per sample",
+  "source_sizes": {
+    "FourKernels": 2378,
+    "Polynomial": 2378,
+    "Mandelbrot": 11375,
+    "LargeCustom": 2099536,
+    "LegacyHeavy": 862
+  }
+}

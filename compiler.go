@@ -138,6 +138,7 @@ func compileBody(body []byte) (string, error) {
 		return "", fmt.Errorf("kernel locals are unsupported; use only parameter 0")
 	}
 	var out strings.Builder
+	out.Grow(min(len(body)*16+256, 16<<10))
 	out.WriteString("fn kernel(x: f32) -> f32 {\n")
 	stack := make([]int, 0, 16)
 	for pc := 0; len(r.b) > 0 && r.err == nil; pc++ {
@@ -149,7 +150,9 @@ func compileBody(body []byte) (string, error) {
 			if len(stack) != 1 || len(r.b) != 0 {
 				return "", fmt.Errorf("invalid final kernel stack or trailing code")
 			}
-			fmt.Fprintf(&out, "  return t%d;\n}\n", stack[0])
+			out.WriteString("  return t")
+			writeNumber(&out, uint32(stack[0]))
+			out.WriteString(";\n}\n")
 			out.WriteString("@group(0) @binding(0) var<storage, read_write> values: array<f32>;\n@compute @workgroup_size(256)\nfn main(@builtin(global_invocation_id) id: vec3<u32>) {\n  if (id.x < arrayLength(&values)) { values[id.x] = kernel(values[id.x]); }\n}\n")
 			return out.String(), nil
 		}
@@ -158,20 +161,34 @@ func compileBody(body []byte) (string, error) {
 			if r.u32() != 0 {
 				return "", fmt.Errorf("only local.get 0 is supported")
 			}
-			fmt.Fprintf(&out, "  let t%d: f32 = x;\n", pc)
+			out.WriteString("  let t")
+			writeNumber(&out, uint32(pc))
+			out.WriteString(": f32 = x;\n")
 		case 0x43:
 			b := r.take(4)
 			if r.err != nil {
 				return "", r.err
 			}
-			fmt.Fprintf(&out, "  let t%d: f32 = bitcast<f32>(0x%08xu);\n", pc, binary.LittleEndian.Uint32(b))
+			out.WriteString("  let t")
+			writeNumber(&out, uint32(pc))
+			out.WriteString(": f32 = bitcast<f32>(")
+			writeBits(&out, binary.LittleEndian.Uint32(b))
+			out.WriteString(");\n")
 		case 0x92, 0x93, 0x94:
 			if len(stack) < 2 {
 				return "", fmt.Errorf("kernel stack underflow")
 			}
 			l, h := stack[len(stack)-2], stack[len(stack)-1]
 			stack = stack[:len(stack)-2]
-			fmt.Fprintf(&out, "  let t%d: f32 = t%d %c t%d;\n", pc, l, "+-*"[op-0x92], h)
+			out.WriteString("  let t")
+			writeNumber(&out, uint32(pc))
+			out.WriteString(": f32 = t")
+			writeNumber(&out, uint32(l))
+			out.WriteByte(' ')
+			out.WriteByte("+-*"[op-0x92])
+			out.WriteString(" t")
+			writeNumber(&out, uint32(h))
+			out.WriteString(";\n")
 		default:
 			return "", fmt.Errorf("unsupported kernel opcode 0x%02x", op)
 		}
@@ -234,4 +251,13 @@ func (r *reader) count() uint32 {
 	}
 	return n
 }
-func (r *reader) name() string { return string(r.take(r.u32())) }
+func (r *reader) name() string {
+	b := r.take(r.u32())
+	if string(b) == "wago_gpu_v1" {
+		return "wago_gpu_v1"
+	}
+	if id := bufferIntrinsicNames[string(b)]; id != 0 {
+		return bufferImports[id-1].name
+	}
+	return string(b)
+}

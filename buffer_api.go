@@ -123,7 +123,7 @@ func validateKernel(k KernelConfig, max uint32) error {
 	if len(k.Export) > 256 || len(k.CPUExport) > 256 || len(k.Bindings) == 0 || uint32(len(k.Bindings)) > max {
 		return compileError(CompileInvalidContract, "invalid kernel binding or name limit")
 	}
-	seen := map[uint32]bool{}
+	var seen [8]bool
 	for _, b := range k.Bindings {
 		if b.Slot >= 8 || seen[b.Slot] || b.Type.spec().size == 0 || b.Access < AccessRead || b.Access > AccessReadWrite {
 			return compileError(CompileInvalidContract, "invalid slot, type, or access")

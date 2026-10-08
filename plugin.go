@@ -286,12 +286,19 @@ func (p *Plugin) transform(ctx wago.ModuleSourceContext, source []byte) ([]byte,
 	if stopped {
 		return source, nil
 	}
-	p.inspectBuffers(ctx, source)
+	digest := wago.DigestModuleSource(source)
+	p.inspectBuffers(ctx, source, digest)
 	start := time.Now()
-	shader, err := CompileWGSL(source, p.config.KernelExport)
-	b := pendingBuild{shader: shader, digest: wago.DigestModuleSource(source), elapsed: time.Since(start)}
-	if err != nil {
-		b.reason = err.Error()
+	b := pendingBuild{digest: digest}
+	if p.config.KernelExport != "" {
+		var err error
+		b.shader, err = CompileWGSL(source, p.config.KernelExport)
+		b.elapsed = time.Since(start)
+		if err != nil {
+			b.reason = err.Error()
+		}
+	} else {
+		b.reason = "scalar GPU kernel not configured"
 	}
 	p.mu.Lock()
 	if p.stopped {

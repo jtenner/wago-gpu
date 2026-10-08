@@ -1,0 +1,20 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics     
+BenchmarkShaderBuild/FourKernels         	      50	    159931 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/FourKernels         	      50	    130619 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/FourKernels         	      50	    146518 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/FourKernels         	      50	    132113 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/FourKernels         	      50	    131756 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Polynomial          	      50	    480550 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Polynomial          	      50	    482595 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Polynomial          	      50	    461965 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Polynomial          	      50	    487541 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Polynomial          	      50	    510332 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Mandelbrot          	      50	    224897 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Mandelbrot          	      50	    185645 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Mandelbrot          	      50	    231254 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Mandelbrot          	      50	    227362 ns/op	     179 B/op	       6 allocs/op
+BenchmarkShaderBuild/Mandelbrot          	      50	    254555 ns/op	     179 B/op	       6 allocs/op
+PASS

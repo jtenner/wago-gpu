@@ -1,0 +1,8 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics     
+BenchmarkShaderBuild/FourKernels         	     100	    131923 ns/op	     177 B/op	       6 allocs/op
+BenchmarkShaderBuild/Polynomial          	     100	    495640 ns/op	     177 B/op	       6 allocs/op
+BenchmarkShaderBuild/Mandelbrot          	     100	    240378 ns/op	     177 B/op	       6 allocs/op
+PASS

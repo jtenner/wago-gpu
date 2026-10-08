@@ -90,7 +90,7 @@ func (p *Plugin) closeBufferInstance(id wago.InstanceIdentity) {
 		delete(b.instances, id)
 	}
 }
-func (p *Plugin) inspectBuffers(ctx wago.ModuleSourceContext, source []byte) {
+func (p *Plugin) inspectBuffers(ctx wago.ModuleSourceContext, source []byte, digest wago.ModuleSourceDigest) {
 	if len(p.config.Kernels) == 0 {
 		return
 	}
@@ -109,6 +109,7 @@ func (p *Plugin) inspectBuffers(ctx wago.ModuleSourceContext, source []byte) {
 		contract.memories = append([]memoryDeclaration(nil), module.memories...)
 		size += uint64(len(module.memories)) * 8
 		var translationBytes uint64
+		var scratch lowerScratch
 		for _, k := range p.config.Kernels {
 			c := &kernelContract{config: k}
 			contract.kernels[k.ID] = c
@@ -119,7 +120,7 @@ func (p *Plugin) inspectBuffers(ctx wago.ModuleSourceContext, source []byte) {
 				continue
 			}
 			start := time.Now()
-			c.lowered, err = lowerBufferBody(module, body, k)
+			c.lowered, err = lowerBufferBodyScratch(module, body, k, &scratch)
 			c.translateTime = time.Since(start)
 			translationBytes += uint64(len(c.lowered.shader))
 			if translationBytes > 8<<20 {
@@ -151,7 +152,7 @@ func (p *Plugin) inspectBuffers(ctx wago.ModuleSourceContext, source []byte) {
 	if size > 64<<10 {
 		return
 	}
-	b.pending[ctx.Compilation] = pendingContract{wago.DigestModuleSource(source), contract, size}
+	b.pending[ctx.Compilation] = pendingContract{digest, contract, size}
 	// Retain at most 16 translation sets. Contract violations remain durable.
 	translationCount := 0
 	var wgslBytes uint64

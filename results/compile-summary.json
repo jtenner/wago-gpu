@@ -1,0 +1,461 @@
+[
+  {
+    "name": "BenchmarkCompilePath/FourKernels/Decode",
+    "before": {
+      "ns/op": 5543.0,
+      "B/op": 8248.0,
+      "allocs/op": 92.0,
+      "time_min_ns": 5367.0,
+      "time_max_ns": 6701.0
+    },
+    "after": {
+      "ns/op": 3279.0,
+      "B/op": 5624.0,
+      "allocs/op": 38.0,
+      "time_min_ns": 2994.0,
+      "time_max_ns": 5624.0
+    },
+    "time_reduction_percent": 40.84430813638824,
+    "allocation_reduction_percent": 58.69565217391304
+  },
+  {
+    "name": "BenchmarkCompilePath/FourKernels/StandaloneKernel",
+    "before": {
+      "ns/op": 9229.0,
+      "B/op": 11032.0,
+      "allocs/op": 124.0,
+      "time_min_ns": 8784.0,
+      "time_max_ns": 10827.0
+    },
+    "after": {
+      "ns/op": 5689.0,
+      "B/op": 8824.0,
+      "allocs/op": 40.0,
+      "time_min_ns": 5604.0,
+      "time_max_ns": 10048.0
+    },
+    "time_reduction_percent": 38.35735182576661,
+    "allocation_reduction_percent": 67.74193548387098
+  },
+  {
+    "name": "BenchmarkCompilePath/FourKernels/PrepareSource",
+    "before": {
+      "ns/op": 64996.0,
+      "B/op": 60027.0,
+      "allocs/op": 765.0,
+      "time_min_ns": 61397.0,
+      "time_max_ns": 68096.0
+    },
+    "after": {
+      "ns/op": 32065.0,
+      "B/op": 41706.0,
+      "allocs/op": 79.0,
+      "time_min_ns": 30741.0,
+      "time_max_ns": 56766.0
+    },
+    "time_reduction_percent": 50.66619484275956,
+    "allocation_reduction_percent": 89.6732026143791
+  },
+  {
+    "name": "BenchmarkCompilePath/FourKernels/NativeOnly",
+    "before": {
+      "ns/op": 240557.0,
+      "B/op": 229748.0,
+      "allocs/op": 454.0,
+      "time_min_ns": 226786.0,
+      "time_max_ns": 262598.0
+    },
+    "after": {
+      "ns/op": 243197.0,
+      "B/op": 229748.0,
+      "allocs/op": 454.0,
+      "time_min_ns": 231618.0,
+      "time_max_ns": 311659.0
+    },
+    "time_reduction_percent": -1.0974529945085854,
+    "allocation_reduction_percent": 0.0
+  },
+  {
+    "name": "BenchmarkCompilePath/FourKernels/NativeWithPlugin",
+    "before": {
+      "ns/op": 310693.0,
+      "B/op": 285741.0,
+      "allocs/op": 1209.0,
+      "time_min_ns": 295206.0,
+      "time_max_ns": 325228.0
+    },
+    "after": {
+      "ns/op": 252974.0,
+      "B/op": 267418.0,
+      "allocs/op": 523.0,
+      "time_min_ns": 251254.0,
+      "time_max_ns": 264279.0
+    },
+    "time_reduction_percent": 18.577502550749458,
+    "allocation_reduction_percent": 56.74110835401158
+  },
+  {
+    "name": "BenchmarkCompilePath/Polynomial/Decode",
+    "before": {
+      "ns/op": 6458.0,
+      "B/op": 8248.0,
+      "allocs/op": 92.0,
+      "time_min_ns": 6146.0,
+      "time_max_ns": 7947.0
+    },
+    "after": {
+      "ns/op": 4207.0,
+      "B/op": 5624.0,
+      "allocs/op": 38.0,
+      "time_min_ns": 4019.0,
+      "time_max_ns": 5119.0
+    },
+    "time_reduction_percent": 34.85599256735832,
+    "allocation_reduction_percent": 58.69565217391304
+  },
+  {
+    "name": "BenchmarkCompilePath/Polynomial/StandaloneKernel",
+    "before": {
+      "ns/op": 39508.0,
+      "B/op": 42058.0,
+      "allocs/op": 636.0,
+      "time_min_ns": 38862.0,
+      "time_max_ns": 47679.0
+    },
+    "after": {
+      "ns/op": 14883.0,
+      "B/op": 27512.0,
+      "allocs/op": 46.0,
+      "time_min_ns": 14630.0,
+      "time_max_ns": 15364.0
+    },
+    "time_reduction_percent": 62.32914852688063,
+    "allocation_reduction_percent": 92.76729559748428
+  },
+  {
+    "name": "BenchmarkCompilePath/Polynomial/PrepareSource",
+    "before": {
+      "ns/op": 52442.0,
+      "B/op": 51920.0,
+      "allocs/op": 656.0,
+      "time_min_ns": 51588.0,
+      "time_max_ns": 67705.0
+    },
+    "after": {
+      "ns/op": 25748.0,
+      "B/op": 37359.0,
+      "allocs/op": 64.0,
+      "time_min_ns": 25519.0,
+      "time_max_ns": 26529.0
+    },
+    "time_reduction_percent": 50.90194881964838,
+    "allocation_reduction_percent": 90.2439024390244
+  },
+  {
+    "name": "BenchmarkCompilePath/Polynomial/NativeOnly",
+    "before": {
+      "ns/op": 239758.0,
+      "B/op": 229749.0,
+      "allocs/op": 454.0,
+      "time_min_ns": 226063.0,
+      "time_max_ns": 254073.0
+    },
+    "after": {
+      "ns/op": 228017.0,
+      "B/op": 229748.0,
+      "allocs/op": 454.0,
+      "time_min_ns": 223149.0,
+      "time_max_ns": 248272.0
+    },
+    "time_reduction_percent": 4.897021163006032,
+    "allocation_reduction_percent": 0.0
+  },
+  {
+    "name": "BenchmarkCompilePath/Polynomial/NativeWithPlugin",
+    "before": {
+      "ns/op": 294873.0,
+      "B/op": 277796.0,
+      "allocs/op": 1105.0,
+      "time_min_ns": 273178.0,
+      "time_max_ns": 315284.0
+    },
+    "after": {
+      "ns/op": 265494.0,
+      "B/op": 263233.0,
+      "allocs/op": 514.0,
+      "time_min_ns": 259372.0,
+      "time_max_ns": 272099.0
+    },
+    "time_reduction_percent": 9.963272324017458,
+    "allocation_reduction_percent": 53.484162895927604
+  },
+  {
+    "name": "BenchmarkCompilePath/Mandelbrot/Decode",
+    "before": {
+      "ns/op": 8210.0,
+      "B/op": 8816.0,
+      "allocs/op": 117.0,
+      "time_min_ns": 7542.0,
+      "time_max_ns": 8488.0
+    },
+    "after": {
+      "ns/op": 4477.0,
+      "B/op": 4880.0,
+      "allocs/op": 43.0,
+      "time_min_ns": 4244.0,
+      "time_max_ns": 4520.0
+    },
+    "time_reduction_percent": 45.46894031668697,
+    "allocation_reduction_percent": 63.24786324786324
+  },
+  {
+    "name": "BenchmarkCompilePath/Mandelbrot/StandaloneKernel",
+    "before": {
+      "ns/op": 17942.0,
+      "B/op": 14752.0,
+      "allocs/op": 210.0,
+      "time_min_ns": 16343.0,
+      "time_max_ns": 21441.0
+    },
+    "after": {
+      "ns/op": 6719.0,
+      "B/op": 8464.0,
+      "allocs/op": 45.0,
+      "time_min_ns": 6628.0,
+      "time_max_ns": 6948.0
+    },
+    "time_reduction_percent": 62.551555010589674,
+    "allocation_reduction_percent": 78.57142857142857
+  },
+  {
+    "name": "BenchmarkCompilePath/Mandelbrot/PrepareSource",
+    "before": {
+      "ns/op": 41412.0,
+      "B/op": 43816.0,
+      "allocs/op": 229.0,
+      "time_min_ns": 37919.0,
+      "time_max_ns": 44825.0
+    },
+    "after": {
+      "ns/op": 24316.0,
+      "B/op": 37511.0,
+      "allocs/op": 63.0,
+      "time_min_ns": 23631.0,
+      "time_max_ns": 24994.0
+    },
+    "time_reduction_percent": 41.282719984545544,
+    "allocation_reduction_percent": 72.48908296943232
+  },
+  {
+    "name": "BenchmarkCompilePath/Mandelbrot/NativeOnly",
+    "before": {
+      "ns/op": 1114869.0,
+      "B/op": 591255.0,
+      "allocs/op": 707.0,
+      "time_min_ns": 1080408.0,
+      "time_max_ns": 1219848.0
+    },
+    "after": {
+      "ns/op": 1127823.0,
+      "B/op": 591253.0,
+      "allocs/op": 707.0,
+      "time_min_ns": 1099140.0,
+      "time_max_ns": 1162992.0
+    },
+    "time_reduction_percent": -1.1619302357496641,
+    "allocation_reduction_percent": 0.0
+  },
+  {
+    "name": "BenchmarkCompilePath/Mandelbrot/NativeWithPlugin",
+    "before": {
+      "ns/op": 1161483.0,
+      "B/op": 631200.0,
+      "allocs/op": 932.0,
+      "time_min_ns": 1124024.0,
+      "time_max_ns": 1232821.0
+    },
+    "after": {
+      "ns/op": 1127501.0,
+      "B/op": 624880.0,
+      "allocs/op": 766.0,
+      "time_min_ns": 1099590.0,
+      "time_max_ns": 1218052.0
+    },
+    "time_reduction_percent": 2.9257423483598166,
+    "allocation_reduction_percent": 17.811158798283266
+  },
+  {
+    "name": "BenchmarkCompilePath/LargeCustom/Decode",
+    "before": {
+      "ns/op": 6736.0,
+      "B/op": 8248.0,
+      "allocs/op": 92.0,
+      "time_min_ns": 6642.0,
+      "time_max_ns": 7406.0
+    },
+    "after": {
+      "ns/op": 4775.0,
+      "B/op": 5624.0,
+      "allocs/op": 38.0,
+      "time_min_ns": 4665.0,
+      "time_max_ns": 4944.0
+    },
+    "time_reduction_percent": 29.11223277909739,
+    "allocation_reduction_percent": 58.69565217391304
+  },
+  {
+    "name": "BenchmarkCompilePath/LargeCustom/StandaloneKernel",
+    "before": {
+      "ns/op": 10598.0,
+      "B/op": 11032.0,
+      "allocs/op": 124.0,
+      "time_min_ns": 10333.0,
+      "time_max_ns": 11495.0
+    },
+    "after": {
+      "ns/op": 5937.0,
+      "B/op": 8824.0,
+      "allocs/op": 40.0,
+      "time_min_ns": 5826.0,
+      "time_max_ns": 7445.0
+    },
+    "time_reduction_percent": 43.97999622570297,
+    "allocation_reduction_percent": 67.74193548387098
+  },
+  {
+    "name": "BenchmarkCompilePath/LargeCustom/PrepareSource",
+    "before": {
+      "ns/op": 2063977.0,
+      "B/op": 4265429.0,
+      "allocs/op": 767.0,
+      "time_min_ns": 1966805.0,
+      "time_max_ns": 2097725.0
+    },
+    "after": {
+      "ns/op": 1129819.0,
+      "B/op": 4247110.0,
+      "allocs/op": 81.0,
+      "time_min_ns": 1103188.0,
+      "time_max_ns": 1207821.0
+    },
+    "time_reduction_percent": 45.2600973751161,
+    "allocation_reduction_percent": 89.4393741851369
+  },
+  {
+    "name": "BenchmarkCompilePath/LargeCustom/NativeOnly",
+    "before": {
+      "ns/op": 345515.0,
+      "B/op": 2327012.0,
+      "allocs/op": 457.0,
+      "time_min_ns": 332565.0,
+      "time_max_ns": 397639.0
+    },
+    "after": {
+      "ns/op": 347926.0,
+      "B/op": 2327012.0,
+      "allocs/op": 457.0,
+      "time_min_ns": 336646.0,
+      "time_max_ns": 365579.0
+    },
+    "time_reduction_percent": -0.697798937817451,
+    "allocation_reduction_percent": 0.0
+  },
+  {
+    "name": "BenchmarkCompilePath/LargeCustom/NativeWithPlugin",
+    "before": {
+      "ns/op": 3289544.0,
+      "B/op": 6588387.0,
+      "allocs/op": 1213.0,
+      "time_min_ns": 3220687.0,
+      "time_max_ns": 3394088.0
+    },
+    "after": {
+      "ns/op": 2363804.0,
+      "B/op": 6570051.0,
+      "allocs/op": 527.0,
+      "time_min_ns": 2314216.0,
+      "time_max_ns": 2437599.0
+    },
+    "time_reduction_percent": 28.14189443886448,
+    "allocation_reduction_percent": 56.55399835119539
+  },
+  {
+    "name": "BenchmarkCompilePath/LegacyHeavy",
+    "before": {
+      "ns/op": 15870.0,
+      "B/op": 18592.0,
+      "allocs/op": 93.0,
+      "time_min_ns": 15383.0,
+      "time_max_ns": 18740.0
+    },
+    "after": {
+      "ns/op": 4530.0,
+      "B/op": 6944.0,
+      "allocs/op": 18.0,
+      "time_min_ns": 3975.0,
+      "time_max_ns": 8116.0
+    },
+    "time_reduction_percent": 71.4555765595463,
+    "allocation_reduction_percent": 80.64516129032258
+  },
+  {
+    "name": "BenchmarkShaderBuild/FourKernels",
+    "before": {
+      "ns/op": 144496.0,
+      "B/op": 177.0,
+      "allocs/op": 6.0,
+      "time_min_ns": 131923.0,
+      "time_max_ns": 165808.0
+    },
+    "after": {
+      "ns/op": 138470.0,
+      "WGSL-B": 515.0,
+      "B/op": 177.0,
+      "allocs/op": 6.0,
+      "time_min_ns": 128693.0,
+      "time_max_ns": 160608.0
+    },
+    "time_reduction_percent": 4.170357656959367,
+    "allocation_reduction_percent": 0.0
+  },
+  {
+    "name": "BenchmarkShaderBuild/Polynomial",
+    "before": {
+      "ns/op": 495640.0,
+      "B/op": 177.0,
+      "allocs/op": 6.0,
+      "time_min_ns": 462880.0,
+      "time_max_ns": 536119.0
+    },
+    "after": {
+      "ns/op": 387553.0,
+      "WGSL-B": 3649.0,
+      "B/op": 177.0,
+      "allocs/op": 6.0,
+      "time_min_ns": 352302.0,
+      "time_max_ns": 435050.0
+    },
+    "time_reduction_percent": 21.807561940117825,
+    "allocation_reduction_percent": 0.0
+  },
+  {
+    "name": "BenchmarkShaderBuild/Mandelbrot",
+    "before": {
+      "ns/op": 240378.0,
+      "B/op": 177.0,
+      "allocs/op": 6.0,
+      "time_min_ns": 217679.0,
+      "time_max_ns": 274258.0
+    },
+    "after": {
+      "ns/op": 191635.0,
+      "WGSL-B": 1007.0,
+      "B/op": 177.0,
+      "allocs/op": 6.0,
+      "time_min_ns": 177959.0,
+      "time_max_ns": 218413.0
+    },
+    "time_reduction_percent": 20.277646040819043,
+    "allocation_reduction_percent": 0.0
+  }
+]

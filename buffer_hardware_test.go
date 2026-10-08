@@ -301,6 +301,61 @@ func TestBufferHardwareSavedFloatBits(t *testing.T) {
 	}
 }
 
+func TestBufferHardwareDeferredValues(t *testing.T) {
+	requireHardware(t)
+	for _, tc := range []struct {
+		name, body string
+		want       float32
+	}{
+		{"localSnapshot", `(local $x f32)
+ (local.set $x (f32.const 1))
+ (call $write (call $get (i32.const 1)) (local.get $i)
+   (f32.add (local.get $x) (local.tee $x (f32.const 2))))`, 3},
+		{"loadBeforeStore", `(local $saved f32)
+ (local.set $saved (f32.add (call $read (call $get (i32.const 1)) (local.get $i)) (f32.const 1)))
+ (call $write (call $get (i32.const 1)) (local.get $i) (f32.const 3))
+ (call $write (call $get (i32.const 1)) (local.get $i) (local.get $saved))`, 10},
+		{"zeroLocal", `(local $x f32)
+ (call $write (call $get (i32.const 1)) (local.get $i) (f32.sub (local.get $x) (f32.const 1)))`, -1},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			c := bufferConfig()
+			c.Disabled = false
+			c.Kernels = c.Kernels[:1]
+			c.Kernels[0].Bindings[1].Access = AccessReadWrite
+			rt, p := setup(t, c, nil)
+			_, in := instance(t, rt, wat(t, testModule(tc.body)))
+			for slot := uint64(0); slot < 2; slot++ {
+				r, err := in.Invoke("create", uint64(TypeF32), 65)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := invoke(t, in, "bind", slot, uint64(uint32(r[0]))); got != V1OK {
+					t.Fatal(got)
+				}
+			}
+			for j := uint32(0); j < 65; j++ {
+				in.WriteFloat32Le(j*4, 9)
+			}
+			if got := invoke(t, in, "set", 2, 0, 0, 0, 65); got != V1OK {
+				t.Fatal(got)
+			}
+			if got := invoke(t, in, "dispatch", 1, 65); got != V1OK {
+				t.Fatal(got, p.BufferSnapshot())
+			}
+			if got := invoke(t, in, "copy", 2, 0, 0, 0, 65); got != V1OK {
+				t.Fatal(got)
+			}
+			for j := uint32(0); j < 65; j++ {
+				got, ok := in.ReadFloat32Le(j * 4)
+				if !ok || got != tc.want {
+					t.Fatalf("element %d: %v, want %v", j, got, tc.want)
+				}
+			}
+		})
+	}
+}
+
 func TestBufferHardwareIntegerData(t *testing.T) {
 	requireHardware(t)
 	for _, typ := range []ElementType{TypeI8, TypeU8, TypeI16, TypeU16, TypeI32, TypeU32} {

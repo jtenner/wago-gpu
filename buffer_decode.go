@@ -10,6 +10,7 @@ type wasmSignature struct{ params, results []byte }
 type wasmImport struct {
 	module, name string
 	signature    uint32
+	intrinsic    uint8
 }
 type memoryDeclaration struct{ wide, shared bool }
 type bufferModule struct {
@@ -20,6 +21,18 @@ type bufferModule struct {
 	exports   map[string]uint32
 	memories  []memoryDeclaration
 }
+
+// Metadata is indexed once per module. Known ABI names share immutable strings.
+// An intrinsic index fits the existing import record's alignment padding.
+var bufferIntrinsicNames = func() map[string]uint8 {
+	names := make(map[string]uint8, len(bufferImports))
+	for i := range bufferImports {
+		names[bufferImports[i].name] = uint8(i + 1)
+	}
+	return names
+}()
+
+var wasmSectionOrder = [14]byte{1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 13: 6, 6: 7, 7: 8, 8: 9, 9: 10, 12: 11, 10: 12, 11: 13}
 
 func (r *reader) leb(bits int, signed bool) uint64 {
 	var value uint64
@@ -70,9 +83,23 @@ func (r *reader) valueType() byte {
 }
 func (r *reader) valueTypes() []byte {
 	n := r.count()
+	start := r.b
+	wide := false
+	for i := uint32(0); i < n && r.err == nil; i++ {
+		before := len(r.b)
+		r.valueType()
+		wide = wide || before-len(r.b) != 1
+	}
+	if r.err != nil {
+		return nil
+	}
+	if !wide {
+		return start[:n]
+	} // Borrow scalar signature bytes during this compilation.
 	v := make([]byte, n)
+	view := reader{b: start[:len(start)-len(r.b)]}
 	for i := range v {
-		v[i] = r.valueType()
+		v[i] = view.valueType()
 	}
 	return v
 }
@@ -111,7 +138,10 @@ func decodeBufferModule(source []byte) (*bufferModule, error) {
 		}
 
 		// Explicit order avoids treating data-count as a code-section successor.
-		order := map[byte]int{1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 13: 6, 6: 7, 7: 8, 8: 9, 9: 10, 12: 11, 10: 12, 11: 13}[id]
+		order := 0
+		if int(id) < len(wasmSectionOrder) {
+			order = int(wasmSectionOrder[id])
+		}
 		if order == 0 || order <= last || seen&(1<<id) != 0 {
 			return nil, compileError(CompileUnsupported, "unsupported section order")
 		}
@@ -164,7 +194,11 @@ func decodeBufferModule(source []byte) (*bufferModule, error) {
 				kind := s.byte()
 				switch kind {
 				case 0:
-					m.imports = append(m.imports, wasmImport{module, name, s.u32()})
+					imp := wasmImport{module: module, name: name, signature: s.u32()}
+					if module == "wago_gpu_v1" {
+						imp.intrinsic = bufferIntrinsicNames[name]
+					}
+					m.imports = append(m.imports, imp)
 				case 1:
 					s.valueType()
 					readLimits(&s)
