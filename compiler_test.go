@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"wago-gpu/internal/fixtures"
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 )
 
 func TestTranslation(t *testing.T) {

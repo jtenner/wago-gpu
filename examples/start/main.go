@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"os"
 
+	wagogpu "github.com/jtenner/wago-gpu"
 	wago "github.com/wago-org/wago"
-	wagogpu "wago-gpu"
 )
 
 //go:generate wat2wasm module.wat -o module.wasm

@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"wago-gpu/internal/fixtures"
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 )
 
 // BenchmarkCPU always uses Wago's native loop and needs no GPU.

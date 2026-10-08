@@ -8,8 +8,8 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	gpu "github.com/jtenner/wago-gpu"
 	"os"
-	gpu "wago-gpu"
 )
 
 //go:embed guest.wasm

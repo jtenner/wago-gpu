@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
+	gpu "github.com/jtenner/wago-gpu"
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 	wago "github.com/wago-org/wago"
-	gpu "wago-gpu"
-	"wago-gpu/internal/fixtures"
 )
 
 type measurement struct {

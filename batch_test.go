@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"wago-gpu/internal/fixtures"
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 )
 
 func TestBatchAndFallback(t *testing.T) {

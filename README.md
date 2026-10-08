@@ -8,13 +8,34 @@ transfers, typed storage, and explicit dispatch. Kernels can share buffers
 without an intermediate guest transfer. The earlier scalar `wago_gpu.run` and
 `run_batch` imports remain available.
 
-The ABI remains provisional until publication review. See the
+`v0.0.0` is an experimental release. The ABI remains provisional. See the
 [specification](BUFFER_API_PROPOSAL.md), [current results](BUFFER_REPORT.md), and
 [canonical ABI table](spec/abi_v1.json).
 
 ## Build and test
 
 Go 1.25 or later is required. The tested Go version is 1.27.1.
+The module path is `github.com/jtenner/wago-gpu`.
+
+```sh
+git clone https://github.com/jtenner/wago-gpu.git
+cd wago-gpu
+```
+
+Run the commands below from this checkout. GPU builds need the local dependency
+repairs selected by this repository's `go.mod`. Go does not apply a dependency's
+`replace` directives to a consuming module. A GPU host in another module must
+apply both replacements to this checkout as well; the unpatched upstream
+binding is not supported. For a host module beside the checkout, use:
+
+```sh
+go get github.com/jtenner/wago-gpu@v0.0.0
+go mod edit -replace github.com/oliverbestmann/webgpu=../wago-gpu/third_party/webgpu
+go mod edit -replace github.com/oliverbestmann/webgpu/libs-linux=../wago-gpu/third_party/webgpu/libs-linux
+```
+
+Build the native library in the checkout with `./native/build.sh` before building
+that host with `-tags webgpu`. The CPU path needs no native replacement build.
 
 ```sh
 # No GPU, native library, or C compiler is needed.
@@ -194,7 +215,7 @@ python3 spec/check_spec.py --tinygo
 go test -run '^$' -fuzz FuzzBufferCompiler -fuzztime 10s .
 ```
 
-The module path and plugin provenance still use local experiment values. No
-remote, published module version, or release has been created. Historical
+The module path and plugin provenance identify `jtenner/wago-gpu`. The ABI
+remains provisional in `v0.0.0`. Historical
 scalar measurements remain in [REPORT.md](REPORT.md) and
 [IMPROVEMENTS.md](IMPROVEMENTS.md); they are not buffer benchmark results.

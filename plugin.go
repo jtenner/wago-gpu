@@ -145,9 +145,9 @@ func New(config Config) (*Plugin, error) {
 }
 
 func definition() wago.PluginDefinition {
-	d := wago.PluginDefinition{ID: "example.com/wago-gpu", Name: "Wago GPU", Version: "0.1.0", Description: "Explicit f32 array compute experiment", Stability: wago.Experimental}
-	// Reserved example.com values identify this unpublished local experiment.
-	d.Provenance = wago.PluginProvenance{Repository: "https://example.com/wago-gpu", License: "MIT"}
+	d := wago.PluginDefinition{ID: "github.com/jtenner/wago-gpu", Name: "Wago GPU", Version: "0.0.0", Description: "Explicit Wasm GPU kernels and typed buffers", Stability: wago.Experimental}
+	// The repository owns this experimental plugin identity.
+	d.Provenance = wago.PluginProvenance{Repository: "https://github.com/jtenner/wago-gpu", License: "MIT"}
 	for _, a := range []wago.Authority{wago.AuthorityHostImportDefine, wago.AuthorityHostCallerIdentify, wago.AuthorityModuleSourceTransform, wago.AuthorityModuleCompileObserve, wago.AuthorityModuleCloseObserve, wago.AuthorityInstanceInstantiateIntercept, wago.AuthorityInstanceCloseObserve} {
 		r := wago.AuthorityRequest{Name: a, Mode: wago.AuthorityRequired, Reason: "connect the selected kernel to checked guest calls and release its resources"}
 		if a == wago.AuthorityHostImportDefine {

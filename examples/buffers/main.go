@@ -9,8 +9,8 @@ import (
 	"math"
 	"os"
 
+	wagogpu "github.com/jtenner/wago-gpu"
 	wago "github.com/wago-org/wago"
-	wagogpu "wago-gpu"
 )
 
 //go:embed module.wasm

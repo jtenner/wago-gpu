@@ -7,7 +7,7 @@ import (
 	"sync"
 	"testing"
 
-	"wago-gpu/internal/fixtures"
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 )
 
 func requireHardware(t testing.TB) {

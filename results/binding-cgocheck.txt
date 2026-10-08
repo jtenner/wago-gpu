@@ -1,1 +1,1 @@
-ok  	wago-gpu	0.498s
+ok  	github.com/jtenner/wago-gpu	0.440s

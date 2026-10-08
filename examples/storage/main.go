@@ -6,9 +6,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	gpu "github.com/jtenner/wago-gpu"
 	"math"
 	"os"
-	gpu "wago-gpu"
 )
 
 //go:generate wasm-tools parse f16.wat -o f16.wasm

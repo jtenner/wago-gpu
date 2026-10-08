@@ -5,13 +5,13 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 	"math"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
-	"wago-gpu/internal/fixtures"
 )
 
 func bufferConfig() Config {

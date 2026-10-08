@@ -895,7 +895,7 @@ defer inst.Close()
 // A declared Wasm start function has already run at this point.
 ```
 
-The import paths are `wagogpu "wago-gpu"` and `wago "github.com/wago-org/wago"`. `context` is from Go's standard library. This fragment belongs in a function that returns `error`. [examples/start/main.go](examples/start/main.go) is a complete runnable host program.
+The import paths are `wagogpu "github.com/jtenner/wago-gpu"` and `wago "github.com/wago-org/wago"`. `context` is from Go's standard library. This fragment belongs in a function that returns `error`. [examples/start/main.go](examples/start/main.go) is a complete runnable host program.
 
 ## 20. Proposed Go configuration additions
 
@@ -999,7 +999,7 @@ import (
     "os"
 
     wago "github.com/wago-org/wago"
-    wagogpu "wago-gpu"
+    wagogpu "github.com/jtenner/wago-gpu"
 )
 
 func main() {
@@ -1104,7 +1104,7 @@ Standard Go 1.27.1 restricts Wasm import declarations to at most one result; the
 
 ## 21. Plugin registration and authority contract
 
-**Existing and proposed as marked.** The current definition is experimental plugin `example.com/wago-gpu`, version `0.1.0`, name `Wago GPU`, with MIT provenance. The `example.com` identity and repository are unpublished placeholders. Public distribution MUST assign an owned identity and update the provenance. That packaging change does not alter guest import names.
+**Existing and proposed as marked.** The definition is experimental plugin `github.com/jtenner/wago-gpu`, version `0.0.0`, name `Wago GPU`, with MIT provenance at `https://github.com/jtenner/wago-gpu`. The owned repository identity replaces the local placeholder. This packaging change does not alter guest import names.
 
 The plugin requires these Wago authorities:
 

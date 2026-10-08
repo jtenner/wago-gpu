@@ -8,8 +8,8 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 	wago "github.com/wago-org/wago"
-	"wago-gpu/internal/fixtures"
 )
 
 type fakeBackend struct {

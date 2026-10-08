@@ -1,8 +1,7 @@
 # Buffer plugin implementation report
 
-Recorded on 2026-10-07. This is an experimental implementation of the reviewed
-`wago_gpu_v1` specification. The ABI remains provisional. No remote or release
-has been published.
+Measurements recorded on 2026-10-07. Repository checks updated on 2026-10-08. This is an experimental implementation of the reviewed
+`wago_gpu_v1` specification. The ABI remains provisional. The repository is `jtenner/wago-gpu`. `v0.0.0` is the experimental release version.
 
 ## Result
 

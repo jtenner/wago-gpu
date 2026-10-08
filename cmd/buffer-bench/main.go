@@ -8,13 +8,13 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	gpu "github.com/jtenner/wago-gpu"
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 	"os"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
-	gpu "wago-gpu"
-	"wago-gpu/internal/fixtures"
 )
 
 type measurement struct {

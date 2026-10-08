@@ -1,8 +1,8 @@
 package wagogpu
 
 import (
+	"github.com/jtenner/wago-gpu/internal/fixtures"
 	"testing"
-	"wago-gpu/internal/fixtures"
 )
 
 func FuzzBufferCompiler(f *testing.F) {

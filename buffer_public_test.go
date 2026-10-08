@@ -3,9 +3,9 @@ package wagogpu_test
 import (
 	"errors"
 	"fmt"
+	gpu "github.com/jtenner/wago-gpu"
 	"os"
 	"testing"
-	gpu "wago-gpu"
 )
 
 func TestPublicCompileError(t *testing.T) {

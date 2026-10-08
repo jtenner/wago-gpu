@@ -1,4 +1,4 @@
-module wago-gpu
+module github.com/jtenner/wago-gpu
 
 go 1.25
 
