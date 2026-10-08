@@ -1,0 +1,26 @@
+# Local executables and build output. Keep source Wasm fixtures under version control.
+/demo
+/core
+/bin/
+/dist/
+*.test
+*.test.exe
+*.out
+*.prof
+/coverage/
+/coverage.txt
+
+# Local caches, editors, and machine-specific configuration.
+.cache/
+__pycache__/
+*.pyc
+.idea/
+.vscode/
+.DS_Store
+.env
+.env.*
+!.env.example
+*.swp
+*~
+
+# Recorded benchmark results and generated ABI/fixture sources are intentional.

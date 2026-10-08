@@ -1,0 +1,4 @@
+twice n=16384: GPU, verified; CPU 0.027 ms, GPU path 0.103 ms, first GPU path 4.950 ms
+  device: 0x28e0; NVIDIA GeForce RTX 4060 Laptop GPU; discrete-gpu; vulkan
+square n=16384: GPU, verified; CPU 0.032 ms, GPU path 0.109 ms, first GPU path 5.049 ms
+  device: 0x28e0; NVIDIA GeForce RTX 4060 Laptop GPU; discrete-gpu; vulkan

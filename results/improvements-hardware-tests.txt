@@ -1,0 +1,111 @@
+=== RUN   TestBatchAndFallback
+--- PASS: TestBatchAndFallback (0.00s)
+=== RUN   TestBatchInvalidAndAtomicFailure
+--- PASS: TestBatchInvalidAndAtomicFailure (0.00s)
+=== RUN   TestMinimumElements
+--- PASS: TestMinimumElements (0.00s)
+=== RUN   TestRunTimeoutDisablesFurtherGPUCalls
+--- PASS: TestRunTimeoutDisablesFurtherGPUCalls (0.00s)
+=== RUN   TestWaitGPU
+--- PASS: TestWaitGPU (0.00s)
+=== RUN   TestVerificationRejectsWrongOrNonfiniteResults
+--- PASS: TestVerificationRejectsWrongOrNonfiniteResults (0.00s)
+=== RUN   TestTranslation
+=== RUN   TestTranslation/twice
+=== RUN   TestTranslation/square
+--- PASS: TestTranslation (0.00s)
+    --- PASS: TestTranslation/twice (0.00s)
+    --- PASS: TestTranslation/square (0.00s)
+=== RUN   TestUnsupportedAndMalformed
+--- PASS: TestUnsupportedAndMalformed (0.00s)
+=== RUN   TestHeavyTranslation
+--- PASS: TestHeavyTranslation (0.00s)
+=== RUN   TestHardware
+    hardware_test.go:26: 0x28e0; NVIDIA GeForce RTX 4060 Laptop GPU; discrete-gpu; vulkan
+=== RUN   TestHardware/twice
+=== RUN   TestHardware/square
+--- PASS: TestHardware (0.27s)
+    --- PASS: TestHardware/twice (0.04s)
+    --- PASS: TestHardware/square (0.04s)
+=== RUN   TestHardwareConcurrentInstances
+--- PASS: TestHardwareConcurrentInstances (0.14s)
+=== RUN   TestHardwareShaderFailure
+[wgpu] [Error] Device::create_shader_module error: 
+Shader '' parsing error: expected global item ('struct', 'const', 'var', 'alias', ';', 'fn') or the end of the file, found 'this'
+  ┌─ wgsl:1:1
+  │
+1 │ this is not WGSL
+  │ ^^^^ expected global item ('struct', 'const', 'var', 'alias', ';', 'fn') or the end of the file
+
+
+--- PASS: TestHardwareShaderFailure (0.10s)
+=== RUN   TestHardwareBatch
+    hardware_test.go:138: twice 257 8 max absolute error 0
+    hardware_test.go:138: twice 257 8 max absolute error 0
+    hardware_test.go:138: twice 16384 8 max absolute error 0
+    hardware_test.go:138: twice 16384 8 max absolute error 0
+    hardware_test.go:138: twice 1024 8 max absolute error 0
+    hardware_test.go:138: twice 1024 8 max absolute error 0
+    hardware_test.go:138: square 257 3 max absolute error 0
+    hardware_test.go:138: square 257 3 max absolute error 0
+    hardware_test.go:138: square 16384 3 max absolute error 128
+    hardware_test.go:138: square 16384 3 max absolute error 128
+    hardware_test.go:138: square 1024 3 max absolute error 128
+    hardware_test.go:138: square 1024 3 max absolute error 128
+    hardware_test.go:138: heavy 257 8 max absolute error 3.4332275390625e-05
+    hardware_test.go:138: heavy 257 8 max absolute error 3.4332275390625e-05
+    hardware_test.go:138: heavy 16384 8 max absolute error 3.4332275390625e-05
+    hardware_test.go:138: heavy 16384 8 max absolute error 3.4332275390625e-05
+    hardware_test.go:138: heavy 1024 8 max absolute error 3.4332275390625e-05
+    hardware_test.go:138: heavy 1024 8 max absolute error 3.4332275390625e-05
+    hardware_test.go:138: heavy 257 64 max absolute error 2.574920654296875e-05
+    hardware_test.go:138: heavy 257 64 max absolute error 2.574920654296875e-05
+    hardware_test.go:138: heavy 16384 64 max absolute error 2.956390380859375e-05
+    hardware_test.go:138: heavy 16384 64 max absolute error 2.956390380859375e-05
+    hardware_test.go:138: heavy 1024 64 max absolute error 2.574920654296875e-05
+    hardware_test.go:138: heavy 1024 64 max absolute error 2.574920654296875e-05
+--- PASS: TestHardwareBatch (0.23s)
+=== RUN   TestHardwareReadbackFailure
+--- PASS: TestHardwareReadbackFailure (0.12s)
+=== RUN   TestFallback
+=== RUN   TestFallback/device_missing
+=== RUN   TestFallback/shader_failure
+=== RUN   TestFallback/execution_failure
+=== RUN   TestFallback/disabled
+=== RUN   TestFallback/strict_float
+=== RUN   TestFallback/unsupported
+--- PASS: TestFallback (0.00s)
+    --- PASS: TestFallback/device_missing (0.00s)
+    --- PASS: TestFallback/shader_failure (0.00s)
+    --- PASS: TestFallback/execution_failure (0.00s)
+    --- PASS: TestFallback/disabled (0.00s)
+    --- PASS: TestFallback/strict_float (0.00s)
+    --- PASS: TestFallback/unsupported (0.00s)
+=== RUN   TestInvalidRangesAndLimits
+--- PASS: TestInvalidRangesAndLimits (0.00s)
+=== RUN   TestCacheRepeatedExecutionAndCleanup
+--- PASS: TestCacheRepeatedExecutionAndCleanup (0.00s)
+=== RUN   TestCompileFailureCleanup
+--- PASS: TestCompileFailureCleanup (0.00s)
+=== RUN   TestRuntimeCloseWithLiveResources
+--- PASS: TestRuntimeCloseWithLiveResources (0.00s)
+=== RUN   TestAbandonedPreparationsAreBounded
+--- PASS: TestAbandonedPreparationsAreBounded (0.00s)
+=== RUN   TestOverlap
+--- PASS: TestOverlap (0.00s)
+=== RUN   TestConcurrentInstances
+--- PASS: TestConcurrentInstances (0.00s)
+=== RUN   FuzzCompileWGSL
+=== RUN   FuzzCompileWGSL/seed#0
+=== RUN   FuzzCompileWGSL/seed#1
+=== RUN   FuzzCompileWGSL/seed#2
+=== RUN   FuzzCompileWGSL/seed#3
+--- PASS: FuzzCompileWGSL (0.00s)
+    --- PASS: FuzzCompileWGSL/seed#0 (0.00s)
+    --- PASS: FuzzCompileWGSL/seed#1 (0.00s)
+    --- PASS: FuzzCompileWGSL/seed#2 (0.00s)
+    --- PASS: FuzzCompileWGSL/seed#3 (0.00s)
+PASS
+ok  	wago-gpu	0.891s
+?   	wago-gpu/cmd/demo	[no test files]
+?   	wago-gpu/internal/fixtures	[no test files]

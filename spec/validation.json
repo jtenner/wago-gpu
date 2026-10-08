@@ -1,0 +1,34 @@
+{
+  "scope": "Draft specification validation; no proposed plugin runtime or hardware acceptance",
+  "result": "passed",
+  "sha256": {
+    "BUFFER_API_PROPOSAL.md": "f111b7f33712c6d5341397d61aaf12ca4f9769e29eb0c43f3cfdf613bd59f396",
+    "spec/abi_v1.json": "38174bb00c6e782254b1ac145fcba1f9813dbe46cf29b6b3b06f24efb6f70fe4",
+    "spec/guest-tinygo.go.txt": "a21062331b33403037525a3999d0fdd8a671c237c800c69407ac895ab0ab1422",
+    "spec/check_spec.py": "4de61c5ed8665b5a654fa5e64701050f9dc690c4fad9df2f297ef5b53555cdd6"
+  },
+  "tools": {
+    "go": "go version go1.27.1 linux/amd64",
+    "wabt": "1.0.42",
+    "wasm_tools": "wasm-tools 1.251.0 (a1a178a02 2026-05-28)",
+    "tinygo": "tinygo version 0.42.0 linux/amd64 (using go version go1.27.1 and LLVM version 22.1.4)"
+  },
+  "checks": [
+    "All 34 import signatures and the type/status tables agree with the document; Go constant names are unique.",
+    "Local links, heading anchor, code fences, whitespace, and sections 1-31 pass.",
+    "All 34 proposed signatures form a valid import-only Wasm module, including GC reference and multi-result types.",
+    "Complete proposed WAT example passes syntax/type validation; all nine imports match the canonical ABI.",
+    "All Go snippets parse. This does not type-check unimplemented plugin APIs.",
+    "Canonical packed-result Go formula round-trips sign-bit handles and failure statuses.",
+    "Four TinyGo source import declarations match the canonical ABI.",
+    "TinyGo probe rebuilt and validated; inspected selected body has the expected compatible form. No plugin execution ran.",
+    "Eight historical benchmark rows match the saved JSON. No benchmark was rerun."
+  ],
+  "not_run": [
+    "Production v1 host registration and generated guest-binding comparison: not implemented.",
+    "Proposed buffer CPU/fake-backend and real Wago interaction tests.",
+    "Native callback repair/error-protocol tests.",
+    "Full guest management execution.",
+    "Real GPU execution and new benchmarks."
+  ]
+}

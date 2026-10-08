@@ -1,0 +1,28 @@
+package main
+
+//go:wasmimport wago_gpu_v1 createBufferPacked
+func createBufferPacked(kind, count uint32) uint64
+
+//go:wasmimport wago_gpu_v1 getBuffer
+func getBuffer(slot uint32) uint32
+
+//go:wasmimport wago_gpu_v1 readBufferF32
+func readBufferF32(handle, index uint32) float32
+
+//go:wasmimport wago_gpu_v1 writeBufferF32
+func writeBufferF32(handle, index uint32, value float32)
+
+//export wago_gpu.kernel.double
+func double(index uint32) {
+    writeBufferF32(getBuffer(1), index, readBufferF32(getBuffer(0), index)*2)
+}
+
+//export wago_gpu.cpu.double
+func cpuDouble(count uint32) {
+    for i := uint32(0); i < count; i++ { double(i) }
+}
+
+//export allocation_probe
+func allocate(count uint32) uint64 { return createBufferPacked(8, count) }
+
+func main() {}

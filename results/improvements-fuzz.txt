@@ -1,0 +1,7 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/64 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 64/64 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 37894 (12628/sec), new interesting: 1 (total: 65)
+fuzz: elapsed: 6s, execs: 63729 (8612/sec), new interesting: 1 (total: 65)
+fuzz: elapsed: 6s, execs: 63729 (0/sec), new interesting: 1 (total: 65)
+PASS
+ok  	wago-gpu	6.012s

@@ -1,0 +1,3 @@
+ok  	wago-gpu	1.087s
+?   	wago-gpu/cmd/demo	[no test files]
+?   	wago-gpu/internal/fixtures	[no test files]

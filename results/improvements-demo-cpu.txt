@@ -1,0 +1,2 @@
+heavy n=16384 passes=8: CPU fallback, verified; CPU 2.466 ms, GPU path 2.158 ms, first GPU path 2.440 ms
+  fallback: GPU disabled

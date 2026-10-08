@@ -1,0 +1,22 @@
+goos: linux
+goarch: amd64
+pkg: wago-gpu
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics     
+BenchmarkCPU/twice/1024         	      50	      1467 ns/op	2791.41 MB/s	       0 B/op	       0 allocs/op
+BenchmarkCPU/twice/16384        	      50	     20894 ns/op	3136.56 MB/s	       0 B/op	       0 allocs/op
+BenchmarkCPU/twice/1000000      	      50	   1267315 ns/op	3156.28 MB/s	       0 B/op	       0 allocs/op
+BenchmarkCPU/twice/10000000     	      50	  12913913 ns/op	3097.43 MB/s	       0 B/op	       0 allocs/op
+BenchmarkCPU/square/1024        	      50	      1433 ns/op	2857.38 MB/s	       0 B/op	       0 allocs/op
+BenchmarkCPU/square/16384       	      50	     20604 ns/op	3180.73 MB/s	       0 B/op	       0 allocs/op
+BenchmarkCPU/square/1000000     	      50	   1281841 ns/op	3120.51 MB/s	       0 B/op	       0 allocs/op
+BenchmarkCPU/square/10000000    	      50	  14831606 ns/op	2696.94 MB/s	       0 B/op	       0 allocs/op
+BenchmarkGPU/twice/1024         	      50	     91041 ns/op	  44.99 MB/s	     968 B/op	      39 allocs/op
+BenchmarkGPU/twice/16384        	      50	     78436 ns/op	 835.54 MB/s	    1013 B/op	      44 allocs/op
+BenchmarkGPU/twice/1000000      	      50	   1058822 ns/op	3777.78 MB/s	    1003 B/op	      44 allocs/op
+BenchmarkGPU/twice/10000000     	      50	  11266360 ns/op	3550.39 MB/s	    1012 B/op	      44 allocs/op
+BenchmarkGPU/square/1024        	      50	     61487 ns/op	  66.62 MB/s	    1006 B/op	      44 allocs/op
+BenchmarkGPU/square/16384       	      50	     90262 ns/op	 726.06 MB/s	    1019 B/op	      44 allocs/op
+BenchmarkGPU/square/1000000     	      50	   1058721 ns/op	3778.14 MB/s	    1003 B/op	      44 allocs/op
+BenchmarkGPU/square/10000000    	      50	  11071908 ns/op	3612.75 MB/s	    1016 B/op	      44 allocs/op
+PASS
+ok  	wago-gpu	5.676s

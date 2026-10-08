@@ -1,0 +1,629 @@
+{
+  "schema_version": 1,
+  "status": "draft-unfrozen",
+  "module": "wago_gpu_v1",
+  "import_count": 34,
+  "element_types": [
+    {
+      "id": 1,
+      "suffix": "I8",
+      "go_constant": "TypeI8",
+      "stored_bytes": 1,
+      "wasm_scalar": "i32"
+    },
+    {
+      "id": 2,
+      "suffix": "U8",
+      "go_constant": "TypeU8",
+      "stored_bytes": 1,
+      "wasm_scalar": "i32"
+    },
+    {
+      "id": 3,
+      "suffix": "I16",
+      "go_constant": "TypeI16",
+      "stored_bytes": 2,
+      "wasm_scalar": "i32"
+    },
+    {
+      "id": 4,
+      "suffix": "U16",
+      "go_constant": "TypeU16",
+      "stored_bytes": 2,
+      "wasm_scalar": "i32"
+    },
+    {
+      "id": 5,
+      "suffix": "I32",
+      "go_constant": "TypeI32",
+      "stored_bytes": 4,
+      "wasm_scalar": "i32"
+    },
+    {
+      "id": 6,
+      "suffix": "U32",
+      "go_constant": "TypeU32",
+      "stored_bytes": 4,
+      "wasm_scalar": "i32"
+    },
+    {
+      "id": 7,
+      "suffix": "F16",
+      "go_constant": "TypeF16",
+      "stored_bytes": 2,
+      "wasm_scalar": "f32"
+    },
+    {
+      "id": 8,
+      "suffix": "F32",
+      "go_constant": "TypeF32",
+      "stored_bytes": 4,
+      "wasm_scalar": "f32"
+    },
+    {
+      "id": 9,
+      "suffix": "I64",
+      "go_constant": "TypeI64",
+      "stored_bytes": 8,
+      "wasm_scalar": "i64"
+    },
+    {
+      "id": 10,
+      "suffix": "U64",
+      "go_constant": "TypeU64",
+      "stored_bytes": 8,
+      "wasm_scalar": "i64"
+    },
+    {
+      "id": 11,
+      "suffix": "F64",
+      "go_constant": "TypeF64",
+      "stored_bytes": 8,
+      "wasm_scalar": "f64"
+    }
+  ],
+  "statuses": [
+    {
+      "value": 0,
+      "name": "OK",
+      "go_constant": "V1OK",
+      "go_type": "int32"
+    },
+    {
+      "value": 1,
+      "name": "CPU_FALLBACK",
+      "go_constant": "V1CPUFallback",
+      "go_type": "int32"
+    },
+    {
+      "value": 2,
+      "name": "INVALID_HANDLE",
+      "go_constant": "V1InvalidHandle",
+      "go_type": "int32"
+    },
+    {
+      "value": 3,
+      "name": "INVALID_RANGE",
+      "go_constant": "V1InvalidRange",
+      "go_type": "int32"
+    },
+    {
+      "value": 4,
+      "name": "TYPE_MISMATCH",
+      "go_constant": "V1TypeMismatch",
+      "go_type": "int32"
+    },
+    {
+      "value": 5,
+      "name": "INVALID_BINDING",
+      "go_constant": "V1InvalidBinding",
+      "go_type": "int32"
+    },
+    {
+      "value": 6,
+      "name": "LIMIT_EXCEEDED",
+      "go_constant": "V1LimitExceeded",
+      "go_type": "int32"
+    },
+    {
+      "value": 7,
+      "name": "DEVICE_ERROR",
+      "go_constant": "V1DeviceError",
+      "go_type": "int32"
+    },
+    {
+      "value": 8,
+      "name": "CONTENTS_LOST",
+      "go_constant": "V1ContentsLost",
+      "go_type": "int32"
+    },
+    {
+      "value": 9,
+      "name": "CANCELLED",
+      "go_constant": "V1Cancelled",
+      "go_type": "int32"
+    },
+    {
+      "value": 10,
+      "name": "INVALID_KERNEL",
+      "go_constant": "V1InvalidKernel",
+      "go_type": "int32"
+    },
+    {
+      "value": 11,
+      "name": "UNSUPPORTED_STORAGE",
+      "go_constant": "V1UnsupportedStorage",
+      "go_type": "int32"
+    },
+    {
+      "value": 12,
+      "name": "INVALID_STATE",
+      "go_constant": "V1InvalidState",
+      "go_type": "int32"
+    }
+  ],
+  "imports": [
+    {
+      "name": "createBuffer",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32",
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "createBufferPacked",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i64"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "freeBuffer",
+      "params": [
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "bindBuffer",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "getBuffer",
+      "params": [
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "dispatch",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "setBuffer32",
+      "params": [
+        "i32",
+        "i32",
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "setBuffer64",
+      "params": [
+        "i32",
+        "i32",
+        "i32",
+        "i64",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "setBufferGC",
+      "params": [
+        "i32",
+        "i32",
+        "anyref",
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "copyBuffer32",
+      "params": [
+        "i32",
+        "i32",
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "copyBuffer64",
+      "params": [
+        "i32",
+        "i32",
+        "i32",
+        "i64",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "copyBufferGC",
+      "params": [
+        "i32",
+        "i32",
+        "anyref",
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "readBufferI8",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferI8",
+      "params": [
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferU8",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferU8",
+      "params": [
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferI16",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferI16",
+      "params": [
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferU16",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferU16",
+      "params": [
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferI32",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferI32",
+      "params": [
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferU32",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferU32",
+      "params": [
+        "i32",
+        "i32",
+        "i32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferF16",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "f32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferF16",
+      "params": [
+        "i32",
+        "i32",
+        "f32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "narrow_types",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferF32",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "f32"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "writeBufferF32",
+      "params": [
+        "i32",
+        "i32",
+        "f32"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "cpu_f32",
+      "gpu_intrinsic": true
+    },
+    {
+      "name": "readBufferI64",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i64"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "writeBufferI64",
+      "params": [
+        "i32",
+        "i32",
+        "i64"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "readBufferU64",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i64"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "writeBufferU64",
+      "params": [
+        "i32",
+        "i32",
+        "i64"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "readBufferF64",
+      "params": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "f64"
+      ],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    },
+    {
+      "name": "writeBufferF64",
+      "params": [
+        "i32",
+        "i32",
+        "f64"
+      ],
+      "results": [],
+      "cpu_required": true,
+      "introduced_phase": "additional_storage",
+      "gpu_intrinsic": false
+    }
+  ],
+  "packed_result": {
+    "import": "createBufferPacked",
+    "result": "i64",
+    "handle_bits": [
+      0,
+      31
+    ],
+    "status_bits": [
+      32,
+      63
+    ],
+    "go_encoding": "(uint64(uint32(status)) << 32) | uint64(uint32(handle))",
+    "failure_handle": 0
+  }
+}

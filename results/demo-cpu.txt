@@ -1,0 +1,4 @@
+twice n=16384: CPU fallback, verified; CPU 0.032 ms, GPU path 0.037 ms, first GPU path 0.088 ms
+  fallback: WebGPU backend not built; use CGO_ENABLED=1 go run -tags webgpu
+square n=16384: CPU fallback, verified; CPU 0.021 ms, GPU path 0.033 ms, first GPU path 0.039 ms
+  fallback: WebGPU backend not built; use CGO_ENABLED=1 go run -tags webgpu
