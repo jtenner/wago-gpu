@@ -159,7 +159,7 @@ func (b *gpuBackend) ReadBuffer(ctx context.Context, resource, staging deviceBuf
 	commit(data)
 	return nil
 }
-func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline, parameter deviceBuffer, resources []deviceBuffer, seeds []bufferSeed, count uint32, op *BufferOperation) (resultErr error) {
+func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline, parameter deviceBuffer, resources []deviceBuffer, seeds []bufferSeed, count uint32, parameterUpload bool, op *BufferOperation) (resultErr error) {
 	if uint32(len(resources)) > b.limits.MaxStorageBuffersPerShaderStage || uint32(len(resources)+1) > b.limits.MaxBindingsPerBindGroup || b.limits.MaxUniformBuffersPerShaderStage < 1 || b.limits.MaxUniformBufferBindingSize < 16 || b.limits.MaxComputeInvocationsPerWorkgroup < 256 || b.limits.MaxComputeWorkgroupSizeX < 256 || (count+255)/256 > b.limits.MaxComputeWorkgroupsPerDimension {
 		return fmt.Errorf("dispatch device limit")
 	}
@@ -171,12 +171,14 @@ func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline
 			b.retainedBytes += 16
 		}
 	}()
-	var params [16]byte
-	binary.LittleEndian.PutUint32(params[:], count)
-	if e := b.queue.TryWriteBuffer(uniform, 0, params[:]); e != nil {
-		return e
+	if parameterUpload {
+		var params [16]byte
+		binary.LittleEndian.PutUint32(params[:], count)
+		if e := b.queue.TryWriteBuffer(uniform, 0, params[:]); e != nil {
+			return e
+		}
+		parameterQueued = true
 	}
-	parameterQueued = true
 	var entries [9]wgpu.BindGroupEntry
 	entries[0] = wgpu.BindGroupEntry{Binding: 0, Buffer: uniform, Size: 16}
 	for i, r := range resources {
@@ -197,7 +199,7 @@ func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline
 		return nil
 	}
 	// Submitted is a conservative fact, never a claim of completed execution.
-	if op.ProfileValid {
+	if op.ProfileValid && len(seeds) != 0 {
 		start := time.Now()
 		if e = b.submitBuffers(ctx, copySeeds, op); e != nil {
 			return e

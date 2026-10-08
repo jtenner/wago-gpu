@@ -17,7 +17,7 @@ type bufferDevice interface {
 	AllocateUniform(uint64) (deviceBuffer, error)
 	UploadBuffer(context.Context, deviceBuffer, []byte) error
 	ReadBuffer(context.Context, deviceBuffer, deviceBuffer, uint64, func([]byte)) error
-	ExecuteBuffers(context.Context, bufferPipeline, deviceBuffer, []deviceBuffer, []bufferSeed, uint32, *BufferOperation) error
+	ExecuteBuffers(context.Context, bufferPipeline, deviceBuffer, []deviceBuffer, []bufferSeed, uint32, bool, *BufferOperation) error
 	Lost() bool
 	RetainedBytes() uint64
 }
@@ -291,8 +291,17 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 	}()
 	for idx, slot := range slots[:used] {
 		b := i.buffers[i.bindings[slot]]
-		if status := p.ensureGPU(ctx, i, b, op); status != V1OK {
-			return status
+		// A full covering store can start with dirty scratch only when no read
+		// needs pre-dispatch data. This also avoids allocating/uploading the old
+		// output. A prefix or a read-before-write always keeps the old contents.
+		replace := k.lowered.writes[slot] && !k.lowered.readBeforeWrite[slot] && count == b.count
+		if b.lost {
+			return V1ContentsLost
+		}
+		if !replace {
+			if status := p.ensureGPU(ctx, i, b, op); status != V1OK {
+				return status
+			}
 		}
 		resources[idx] = b.gpu
 		if k.lowered.writes[slot] {
@@ -303,10 +312,14 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			}
 			outputs[slot] = r
 			resources[idx] = r
-			seeds[seedCount] = bufferSeed{b.gpu, r, size}
-			seedCount++
+			if !replace {
+				seeds[seedCount] = bufferSeed{b.gpu, r, size}
+				seedCount++
+			}
 		}
 	}
+	parameterUpload := i.uniform.resource == nil || i.uniformCount != count
+	parametersValid := !parameterUpload
 	uniform, status := p.takeTransferScratch(i, &i.uniform, 16, d.AllocateUniform)
 	if status != V1OK {
 		return status
@@ -316,27 +329,36 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			p.closeBufferResource(i, uniform, 16)
 		} else {
 			i.uniform = retiredBuffer{uniform, 16}
+			i.uniformCount = 0
+			if parametersValid {
+				i.uniformCount = count
+			}
 		}
 	}()
 	// The persistent parameter buffer has its own charge. Each pending queue
-	// write additionally holds a 16-byte payload until completion.
-	if !p.reserveBuffer(i, 16) {
+	// write additionally holds a 16-byte payload until completion. Repeated
+	// counts reuse completed parameter contents; eviction requires a new write.
+	var payload uint64
+	if parameterUpload {
+		payload = 16
+	}
+	if !p.reserveBuffer(i, payload) {
 		return V1LimitExceeded
 	}
 	before := d.RetainedBytes()
 	defer func() {
 		if d.RetainedBytes() > before {
 			retained := d.RetainedBytes() - before
-			if retained > 16 {
+			if retained > payload {
 				panic("backend exceeded uniform reservation")
 			}
 			i.retiredBytes += retained
-			p.releaseBufferBytes(i, 16-retained)
+			p.releaseBufferBytes(i, payload-retained)
 		} else {
-			p.releaseBufferBytes(i, 16)
+			p.releaseBufferBytes(i, payload)
 		}
 	}()
-	err := d.ExecuteBuffers(ctx, k.pipeline.pipeline, uniform, resources[:used], seeds[:seedCount], count, op)
+	err := d.ExecuteBuffers(ctx, k.pipeline.pipeline, uniform, resources[:used], seeds[:seedCount], count, parameterUpload, op)
 	if err != nil {
 		op.TransferCountsComplete = false
 		p.buffers.stats.TotalsComplete = false
@@ -348,7 +370,12 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 		}
 		return V1DeviceError
 	}
-	delta := TransferCounters{ParameterUploadBytes: 16, ParameterUploadCount: 1}
+	parametersValid = true
+	delta := TransferCounters{}
+	if parameterUpload {
+		delta.ParameterUploadBytes = 16
+		delta.ParameterUploadCount = 1
+	}
 	for _, seed := range seeds[:seedCount] {
 		delta.DeviceCopyBytes += seed.size
 		delta.DeviceCopyCount++
@@ -369,7 +396,9 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			continue
 		}
 		b := i.buffers[i.bindings[slot]]
-		p.keepBufferScratch(i, b.gpu, physicalBytes(b))
+		if b.gpu != nil {
+			p.keepBufferScratch(i, b.gpu, physicalBytes(b))
+		}
 		b.gpu = r
 		b.gpuCurrent = true
 		b.cpuCurrent = false

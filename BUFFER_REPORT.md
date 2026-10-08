@@ -18,7 +18,7 @@ project and its local native dependency patch.
 
 The shorter example hosts now share one setup and cleanup helper. Two new WASI
 Mandelbrot guests provide direct CPU rendering and buffer rendering with explicit
-GPU passes and CPU fallback. At the default 96×64 pixels and 32 iterations, the
+GPU passes and CPU fallback. At the earlier 96×64 pixels and 32 iterations, the
 direct Wago CPU, buffer CPU, real GPU, and Wasmtime CPU programs produced identical
 PGM files. The GPU run completed all 32 passes with no fallback on the same
 NVIDIA RTX 4060 Laptop/Vulkan device listed below. This is a correctness check,
@@ -30,8 +30,10 @@ The [Mandelbrot benchmark report](examples/mandelbrot/BENCHMARKS.md) records
 separate setup and repeated-command measurements. These results do not change
 the earlier array-kernel benchmark tables below.
 
-The [current large-image performance report](examples/mandelbrot/PERFORMANCE.md)
-records the full-HD/1440p runs and scratch reuse changes. The array benchmark
+The [earlier large-image performance report](examples/mandelbrot/PERFORMANCE.md)
+records the full-HD/1440p runs and scratch reuse changes. The
+[current performance report](examples/mandelbrot/PERFORMANCE_FOLLOWUP.md) records
+CPU input reuse, proven GPU copy omission, and unchanged-parameter reuse. The array benchmark
 numbers below remain the earlier recorded measurements.
 
 ## Implemented behavior

@@ -61,12 +61,20 @@ func cpuStep(count uint32) {
 	check(copyBuffer(handles[1], 0, 0, address(ci), count))
 	check(copyBuffer(handles[2], 0, 0, address(x), count))
 	check(copyBuffer(handles[3], 0, 0, address(y), count))
+	cpuStepCurrent(count)
+}
+
+// The render loop already has current inputs: c never changes, and each GPU
+// success copies both outputs into x/y before the next pass. CPU success also
+// updates x/y. No other guest operation changes these input buffers.
+// The public CPU runner above still refreshes inputs for independent calls.
+func cpuStepCurrent(count uint32) {
 	for i := uint32(0); i < count; i++ {
 		nextX, nextY := x[i]*x[i]-y[i]*y[i]+cr[i], 2*x[i]*y[i]+ci[i]
 		x[i], y[i] = nextX, nextY
 	}
-	check(setBuffer(handles[2], 0, 0, address(x), count))
-	check(setBuffer(handles[3], 0, 0, address(y), count))
+	check(setBuffer(getBuffer(2), 0, 0, address(x), count))
+	check(setBuffer(getBuffer(3), 0, 0, address(y), count))
 }
 
 var gpuPasses, cpuPasses uint32
@@ -114,7 +122,7 @@ func render(width, height, iterations uint32) []byte {
 			check(copyBuffer(buffers[2], 0, 0, address(x), count))
 			check(copyBuffer(buffers[3], 0, 0, address(y), count))
 		case 1:
-			cpuStep(count)
+			cpuStepCurrent(count)
 			cpuPasses++
 		default:
 			panic("dispatch failed")

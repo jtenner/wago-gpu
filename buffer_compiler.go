@@ -12,7 +12,11 @@ import (
 type loweredKernel struct {
 	shader        string
 	reads, writes map[uint32]bool
-	float         bool
+	// Accepted bodies are straight-line and every access uses the invocation
+	// index. A read before the first store is the only need for old contents
+	// within that invocation. Partial dispatches must still preserve the tail.
+	readBeforeWrite [8]bool
+	float           bool
 }
 type valueRecord struct {
 	text   string
@@ -248,6 +252,9 @@ func lowerBufferBody(m *bufferModule, body []byte, k KernelConfig) (loweredKerne
 				}
 				fmt.Fprintf(&code, "  %s = %s;\n", access, expr)
 			} else {
+				if !out.writes[b.Slot] {
+					out.readBeforeWrite[b.Slot] = true
+				}
 				out.reads[b.Slot] = true
 				expr := access
 				switch typ {

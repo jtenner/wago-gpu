@@ -1,0 +1,26 @@
+=== RUN   TestBufferHardwareSeedRules
+=== RUN   TestBufferHardwareSeedRules/full
+=== RUN   TestBufferHardwareSeedRules/prefix
+=== RUN   TestBufferHardwareSeedRules/read-before-write
+=== RUN   TestBufferHardwareSeedRules/store-first
+=== RUN   TestBufferHardwareSeedRules/saved-old-value
+--- PASS: TestBufferHardwareSeedRules (0.61s)
+    --- PASS: TestBufferHardwareSeedRules/full (0.15s)
+    --- PASS: TestBufferHardwareSeedRules/prefix (0.13s)
+    --- PASS: TestBufferHardwareSeedRules/read-before-write (0.11s)
+    --- PASS: TestBufferHardwareSeedRules/store-first (0.10s)
+    --- PASS: TestBufferHardwareSeedRules/saved-old-value (0.11s)
+=== RUN   TestBufferHardwareParameterReuse
+=== RUN   TestBufferHardwareParameterReuse/plain
+=== RUN   TestBufferHardwareParameterReuse/profile
+--- PASS: TestBufferHardwareParameterReuse (0.19s)
+    --- PASS: TestBufferHardwareParameterReuse/plain (0.10s)
+    --- PASS: TestBufferHardwareParameterReuse/profile (0.09s)
+=== RUN   TestMandelbrotBulkFallbackAfterGPU
+--- PASS: TestMandelbrotBulkFallbackAfterGPU (0.00s)
+PASS
+ok  	github.com/jtenner/wago-gpu	0.814s
+=== RUN   TestHardwareMandelbrot
+--- PASS: TestHardwareMandelbrot (0.61s)
+PASS
+ok  	github.com/jtenner/wago-gpu/examples/mandelbrot	0.618s

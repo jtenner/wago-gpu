@@ -1,0 +1,144 @@
+[
+  {
+    "width": 1920,
+    "height": 1080,
+    "iterations": 64,
+    "mode": "cpu",
+    "sha256": "54850e18c629a1632c92b6b85a8840076816ef8ab05d7efa0415da05cc09c6b4",
+    "stderr": "Mandelbrot: direct Wago CPU\n",
+    "command": [
+      "/home/jtenner/Documents/Codex/2026-10-07-experiment-wago-gpu-compiler-plugin-work/wago-gpu/.cache/mandelbrot-followup",
+      "-width",
+      "1920",
+      "-height",
+      "1080",
+      "-iterations",
+      "64"
+    ]
+  },
+  {
+    "width": 1920,
+    "height": 1080,
+    "iterations": 64,
+    "mode": "fallback",
+    "sha256": "54850e18c629a1632c92b6b85a8840076816ef8ab05d7efa0415da05cc09c6b4",
+    "stderr": "Mandelbrot buffers: GPU passes=0, CPU passes=64\n",
+    "command": [
+      "/home/jtenner/Documents/Codex/2026-10-07-experiment-wago-gpu-compiler-plugin-work/wago-gpu/.cache/mandelbrot-followup",
+      "-program",
+      "buffers",
+      "-cpu",
+      "-width",
+      "1920",
+      "-height",
+      "1080",
+      "-iterations",
+      "64"
+    ]
+  },
+  {
+    "width": 1920,
+    "height": 1080,
+    "iterations": 64,
+    "mode": "gpu",
+    "sha256": "fefcee6e1a941baf45cd0a1228bdbcfea0ac0612a6eae33aa4675ed198dece8b",
+    "stderr": "Mandelbrot buffers: GPU passes=64, CPU passes=0\n",
+    "command": [
+      "/home/jtenner/Documents/Codex/2026-10-07-experiment-wago-gpu-compiler-plugin-work/wago-gpu/.cache/mandelbrot-followup",
+      "-program",
+      "buffers",
+      "-require-gpu",
+      "-width",
+      "1920",
+      "-height",
+      "1080",
+      "-iterations",
+      "64"
+    ]
+  },
+  {
+    "width": 1920,
+    "height": 1080,
+    "iterations": 64,
+    "comparison": "fallback",
+    "different_pixels": 0
+  },
+  {
+    "width": 1920,
+    "height": 1080,
+    "iterations": 64,
+    "comparison": "gpu",
+    "different_pixels": 198
+  },
+  {
+    "width": 2560,
+    "height": 1440,
+    "iterations": 64,
+    "mode": "cpu",
+    "sha256": "0b110714e04d40b069cab2e8ee4fc3f044b594deefb8333014c5944dd29c8df3",
+    "stderr": "Mandelbrot: direct Wago CPU\n",
+    "command": [
+      "/home/jtenner/Documents/Codex/2026-10-07-experiment-wago-gpu-compiler-plugin-work/wago-gpu/.cache/mandelbrot-followup",
+      "-width",
+      "2560",
+      "-height",
+      "1440",
+      "-iterations",
+      "64"
+    ]
+  },
+  {
+    "width": 2560,
+    "height": 1440,
+    "iterations": 64,
+    "mode": "fallback",
+    "sha256": "0b110714e04d40b069cab2e8ee4fc3f044b594deefb8333014c5944dd29c8df3",
+    "stderr": "Mandelbrot buffers: GPU passes=0, CPU passes=64\n",
+    "command": [
+      "/home/jtenner/Documents/Codex/2026-10-07-experiment-wago-gpu-compiler-plugin-work/wago-gpu/.cache/mandelbrot-followup",
+      "-program",
+      "buffers",
+      "-cpu",
+      "-width",
+      "2560",
+      "-height",
+      "1440",
+      "-iterations",
+      "64"
+    ]
+  },
+  {
+    "width": 2560,
+    "height": 1440,
+    "iterations": 64,
+    "mode": "gpu",
+    "sha256": "c2e7e58d779d6611b5ece2dbf102ec8fc744c3bd4928fe35891d2ee75745e631",
+    "stderr": "Mandelbrot buffers: GPU passes=64, CPU passes=0\n",
+    "command": [
+      "/home/jtenner/Documents/Codex/2026-10-07-experiment-wago-gpu-compiler-plugin-work/wago-gpu/.cache/mandelbrot-followup",
+      "-program",
+      "buffers",
+      "-require-gpu",
+      "-width",
+      "2560",
+      "-height",
+      "1440",
+      "-iterations",
+      "64"
+    ]
+  },
+  {
+    "width": 2560,
+    "height": 1440,
+    "iterations": 64,
+    "comparison": "fallback",
+    "different_pixels": 0
+  },
+  {
+    "width": 2560,
+    "height": 1440,
+    "iterations": 64,
+    "comparison": "gpu",
+    "different_pixels": 366
+  }
+]

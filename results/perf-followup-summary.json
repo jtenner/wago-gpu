@@ -1,0 +1,215 @@
+{
+  "perf-followup-before.txt": {
+    "512x512/cpu": {
+      "ms": 5.817054,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "512x512/fallback": {
+      "ms": 27.444315,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 4.0,
+      "allocs/op": 1923.0
+    },
+    "512x512/gpu": {
+      "ms": 36.283064,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 64.0,
+      "seed-copy-MiB/op": 64.0,
+      "tracked-peak-MiB": 11.0,
+      "allocs/op": 2480.0
+    },
+    "1920x1080/cpu": {
+      "ms": 44.267461,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "1920x1080/fallback": {
+      "ms": 236.855906,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 31.64,
+      "allocs/op": 1923.0
+    },
+    "1920x1080/gpu": {
+      "ms": 224.741754,
+      "different-pixels": 5.0,
+      "readback-MiB/op": 506.2,
+      "seed-copy-MiB/op": 506.2,
+      "tracked-peak-MiB": 87.01,
+      "allocs/op": 2480.0
+    },
+    "2560x1440/cpu": {
+      "ms": 77.673424,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "2560x1440/fallback": {
+      "ms": 489.652473,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 56.25,
+      "allocs/op": 1923.0
+    },
+    "2560x1440/gpu": {
+      "ms": 405.065084,
+      "different-pixels": 13.0,
+      "readback-MiB/op": 900.0,
+      "seed-copy-MiB/op": 900.0,
+      "tracked-peak-MiB": 154.7,
+      "allocs/op": 2480.0
+    }
+  },
+  "perf-followup-after.txt": {
+    "512x512/cpu": {
+      "ms": 5.671473,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "512x512/fallback": {
+      "ms": 22.917049,
+      "different-pixels": 0.0,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 66.0,
+      "parameter-writes/op": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 4.0,
+      "allocs/op": 1155.0
+    },
+    "512x512/gpu": {
+      "ms": 30.279184,
+      "different-pixels": 0.0,
+      "guest-copy-MiB/op": 64.0,
+      "guest-set-MiB/op": 2.0,
+      "parameter-writes/op": 1.0,
+      "readback-MiB/op": 64.0,
+      "seed-copy-MiB/op": 64.0,
+      "tracked-peak-MiB": 11.0,
+      "allocs/op": 2449.0
+    },
+    "1920x1080/cpu": {
+      "ms": 43.504684,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "1920x1080/fallback": {
+      "ms": 188.217411,
+      "different-pixels": 0.0,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 522.1,
+      "parameter-writes/op": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 31.64,
+      "allocs/op": 1155.0
+    },
+    "1920x1080/gpu": {
+      "ms": 203.487719,
+      "different-pixels": 5.0,
+      "guest-copy-MiB/op": 506.2,
+      "guest-set-MiB/op": 15.82,
+      "parameter-writes/op": 1.0,
+      "readback-MiB/op": 506.2,
+      "seed-copy-MiB/op": 506.2,
+      "tracked-peak-MiB": 87.01,
+      "allocs/op": 2449.0
+    },
+    "2560x1440/cpu": {
+      "ms": 77.535154,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "2560x1440/fallback": {
+      "ms": 402.078767,
+      "different-pixels": 0.0,
+      "guest-copy-MiB/op": 0.0,
+      "guest-set-MiB/op": 928.1,
+      "parameter-writes/op": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 56.25,
+      "allocs/op": 1155.0
+    },
+    "2560x1440/gpu": {
+      "ms": 377.683263,
+      "different-pixels": 13.0,
+      "guest-copy-MiB/op": 900.0,
+      "guest-set-MiB/op": 28.12,
+      "parameter-writes/op": 1.0,
+      "readback-MiB/op": 900.0,
+      "seed-copy-MiB/op": 900.0,
+      "tracked-peak-MiB": 154.7,
+      "allocs/op": 2449.0
+    }
+  },
+  "perf-followup-pingpong.txt": {
+    "512x512/cpu": {
+      "ms": 6.20082,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "512x512/fallback": {
+      "ms": 23.829609,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 6.0,
+      "allocs/op": 1293.0
+    },
+    "512x512/gpu": {
+      "ms": 32.876709,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 64.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 15.0,
+      "allocs/op": 2628.0
+    },
+    "1920x1080/cpu": {
+      "ms": 44.256207,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "1920x1080/fallback": {
+      "ms": 189.337469,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 47.46,
+      "allocs/op": 1293.0
+    },
+    "1920x1080/gpu": {
+      "ms": 222.459638,
+      "different-pixels": 5.0,
+      "readback-MiB/op": 506.2,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 118.7,
+      "allocs/op": 2624.0
+    },
+    "2560x1440/cpu": {
+      "ms": 77.790505,
+      "different-pixels": 0.0,
+      "allocs/op": 429.0
+    },
+    "2560x1440/fallback": {
+      "ms": 406.781413,
+      "different-pixels": 0.0,
+      "readback-MiB/op": 0.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 84.38,
+      "allocs/op": 1293.0
+    },
+    "2560x1440/gpu": {
+      "ms": 401.894291,
+      "different-pixels": 13.0,
+      "readback-MiB/op": 900.0,
+      "seed-copy-MiB/op": 0.0,
+      "tracked-peak-MiB": 210.9,
+      "allocs/op": 2630.0
+    }
+  }
+}

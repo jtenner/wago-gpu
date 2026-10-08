@@ -42,6 +42,7 @@ type bufferInstance struct {
 	poolCount    int
 	readback     retiredBuffer
 	uniform      retiredBuffer
+	uniformCount uint32
 	conversion   []byte
 	poolBytes    uint64
 	retiredBytes uint64

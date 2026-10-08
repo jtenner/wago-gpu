@@ -53,8 +53,10 @@ go run -tags webgpu ./examples/mandelbrot -program buffers -require-gpu \
 The current shader subset supports arithmetic, buffer access, and local values.
 The guest handles iteration, comparisons, first-escape counts, and pixel shades.
 After each pass it copies both orbit buffers back for the escape check. Status 1
-runs the same formulas on the CPU using bulk transfers and the existing guest
-scratch arrays. It does not make a host call for each pixel. Other statuses stop the program.
+runs the same formulas on the CPU using current guest arrays and bulk output
+sets. The render loop keeps these inputs current after each successful pass.
+The exported CPU runner refreshes all inputs for an independent call. Neither
+path makes a host call for each pixel. Other statuses stop the program.
 
 This example shows the contract and produces a real Mandelbrot image. Repeated
 readbacks and full-output seed copies can make it slower than the direct CPU
@@ -125,7 +127,11 @@ buffers for each image. Both run in one Go process and send output to
 any pass uses fallback.
 
 See [the measurements and limits](BENCHMARKS.md) for the earlier results.
-The [large-image and scratch-buffer report](PERFORMANCE.md) contains the current results and the changes made after those measurements.
+The [large-image and scratch-buffer report](PERFORMANCE.md) contains the earlier
+full-HD and 1440p storage measurements.
+The [latest performance report](PERFORMANCE_FOLLOWUP.md) records CPU input reuse,
+GPU copy checks, unchanged-parameter reuse, and a separate-output layout that
+was tested and removed because of its memory cost.
 
 To measure fresh-process time and maximum RSS on Linux, build the host first.
 The Python helper runs the historical 96×64, 32-iteration image three times

@@ -67,6 +67,12 @@ func TestMandelbrotBulkFallbackAfterGPU(t *testing.T) {
 	if e != nil || len(values) != 1 || values[0] != 11 {
 		t.Fatal(values, e)
 	}
+	// Only the successful GPU pass needs guest input copies. The private render
+	// loop keeps current arrays through the failed dispatch and CPU fallback.
+	transfers := plugin.BufferSnapshot().Totals
+	if transfers.GuestCopyCount != 2 || transfers.GuestSetCount != 2+2*11 {
+		t.Fatal("fallback copied cached inputs or omitted outputs", transfers)
+	}
 	if e := rt.CloseContext(context.Background()); e != nil {
 		t.Fatal(e)
 	}

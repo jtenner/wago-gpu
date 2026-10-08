@@ -11,6 +11,16 @@ import (
 	"testing"
 )
 
+func TestBufferHardwareSeedRules(t *testing.T) {
+	requireHardware(t)
+	testBufferSeedRules(t, true)
+}
+
+func TestBufferHardwareParameterReuse(t *testing.T) {
+	requireHardware(t)
+	testBufferParameterReuse(t, true)
+}
+
 func TestBufferHardwareStart(t *testing.T) {
 	requireHardware(t)
 	for _, paths := range [][2]bool{{false, false}, {true, false}, {false, true}, {true, true}} {

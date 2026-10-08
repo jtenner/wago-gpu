@@ -1,5 +1,8 @@
 # Larger images and scratch-buffer performance
 
+These are the earlier scratch-buffer measurements. The
+[follow-up report](PERFORMANCE_FOLLOWUP.md) contains the latest changes and results.
+
 The example now defaults to **1920×1080 pixels and 64 iterations**. It accepts
 up to 4096 pixels on each axis, 4,194,304 total pixels, and 128 iterations.
 This includes 2560×1440. Host and guest share the limits. The plugin's existing

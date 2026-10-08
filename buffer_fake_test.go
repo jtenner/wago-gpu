@@ -22,6 +22,7 @@ type fakeBufferDevice struct {
 	lose                                                             bool
 	beforeReturn                                                     func()
 	mode                                                             string
+	parameterUploads                                                 int
 }
 type fakeDeviceBuffer struct {
 	owner  *fakeBufferDevice
@@ -76,8 +77,15 @@ func (d *fakeBufferDevice) ReadBuffer(ctx context.Context, b, staging deviceBuff
 	return nil
 }
 func (d *fakeBufferDevice) Lost() bool { return d.lose }
-func (d *fakeBufferDevice) ExecuteBuffers(ctx context.Context, _ bufferPipeline, parameter deviceBuffer, buffers []deviceBuffer, seeds []bufferSeed, count uint32, op *BufferOperation) error {
+func (d *fakeBufferDevice) ExecuteBuffers(ctx context.Context, _ bufferPipeline, parameter deviceBuffer, buffers []deviceBuffer, seeds []bufferSeed, count uint32, parameterUpload bool, op *BufferOperation) error {
 	d.executions++
+	if parameterUpload {
+		binary.LittleEndian.PutUint32(parameter.(*fakeDeviceBuffer).bytes, count)
+		d.parameterUploads++
+	}
+	if binary.LittleEndian.Uint32(parameter.(*fakeDeviceBuffer).bytes) != count {
+		return errors.New("stale dispatch parameters")
+	}
 	for _, s := range seeds {
 		copy(s.destination.(*fakeDeviceBuffer).bytes, s.source.(*fakeDeviceBuffer).bytes)
 	}
@@ -92,6 +100,15 @@ func (d *fakeBufferDevice) ExecuteBuffers(ctx context.Context, _ bufferPipeline,
 		}
 		if d.executions == 2 {
 			return errors.New("injected failure on second GPU pass")
+		}
+	} else if d.mode == "increment" || d.mode == "store-first" {
+		dst := buffers[0].(*fakeDeviceBuffer).bytes
+		for j := uint32(0); j < count; j++ {
+			v := math.Float32frombits(binary.LittleEndian.Uint32(dst[j*4:]))
+			if d.mode == "store-first" {
+				v = 3
+			}
+			binary.LittleEndian.PutUint32(dst[j*4:], math.Float32bits(v+1))
 		}
 	} else if len(buffers) >= 2 {
 		src, dst := buffers[0].(*fakeDeviceBuffer).bytes, buffers[1].(*fakeDeviceBuffer).bytes

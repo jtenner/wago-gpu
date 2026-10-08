@@ -26,10 +26,12 @@ func TestScratchReusesAllOutputsAndTransfers(t *testing.T) {
 				t.Fatal(got)
 			}
 		}
-		if pass == 0 {
+		// Full covering outputs do not allocate their old GPU contents. The
+		// second pass establishes the second side of the output scratch pair.
+		if pass == 1 {
 			allocations = d.allocations
 		}
-		if d.allocations != allocations {
+		if pass > 1 && d.allocations != allocations {
 			t.Fatal("repeated pass allocated device storage", pass, d.allocations, allocations)
 		}
 	}

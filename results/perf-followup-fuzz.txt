@@ -1,0 +1,7 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/2 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 2/2 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 48582 (16193/sec), new interesting: 10 (total: 12)
+fuzz: elapsed: 6s, execs: 50782 (733/sec), new interesting: 11 (total: 13)
+fuzz: elapsed: 6s, execs: 50782 (0/sec), new interesting: 11 (total: 13)
+PASS
+ok  	github.com/jtenner/wago-gpu	6.009s

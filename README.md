@@ -16,8 +16,8 @@ without an intermediate guest transfer. The earlier scalar `wago_gpu.run` and
 
 Real GPU execution passed the result checks. **Direct Wago CPU execution is
 still faster for all fresh-input array and Mandelbrot cases in this update.**
-The storage changes reduced allocations and removed the high cost of scalar
-host calls from the Mandelbrot CPU fallback.
+The latest changes reuse current CPU inputs, omit GPU output copies when the
+compiler proves they are unnecessary, and reuse unchanged dispatch parameters.
 
 Measured on 2026-10-08 with an NVIDIA RTX 4060 Laptop GPU, Vulkan driver
 550.163.01, AMD Ryzen 7 8845HS, Debian 13/Linux 6.12, and Go 1.27.1.
@@ -28,9 +28,9 @@ instance and includes setup, output to `io.Discard`, and cleanup.
 
 | Image | Direct CPU ms | Buffer CPU fallback ms | GPU ms |
 | --- | ---: | ---: | ---: |
-| 512×512 | 5.483 | 27.060 | 31.437 |
-| 1920×1080 | 43.623 | 235.632 | 215.152 |
-| 2560×1440 | 73.169 | 466.488 | 367.325 |
+| 512×512 | 5.671 | 22.917 | 30.279 |
+| 1920×1080 | 43.505 | 188.217 | 203.488 |
+| 2560×1440 | 77.535 | 402.079 | 377.683 |
 
 The direct CPU program stops updating pixels after they escape. The buffer
 paths update every pixel on each pass. The GPU path also copies two orbit
@@ -38,26 +38,34 @@ buffers back to the CPU and seeds two output buffers on each pass.
 
 | Measure | Before | After |
 | --- | ---: | ---: |
-| 512×512 CPU fallback, ms | 38,139.107 | 27.060 |
-| 1920×1080 GPU render, ms | 228.052 | 215.152 |
-| 2560×1440 GPU render, ms | 401.087 | 367.325 |
-| Go allocations per large GPU render | 2,887 | 2,480 |
+| 1920×1080 CPU fallback, ms | 236.856 | 188.217 |
+| 2560×1440 CPU fallback, ms | 489.652 | 402.079 |
+| 1920×1080 GPU render, ms | 224.742 | 203.488 |
+| 2560×1440 GPU render, ms | 405.065 | 377.683 |
+| Go allocations per CPU fallback render | 1,923 | 1,155 |
+| Go allocations per GPU render | 2,480 | 2,449 |
+| GPU count-parameter writes per 32-pass render | 32 | 1 |
 
-The old CPU fallback value is one sample from a CPU-only build. The new value
-uses the repeated-run method above with GPU execution disabled. GPU clocks were
-not fixed, and temperature was not controlled. Small timing changes can include
-measurement noise. GPU device timestamps are unavailable.
+The baseline and updated runs use the same settings. GPU clocks were not fixed,
+and temperature was not controlled. Timing changes can include measurement
+noise. GPU device timestamps are unavailable.
 
 The changes reuse output scratch buffers, a readback buffer, a uniform buffer,
 and a bounded Go conversion slice. Dispatch uses fixed-size arrays. The guest
-allocates its arrays once and uses bulk transfers for CPU fallback. Pixel and
-transfer loops remain linear; no quadratic loop was found. Wago and the public
-plugin ABI were not changed.
+allocates its arrays once. Its private render loop uses current guest inputs for
+CPU fallback; the exported CPU runner still refreshes inputs for independent
+calls. Pixel and transfer loops remain linear; no quadratic loop was found.
+Wago and the public plugin ABI were not changed.
 
-Retained scratch uses more memory: the tracked 2560×1440 peak increased from
-140.60 to 154.70 MiB. This remains below the unchanged 256 MiB instance limit.
-Idle storage remains charged and can be released under budget pressure. Go
-allocation counts exclude native driver allocations.
+The latest changes leave the tracked 2560×1440 GPU peak at 154.70 MiB, below the
+unchanged 256 MiB instance limit. Idle storage remains charged and can be
+released under budget pressure. Go allocation counts exclude native driver
+allocations. A separate-output Mandelbrot layout was tested and removed: it
+raised the peak to 210.90 MiB with little change in large-image GPU time.
+
+Full-range math outputs can skip their old-data upload and seed copy. Prefixes
+and read-before-write kernels retain those copies. Mandelbrot still needs its
+orbit seeds and readbacks: each transfers 900 MiB per 1440p, 32-pass image.
 
 CPU and bulk-fallback images match exactly. GPU float arithmetic is relaxed.
 At 32 iterations, GPU images differ from CPU images at 5 full-HD pixels and
@@ -69,11 +77,12 @@ original array kernels also passed all four sizes, including 10 million
 elements. Their repeated fresh-input GPU runs remained slower than direct CPU
 execution; the largest tracked peak was 228.88 MiB.
 
-See the [full performance report](examples/mandelbrot/PERFORMANCE.md) for raw
+See the [latest performance report](examples/mandelbrot/PERFORMANCE_FOLLOWUP.md) for raw
 samples, test logs, array timings, and rerun commands. The next useful work is
 to reduce per-pass transfers and move the escape check and loop to the GPU.
-Skipping output seed copies requires a proof that old values are not needed.
-These changes are not implemented.
+That compiler extension is not implemented. The
+[earlier scratch report](examples/mandelbrot/PERFORMANCE.md) records the first
+storage changes and their memory cost.
 
 ## Build and test
 

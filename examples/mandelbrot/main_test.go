@@ -53,6 +53,26 @@ func TestBufferCPUImage(t *testing.T) {
 		})
 	}
 }
+
+func TestBufferCPUUsesCurrentGuestInputs(t *testing.T) {
+	source, e := programs.ReadFile("gpu.wasm")
+	if e != nil {
+		t.Fatal(e)
+	}
+	c := bufferConfig(true)
+	e = runwasm.Run(source, runwasm.Options{GPU: &c, WASI: &p1.Config{
+		Args: []string{"mandelbrot", "19", "17", "12"}, Stdout: io.Discard, Stderr: io.Discard,
+	}, Calls: []string{"_start"}}, func(result runwasm.Result) error {
+		transfers := result.GPU.BufferSnapshot().Totals
+		if transfers.GuestCopyCount != 0 || transfers.GuestSetCount != 2+2*12 {
+			return fmt.Errorf("CPU render copied cached inputs or omitted outputs: %+v", transfers)
+		}
+		return nil
+	})
+	if e != nil {
+		t.Fatal(e)
+	}
+}
 func TestMandelbrotKernel(t *testing.T) {
 	source, e := programs.ReadFile("gpu.wasm")
 	if e != nil {

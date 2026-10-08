@@ -88,6 +88,9 @@ func benchmarkMandelbrot(b *testing.B, reuse bool) {
 					b.ReportMetric(float64(s.Totals.GPUUploadBytes)/commands/(1<<20), "upload-MiB/op")
 					b.ReportMetric(float64(s.Totals.GPUDownloadBytes)/commands/(1<<20), "readback-MiB/op")
 					b.ReportMetric(float64(s.Totals.DeviceCopyBytes)/commands/(1<<20), "seed-copy-MiB/op")
+					b.ReportMetric(float64(s.Totals.GuestCopyBytes)/commands/(1<<20), "guest-copy-MiB/op")
+					b.ReportMetric(float64(s.Totals.GuestSetBytes)/commands/(1<<20), "guest-set-MiB/op")
+					b.ReportMetric(float64(s.Totals.ParameterUploadCount)/commands, "parameter-writes/op")
 					b.ReportMetric(float64(plugin.Snapshot().DeviceInit)/1e6, "device-init-ms")
 					for _, k := range s.Kernels {
 						b.ReportMetric(float64(k.Translate)/1e6, "translate-ms")
