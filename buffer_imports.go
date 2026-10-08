@@ -62,13 +62,40 @@ func (p *Plugin) bufferCall(caller wago.Caller, call wago.HostCall, name string)
 		b := instance.buffers[uint32(call.I32(0))]
 		needsDeadline = b != nil && !b.cpuCurrent
 	}
+	var deadline time.Time
 	if needsDeadline {
 		if started.IsZero() {
 			started = time.Now()
 		}
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithDeadline(ctx, started.Add(p.config.RunTimeout))
-		defer cancel()
+		deadline = started.Add(p.config.RunTimeout)
+		needsTimer := true
+		if instance != nil && (strings.HasPrefix(name, "setBuffer") || strings.HasPrefix(name, "copyBuffer")) {
+			b := instance.buffers[uint32(call.I32(0))]
+			fullSet := b != nil && strings.HasPrefix(name, "setBuffer") && call.I32(1) == 0 && uint32(call.I32(4)) == b.count
+			// These transfers do no asynchronous work. Check the same entry
+			// deadline during preparation and before commit without a timer.
+			needsTimer = b == nil || (!b.cpuCurrent && !fullSet)
+		}
+		if name == "dispatch" && instance != nil && instance.module != nil && instance.module.verified {
+			k := instance.module.kernels[uint32(call.I32(0))]
+			if k != nil && !p.canRunBufferKernel(k, uint32(call.I32(1))) {
+				// A fallback with current CPU data has no GPU wait. Do not
+				// skip the timer if any declared buffer needs readback.
+				needsTimer = false
+				for _, slot := range k.config.Bindings {
+					b := instance.buffers[instance.bindings[slot.Slot]]
+					if b == nil || !b.cpuCurrent {
+						needsTimer = true
+						break
+					}
+				}
+			}
+		}
+		if needsTimer {
+			var cancel context.CancelFunc
+			ctx, cancel = context.WithDeadline(ctx, deadline)
+			defer cancel()
+		}
 	}
 	if scalar {
 		if p.stopped || instance == nil {
@@ -197,10 +224,10 @@ func (p *Plugin) bufferCall(caller wago.Caller, call wago.HostCall, name string)
 		kernel, count := uint32(call.I32(0)), uint32(call.I32(1))
 		op.KernelID = kernel
 		op.Count = count
-		status = p.dispatchBuffers(ctx, instance, kernel, count, &op)
+		status = p.dispatchBuffers(ctx, deadline, instance, kernel, count, &op)
 		call.SetI32(0, status)
 	default:
-		status = p.transferBuffer(ctx, caller, instance, call, name, &op)
+		status = p.transferBuffer(ctx, deadline, caller, instance, call, name, &op)
 		call.SetI32(0, status)
 	}
 }
@@ -274,7 +301,10 @@ func (p *Plugin) scalarBuffer(ctx context.Context, i *bufferInstance, call wago.
 		call.SetF64(0, math.Float64frombits(binary.LittleEndian.Uint64(data)))
 	}
 }
-func (p *Plugin) dispatchBuffers(ctx context.Context, i *bufferInstance, id, count uint32, op *BufferOperation) int32 {
+func (p *Plugin) canRunBufferKernel(k *kernelContract, count uint32) bool {
+	return !p.config.Disabled && k.rejection == nil && (!k.lowered.float || k.config.RelaxedFloat) && count >= k.config.MinElements && k.pipeline != nil && !p.stats.GPUFailed
+}
+func (p *Plugin) dispatchBuffers(ctx context.Context, deadline time.Time, i *bufferInstance, id, count uint32, op *BufferOperation) int32 {
 	if i.module == nil || !i.module.verified {
 		op.ReasonCode = "CONTRACT_UNVERIFIED"
 		return V1InvalidKernel
@@ -313,7 +343,7 @@ func (p *Plugin) dispatchBuffers(ctx context.Context, i *bufferInstance, id, cou
 		op.Outcome = "NOOP"
 		return V1OK
 	}
-	if ctx.Err() != nil {
+	if importCancelled(ctx, deadline) {
 		op.ReasonCode = "CANCELLED"
 		return V1Cancelled
 	}
@@ -329,7 +359,7 @@ func (p *Plugin) dispatchBuffers(ctx context.Context, i *bufferInstance, id, cou
 	} else if count < k.config.MinElements {
 		op.ReasonCode = "BELOW_THRESHOLD"
 	}
-	if !p.config.Disabled && k.rejection == nil && (!k.lowered.float || k.config.RelaxedFloat) && count >= k.config.MinElements && k.pipeline != nil && !p.stats.GPUFailed {
+	if p.canRunBufferKernel(k, count) {
 		status := p.executeBufferKernel(ctx, i, k, count, op)
 		if status != V1DeviceError && status != V1ContentsLost {
 			return status
@@ -339,7 +369,7 @@ func (p *Plugin) dispatchBuffers(ctx context.Context, i *bufferInstance, id, cou
 				return ready
 			}
 		}
-		if ctx.Err() != nil {
+		if importCancelled(ctx, deadline) {
 			return V1Cancelled
 		}
 		op.Outcome = "CPU_FALLBACK_READY"
@@ -354,7 +384,7 @@ func (p *Plugin) dispatchBuffers(ctx context.Context, i *bufferInstance, id, cou
 			return status
 		}
 	}
-	if ctx.Err() != nil {
+	if importCancelled(ctx, deadline) {
 		return V1Cancelled
 	}
 	return V1CPUFallback

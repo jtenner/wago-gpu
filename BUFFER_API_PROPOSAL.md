@@ -1234,6 +1234,11 @@ Buffer stride is four bytes for all GPU-supported element types in version 1. Th
 
 Different dispatches use ordered submissions and valid storage dependencies. Intra-kernel barriers, workgroup shared storage, atomics, subgroup operations, and cross-index communication are outside the supported subset.
 
+A covering prefix with no read that needs old prefix contents MAY seed only
+the unchanged tail. The temporary output must still preserve every element
+outside the dispatch range. Transfer counters report the actual physical copy
+bytes. This optimization does not relax the commit or error protocol.
+
 ### 23.4 Completion and commit
 
 **Proposed.** A GPU buffer dispatch can finish without copying all outputs to the CPU. Commit requires four completed checks: successful resource creation; valid command encoding and submission; successful work completion; and completed relevant validation/allocation/internal-error reporting with no invalidating error. Unknown status fails. Queue completion alone proves none of the earlier validation decisions.

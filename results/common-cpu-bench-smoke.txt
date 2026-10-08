@@ -1,0 +1,26 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkCommon/matmul/64/cpu-naive         	       1	    284184 ns/op	         1.845 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-transposed    	       1	    257404 ns/op	         2.037 GFLOP/s	      16 B/op	       1 allocs/op
+BenchmarkCommon/matmul/64/cpu-transpose-and-matmul         	       1	    267633 ns/op	         1.959 GFLOP/s	    5336 B/op	       7 allocs/op
+BenchmarkCommon/matmul/128/cpu-naive                       	       1	   2269196 ns/op	         1.848 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-transposed                  	       1	   2061475 ns/op	         2.035 GFLOP/s	      16 B/op	       1 allocs/op
+BenchmarkCommon/matmul/128/cpu-transpose-and-matmul        	       1	   2572304 ns/op	         1.631 GFLOP/s	      16 B/op	       1 allocs/op
+BenchmarkCommon/matmul/256/cpu-naive                       	       1	  20140649 ns/op	         1.666 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-transposed                  	       1	  17121642 ns/op	         1.960 GFLOP/s	      16 B/op	       1 allocs/op
+BenchmarkCommon/matmul/256/cpu-transpose-and-matmul        	       1	  18004632 ns/op	         1.864 GFLOP/s	      16 B/op	       1 allocs/op
+BenchmarkCommon/matmul/512/cpu-naive                       	       1	 166836204 ns/op	         1.609 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-transposed                  	       1	 136205120 ns/op	         1.971 GFLOP/s	      16 B/op	       1 allocs/op
+BenchmarkCommon/matmul/512/cpu-transpose-and-matmul        	       1	 136941124 ns/op	         1.960 GFLOP/s	      16 B/op	       1 allocs/op
+BenchmarkCommon/dot/1024/cpu                               	       1	      1172 ns/op	         1.747 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/16384/cpu                              	       1	     11091 ns/op	         2.954 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/1000000/cpu                            	       1	    666552 ns/op	         3.001 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/10000000/cpu                           	       1	   6591849 ns/op	         3.034 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1024/cpu                             	       1	      1703 ns/op	         1.203 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/16384/cpu                            	       1	     14788 ns/op	         2.216 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1000000/cpu                          	       1	    797339 ns/op	         2.508 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/10000000/cpu                         	       1	   8068338 ns/op	         2.479 GFLOP/s	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/jtenner/wago-gpu	1.335s

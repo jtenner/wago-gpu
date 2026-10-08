@@ -87,7 +87,7 @@ func (d *fakeBufferDevice) ExecuteBuffers(ctx context.Context, _ bufferPipeline,
 		return errors.New("stale dispatch parameters")
 	}
 	for _, s := range seeds {
-		copy(s.destination.(*fakeDeviceBuffer).bytes, s.source.(*fakeDeviceBuffer).bytes)
+		copy(s.destination.(*fakeDeviceBuffer).bytes[s.offset:s.offset+s.size], s.source.(*fakeDeviceBuffer).bytes[s.offset:s.offset+s.size])
 	}
 	if d.mode == "mandelbrot" {
 		cr, ci := buffers[0].(*fakeDeviceBuffer).bytes, buffers[1].(*fakeDeviceBuffer).bytes
@@ -316,7 +316,7 @@ func TestBufferCancelledBeforeCommit(t *testing.T) {
 	p.mu.Lock()
 	for _, i := range p.buffers.instances {
 		op := BufferOperation{}
-		status := p.dispatchBuffers(ctx, i, 1, 4, &op)
+		status := p.dispatchBuffers(ctx, time.Time{}, i, 1, 4, &op)
 		if status != V1Cancelled {
 			t.Fatal(status)
 		}

@@ -1,0 +1,90 @@
+=== RUN   TestBufferHardwareBindingCacheLifetime
+--- PASS: TestBufferHardwareBindingCacheLifetime (0.13s)
+=== RUN   TestBufferHardwareTailBoundaries
+--- PASS: TestBufferHardwareTailBoundaries (0.09s)
+=== RUN   TestBulkCPURunners
+=== RUN   TestBulkCPURunners/twice
+=== RUN   TestBulkCPURunners/square
+=== RUN   TestBulkCPURunners/copy
+=== RUN   TestBulkCPURunners/polynomial
+--- PASS: TestBulkCPURunners (0.00s)
+    --- PASS: TestBulkCPURunners/twice (0.00s)
+    --- PASS: TestBulkCPURunners/square (0.00s)
+    --- PASS: TestBulkCPURunners/copy (0.00s)
+    --- PASS: TestBulkCPURunners/polynomial (0.00s)
+=== RUN   TestCPUBulkDeadlineIncludesLockWait
+=== RUN   TestCPUBulkDeadlineIncludesLockWait/expired-set
+=== RUN   TestCPUBulkDeadlineIncludesLockWait/invalid-set
+=== RUN   TestCPUBulkDeadlineIncludesLockWait/zero-set
+=== RUN   TestCPUBulkDeadlineIncludesLockWait/expired-copy
+=== RUN   TestCPUBulkDeadlineIncludesLockWait/invalid-copy
+=== RUN   TestCPUBulkDeadlineIncludesLockWait/zero-copy
+--- PASS: TestCPUBulkDeadlineIncludesLockWait (0.63s)
+    --- PASS: TestCPUBulkDeadlineIncludesLockWait/expired-set (0.10s)
+    --- PASS: TestCPUBulkDeadlineIncludesLockWait/invalid-set (0.10s)
+    --- PASS: TestCPUBulkDeadlineIncludesLockWait/zero-set (0.11s)
+    --- PASS: TestCPUBulkDeadlineIncludesLockWait/expired-copy (0.11s)
+    --- PASS: TestCPUBulkDeadlineIncludesLockWait/invalid-copy (0.11s)
+    --- PASS: TestCPUBulkDeadlineIncludesLockWait/zero-copy (0.10s)
+=== RUN   TestCPUFallbackDeadlineIncludesLockWait
+=== RUN   TestCPUFallbackDeadlineIncludesLockWait/4
+=== RUN   TestCPUFallbackDeadlineIncludesLockWait/5
+=== RUN   TestCPUFallbackDeadlineIncludesLockWait/0
+--- PASS: TestCPUFallbackDeadlineIncludesLockWait (0.32s)
+    --- PASS: TestCPUFallbackDeadlineIncludesLockWait/4 (0.10s)
+    --- PASS: TestCPUFallbackDeadlineIncludesLockWait/5 (0.11s)
+    --- PASS: TestCPUFallbackDeadlineIncludesLockWait/0 (0.11s)
+=== RUN   TestCPUFallbackReadbackKeepsTimer
+--- PASS: TestCPUFallbackReadbackKeepsTimer (0.02s)
+=== RUN   TestCommonReferenceHardware
+=== RUN   TestCommonReferenceHardware/matmul/1/tiled=false
+    common_benchmark_test.go:295: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/matmul/17/tiled=false
+    common_benchmark_test.go:295: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/matmul/32/tiled=false
+    common_benchmark_test.go:295: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/matmul/32/tiled=true
+    common_benchmark_test.go:295: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/matmul/64/tiled=false
+    common_benchmark_test.go:295: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/matmul/64/tiled=true
+    common_benchmark_test.go:295: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/saxpy/1
+    common_benchmark_test.go:324: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/saxpy/255
+    common_benchmark_test.go:324: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/saxpy/256
+    common_benchmark_test.go:324: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/saxpy/257
+    common_benchmark_test.go:324: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/saxpy/16384
+    common_benchmark_test.go:324: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/dot/1
+    common_benchmark_test.go:340: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/dot/255
+    common_benchmark_test.go:340: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/dot/256
+    common_benchmark_test.go:340: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/dot/257
+    common_benchmark_test.go:340: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+=== RUN   TestCommonReferenceHardware/dot/16384
+    common_benchmark_test.go:340: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+--- PASS: TestCommonReferenceHardware (1.37s)
+    --- PASS: TestCommonReferenceHardware/matmul/1/tiled=false (0.11s)
+    --- PASS: TestCommonReferenceHardware/matmul/17/tiled=false (0.09s)
+    --- PASS: TestCommonReferenceHardware/matmul/32/tiled=false (0.08s)
+    --- PASS: TestCommonReferenceHardware/matmul/32/tiled=true (0.09s)
+    --- PASS: TestCommonReferenceHardware/matmul/64/tiled=false (0.09s)
+    --- PASS: TestCommonReferenceHardware/matmul/64/tiled=true (0.09s)
+    --- PASS: TestCommonReferenceHardware/saxpy/1 (0.08s)
+    --- PASS: TestCommonReferenceHardware/saxpy/255 (0.09s)
+    --- PASS: TestCommonReferenceHardware/saxpy/256 (0.08s)
+    --- PASS: TestCommonReferenceHardware/saxpy/257 (0.08s)
+    --- PASS: TestCommonReferenceHardware/saxpy/16384 (0.08s)
+    --- PASS: TestCommonReferenceHardware/dot/1 (0.08s)
+    --- PASS: TestCommonReferenceHardware/dot/255 (0.09s)
+    --- PASS: TestCommonReferenceHardware/dot/256 (0.08s)
+    --- PASS: TestCommonReferenceHardware/dot/257 (0.08s)
+    --- PASS: TestCommonReferenceHardware/dot/16384 (0.09s)
+PASS
+ok  	github.com/jtenner/wago-gpu	2.572s

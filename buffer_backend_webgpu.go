@@ -11,10 +11,15 @@ import (
 	"time"
 )
 
-type nativeBuffer struct{ buffer *wgpu.Buffer }
+type nativeBuffer struct {
+	buffer *wgpu.Buffer
+	owner  *gpuBackend
+	size   uint64
+}
 
 func (b *nativeBuffer) Close() {
 	if b.buffer != nil {
+		b.owner.invalidateBuffer(b)
 		b.buffer.Destroy()
 		b.buffer.Release()
 		b.buffer = nil
@@ -24,9 +29,72 @@ func (b *nativeBuffer) Close() {
 type nativeBufferPipeline struct {
 	pipeline *wgpu.ComputePipeline
 	layout   *wgpu.BindGroupLayout
+	owner    *gpuBackend
 }
 
-func (p *nativeBufferPipeline) Close()      { p.layout.Release(); p.pipeline.Release() }
+func (p *nativeBufferPipeline) Close() {
+	for i, entry := range p.owner.groups {
+		if entry.pipeline == p {
+			p.owner.releaseGroup(i)
+		}
+	}
+	p.layout.Release()
+	p.pipeline.Release()
+}
+
+// Two alternating private output sets cover the common resident case. Keys
+// retain Go wrappers, not recyclable native IDs. Closing any member or pipeline
+// invalidates its groups before Destroy/Release. Device access stays serialized.
+type nativeGroupEntry struct {
+	group    *wgpu.BindGroup
+	pipeline *nativeBufferPipeline
+	buffers  [9]*nativeBuffer
+}
+
+func (b *gpuBackend) releaseGroup(index int) {
+	if b.groups[index].group != nil {
+		b.groups[index].group.Release()
+	}
+	b.groups[index] = nativeGroupEntry{}
+}
+func (b *gpuBackend) invalidateBuffer(buffer *nativeBuffer) {
+	for i, entry := range b.groups {
+		for _, member := range entry.buffers {
+			if member == buffer {
+				b.releaseGroup(i)
+				break
+			}
+		}
+	}
+}
+func (b *gpuBackend) bindingCounts() (uint64, uint64) { return b.groupHits, b.groupMisses }
+func (b *gpuBackend) bindBuffers(p *nativeBufferPipeline, uniform *nativeBuffer, resources []deviceBuffer) (*wgpu.BindGroup, error) {
+	var key [9]*nativeBuffer
+	key[0] = uniform
+	for i, resource := range resources {
+		key[i+1] = resource.(*nativeBuffer)
+	}
+	for _, entry := range b.groups {
+		if entry.group != nil && entry.pipeline == p && entry.buffers == key {
+			b.groupHits++
+			return entry.group, nil
+		}
+	}
+	var entries [9]wgpu.BindGroupEntry
+	entries[0] = wgpu.BindGroupEntry{Binding: 0, Buffer: uniform.buffer, Size: 16}
+	for i, member := range key[1 : len(resources)+1] {
+		entries[i+1] = wgpu.BindGroupEntry{Binding: uint32(i + 1), Buffer: member.buffer, Size: member.size}
+	}
+	group, err := b.device.TryCreateBindGroup(&wgpu.BindGroupDescriptor{Layout: p.layout, Entries: entries[:len(resources)+1]})
+	if err != nil {
+		return nil, err
+	}
+	b.groupMisses++
+	b.releaseGroup(b.nextGroup)
+	b.groups[b.nextGroup] = nativeGroupEntry{group, p, key}
+	b.nextGroup = (b.nextGroup + 1) % len(b.groups)
+	return group, nil
+}
 func (b *gpuBackend) RetainedBytes() uint64 { return b.retainedBytes }
 func (b *gpuBackend) Lost() bool            { return b.lost.Load() }
 func (b *gpuBackend) BuildBuffer(source string) (bufferPipeline, error) {
@@ -51,7 +119,7 @@ func (b *gpuBackend) BuildBuffer(source string) (bufferPipeline, error) {
 		}
 		return nil, e
 	}
-	return &nativeBufferPipeline{pipeline, layout}, nil
+	return &nativeBufferPipeline{pipeline: pipeline, layout: layout, owner: b}, nil
 }
 func (b *gpuBackend) AllocateBuffer(size uint64) (deviceBuffer, error) {
 	if size == 0 || size > b.limits.MaxBufferSize || size > b.limits.MaxStorageBufferBindingSize {
@@ -61,7 +129,7 @@ func (b *gpuBackend) AllocateBuffer(size uint64) (deviceBuffer, error) {
 	if e != nil {
 		return nil, e
 	}
-	return &nativeBuffer{r}, nil
+	return &nativeBuffer{buffer: r, owner: b, size: size}, nil
 }
 func (b *gpuBackend) UploadBuffer(ctx context.Context, resource deviceBuffer, data []byte) (resultErr error) {
 	if e := b.queue.TryWriteBuffer(resource.(*nativeBuffer).buffer, 0, data); e != nil {
@@ -104,14 +172,14 @@ func (b *gpuBackend) AllocateReadback(size uint64) (deviceBuffer, error) {
 	if e != nil {
 		return nil, e
 	}
-	return &nativeBuffer{r}, nil
+	return &nativeBuffer{buffer: r, owner: b, size: size}, nil
 }
 func (b *gpuBackend) AllocateUniform(size uint64) (deviceBuffer, error) {
 	r, e := b.device.TryCreateBuffer(&wgpu.BufferDescriptor{Size: size, Usage: wgpu.BufferUsageUniform | wgpu.BufferUsageCopyDst})
 	if e != nil {
 		return nil, e
 	}
-	return &nativeBuffer{r}, nil
+	return &nativeBuffer{buffer: r, owner: b, size: size}, nil
 }
 func (b *gpuBackend) ReadBuffer(ctx context.Context, resource, staging deviceBuffer, size uint64, commit func([]byte)) (resultErr error) {
 	r := staging.(*nativeBuffer).buffer
@@ -179,20 +247,13 @@ func (b *gpuBackend) ExecuteBuffers(ctx context.Context, pipeline bufferPipeline
 		}
 		parameterQueued = true
 	}
-	var entries [9]wgpu.BindGroupEntry
-	entries[0] = wgpu.BindGroupEntry{Binding: 0, Buffer: uniform, Size: 16}
-	for i, r := range resources {
-		buffer := r.(*nativeBuffer).buffer
-		entries[i+1] = wgpu.BindGroupEntry{Binding: uint32(i + 1), Buffer: buffer, Size: buffer.GetSize()}
-	}
-	group, e := b.device.TryCreateBindGroup(&wgpu.BindGroupDescriptor{Layout: p.layout, Entries: entries[:len(resources)+1]})
+	group, e := b.bindBuffers(p, parameter.(*nativeBuffer), resources)
 	if e != nil {
 		return e
 	}
-	defer group.Release()
 	copySeeds := func(encoder *wgpu.CommandEncoder) error {
 		for _, seed := range seeds {
-			if e := encoder.TryCopyBufferToBuffer(seed.source.(*nativeBuffer).buffer, 0, seed.destination.(*nativeBuffer).buffer, 0, seed.size); e != nil {
+			if e := encoder.TryCopyBufferToBuffer(seed.source.(*nativeBuffer).buffer, seed.offset, seed.destination.(*nativeBuffer).buffer, seed.offset, seed.size); e != nil {
 				return e
 			}
 		}

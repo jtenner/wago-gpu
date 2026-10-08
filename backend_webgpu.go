@@ -12,15 +12,18 @@ import (
 )
 
 type gpuBackend struct {
-	instance      *wgpu.Instance
-	adapter       *wgpu.Adapter
-	device        *wgpu.Device
-	queue         *wgpu.Queue
-	info          string
-	limits        wgpu.Limits
-	lost          atomic.Bool
-	retired       []*wgpu.Buffer
-	retainedBytes uint64
+	instance               *wgpu.Instance
+	adapter                *wgpu.Adapter
+	device                 *wgpu.Device
+	queue                  *wgpu.Queue
+	info                   string
+	limits                 wgpu.Limits
+	lost                   atomic.Bool
+	retired                []*wgpu.Buffer
+	retainedBytes          uint64
+	groups                 [2]nativeGroupEntry
+	nextGroup              int
+	groupHits, groupMisses uint64
 }
 
 func openBackend() (backend, error) {
@@ -52,6 +55,9 @@ func openBackend() (backend, error) {
 }
 func (b *gpuBackend) Info() string { return b.info }
 func (b *gpuBackend) Close() {
+	for i := range b.groups {
+		b.releaseGroup(i)
+	}
 	for _, r := range b.retired {
 		r.Destroy()
 		r.Release()

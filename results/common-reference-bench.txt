@@ -1,0 +1,450 @@
+goos: linux
+goarch: amd64
+pkg: github.com/jtenner/wago-gpu
+cpu: AMD Ryzen 7 8845HS w/ Radeon 780M Graphics
+BenchmarkCommon/matmul/64/cpu-naive         	       3	    263980 ns/op	         1.986 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-naive         	       3	    267476 ns/op	         1.960 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-naive         	       3	    267914 ns/op	         1.957 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-transposed    	       3	    249823 ns/op	         2.099 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-transposed    	       3	    250685 ns/op	         2.091 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-transposed    	       3	    249953 ns/op	         2.098 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-transpose-and-matmul         	       3	    260336 ns/op	         2.014 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-transpose-and-matmul         	       3	    260373 ns/op	         2.014 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/cpu-transpose-and-matmul         	       3	    260313 ns/op	         2.014 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/64/gpu-naive-resident               	       3	     66124 ns/op	         7.929 GFLOP/s	        65.82 compute-us/op	     65552 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        71.40 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-naive-resident               	       3	     44200 ns/op	        11.86 GFLOP/s	        44.01 compute-us/op	     65552 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        67.01 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-naive-resident               	       3	     48568 ns/op	        10.80 GFLOP/s	        48.31 compute-us/op	     65552 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        66.84 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-naive-end-to-end             	       3	    153589 ns/op	         3.414 GFLOP/s	        43.19 compute-us/op	     65552 device-buffer-bytes	        26.94 download-us/op	         0 final-sum-us/op	        73.60 first-ms	        83.09 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-naive-end-to-end             	       3	    130826 ns/op	         4.008 GFLOP/s	        42.67 compute-us/op	     65552 device-buffer-bytes	        28.06 download-us/op	         0 final-sum-us/op	        69.39 first-ms	        59.68 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-naive-end-to-end             	       3	    135187 ns/op	         3.878 GFLOP/s	        43.20 compute-us/op	     65552 device-buffer-bytes	        27.36 download-us/op	         0 final-sum-us/op	        66.82 first-ms	        64.12 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-tiled-resident               	       3	     36629 ns/op	        14.31 GFLOP/s	        36.41 compute-us/op	     65552 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        67.30 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-tiled-resident               	       3	     34475 ns/op	        15.21 GFLOP/s	        34.29 compute-us/op	     65552 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        65.25 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-tiled-resident               	       3	     43188 ns/op	        12.14 GFLOP/s	        42.99 compute-us/op	     65552 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        67.12 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-tiled-end-to-end             	       3	    122751 ns/op	         4.271 GFLOP/s	        34.90 compute-us/op	     65552 device-buffer-bytes	        26.63 download-us/op	         0 final-sum-us/op	        63.66 first-ms	        60.88 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-tiled-end-to-end             	       3	    121458 ns/op	         4.317 GFLOP/s	        35.85 compute-us/op	     65552 device-buffer-bytes	        27.22 download-us/op	         0 final-sum-us/op	        66.30 first-ms	        58.05 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/64/gpu-tiled-end-to-end             	       3	    124761 ns/op	         4.202 GFLOP/s	        35.83 compute-us/op	     65552 device-buffer-bytes	        27.97 download-us/op	         0 final-sum-us/op	        67.77 first-ms	        60.55 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/64/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/cpu-naive                       	       3	   2278628 ns/op	         1.841 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-naive                       	       3	   2294827 ns/op	         1.828 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-naive                       	       3	   2280767 ns/op	         1.839 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-transposed                  	       3	   2065547 ns/op	         2.031 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-transposed                  	       3	   2062123 ns/op	         2.034 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-transposed                  	       3	   2052472 ns/op	         2.044 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-transpose-and-matmul        	       3	   2077723 ns/op	         2.019 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-transpose-and-matmul        	       3	   2069237 ns/op	         2.027 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/cpu-transpose-and-matmul        	       3	   2063480 ns/op	         2.033 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/128/gpu-naive-resident              	       3	     53741 ns/op	        78.05 GFLOP/s	        53.56 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        65.66 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-naive-resident              	       3	     57188 ns/op	        73.34 GFLOP/s	        57.02 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        64.73 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-naive-resident              	       3	     56566 ns/op	        74.15 GFLOP/s	        56.38 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        64.49 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-naive-end-to-end            	       3	    162335 ns/op	        25.84 GFLOP/s	        53.61 compute-us/op	    262160 device-buffer-bytes	        33.40 download-us/op	         0 final-sum-us/op	        68.56 first-ms	        74.91 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-naive-end-to-end            	       3	    194689 ns/op	        21.54 GFLOP/s	        62.58 compute-us/op	    262160 device-buffer-bytes	        39.14 download-us/op	         0 final-sum-us/op	        66.25 first-ms	        92.51 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-naive-end-to-end            	       3	    192672 ns/op	        21.77 GFLOP/s	        60.90 compute-us/op	    262160 device-buffer-bytes	        37.38 download-us/op	         0 final-sum-us/op	        68.39 first-ms	        93.77 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-tiled-resident              	       3	     44774 ns/op	        93.68 GFLOP/s	        44.60 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        66.92 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-tiled-resident              	       3	     43979 ns/op	        95.37 GFLOP/s	        43.79 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        65.16 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-tiled-resident              	       3	     44564 ns/op	        94.12 GFLOP/s	        44.34 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        64.57 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-tiled-end-to-end            	       3	    149284 ns/op	        28.10 GFLOP/s	        43.65 compute-us/op	    262160 device-buffer-bytes	        32.94 download-us/op	         0 final-sum-us/op	        65.07 first-ms	        72.32 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-tiled-end-to-end            	       3	    160896 ns/op	        26.07 GFLOP/s	        45.15 compute-us/op	    262160 device-buffer-bytes	        40.75 download-us/op	         0 final-sum-us/op	        63.99 first-ms	        74.43 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/128/gpu-tiled-end-to-end            	       3	    181939 ns/op	        23.05 GFLOP/s	        50.97 compute-us/op	    262160 device-buffer-bytes	        39.79 download-us/op	         0 final-sum-us/op	        77.72 first-ms	        90.65 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/128/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/cpu-naive                       	       3	  19331177 ns/op	         1.736 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-naive                       	       3	  18369157 ns/op	         1.827 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-naive                       	       3	  18441961 ns/op	         1.819 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-transposed                  	       3	  16401618 ns/op	         2.046 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-transposed                  	       3	  16387194 ns/op	         2.048 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-transposed                  	       3	  16296391 ns/op	         2.059 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-transpose-and-matmul        	       3	  16578742 ns/op	         2.024 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-transpose-and-matmul        	       3	  16471931 ns/op	         2.037 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/cpu-transpose-and-matmul        	       3	  16458386 ns/op	         2.039 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/256/gpu-naive-resident              	       3	    124220 ns/op	       270.1 GFLOP/s	       124.0 compute-us/op	   1048592 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        69.22 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-naive-resident              	       3	    124284 ns/op	       270.0 GFLOP/s	       124.1 compute-us/op	   1048592 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        68.90 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-naive-resident              	       3	    123282 ns/op	       272.2 GFLOP/s	       123.1 compute-us/op	   1048592 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        67.62 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-naive-end-to-end            	       3	    295829 ns/op	       113.4 GFLOP/s	       124.6 compute-us/op	   1048592 device-buffer-bytes	        55.44 download-us/op	         0 final-sum-us/op	        68.03 first-ms	       115.3 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-naive-end-to-end            	       3	    304699 ns/op	       110.1 GFLOP/s	       127.8 compute-us/op	   1048592 device-buffer-bytes	        58.71 download-us/op	         0 final-sum-us/op	        69.46 first-ms	       117.7 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-naive-end-to-end            	       3	    293635 ns/op	       114.3 GFLOP/s	       127.1 compute-us/op	   1048592 device-buffer-bytes	        54.76 download-us/op	         0 final-sum-us/op	        68.92 first-ms	       111.4 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-tiled-resident              	       3	    114058 ns/op	       294.2 GFLOP/s	       113.9 compute-us/op	   1048592 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        66.97 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-tiled-resident              	       3	    112408 ns/op	       298.5 GFLOP/s	       112.2 compute-us/op	   1048592 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        70.26 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-tiled-resident              	       3	    111957 ns/op	       299.7 GFLOP/s	       111.7 compute-us/op	   1048592 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        72.53 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-tiled-end-to-end            	       3	    285908 ns/op	       117.4 GFLOP/s	       114.7 compute-us/op	   1048592 device-buffer-bytes	        55.12 download-us/op	         0 final-sum-us/op	        70.31 first-ms	       115.7 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-tiled-end-to-end            	       3	    281018 ns/op	       119.4 GFLOP/s	       111.2 compute-us/op	   1048592 device-buffer-bytes	        55.70 download-us/op	         0 final-sum-us/op	        68.28 first-ms	       113.6 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/256/gpu-tiled-end-to-end            	       3	    285881 ns/op	       117.4 GFLOP/s	       114.4 compute-us/op	   1048592 device-buffer-bytes	        55.07 download-us/op	         0 final-sum-us/op	        65.62 first-ms	       116.1 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/256/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/cpu-naive                       	       3	 188610687 ns/op	         1.423 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-naive                       	       3	 175130601 ns/op	         1.533 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-naive                       	       3	 191045709 ns/op	         1.405 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-transposed                  	       3	 129596123 ns/op	         2.071 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-transposed                  	       3	 129913145 ns/op	         2.066 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-transposed                  	       3	 129929693 ns/op	         2.066 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-transpose-and-matmul        	       3	 131588685 ns/op	         2.040 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-transpose-and-matmul        	       3	 131703167 ns/op	         2.038 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/cpu-transpose-and-matmul        	       3	 132162714 ns/op	         2.031 GFLOP/s	       5 B/op	       0 allocs/op
+BenchmarkCommon/matmul/512/gpu-naive-resident              	       3	    712700 ns/op	       376.6 GFLOP/s	       712.4 compute-us/op	   4194320 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        81.66 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-naive-resident              	       3	    710760 ns/op	       377.7 GFLOP/s	       710.6 compute-us/op	   4194320 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        89.69 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-naive-resident              	       3	    719052 ns/op	       373.3 GFLOP/s	       718.9 compute-us/op	   4194320 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        79.19 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-naive-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-naive-end-to-end            	       3	   1143577 ns/op	       234.7 GFLOP/s	       711.2 compute-us/op	   4194320 device-buffer-bytes	       161.4 download-us/op	         0 final-sum-us/op	        76.10 first-ms	       270.6 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-naive-end-to-end            	       3	   1128865 ns/op	       237.8 GFLOP/s	       710.6 compute-us/op	   4194320 device-buffer-bytes	       150.3 download-us/op	         0 final-sum-us/op	        77.15 first-ms	       267.6 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-naive-end-to-end            	       3	   1124541 ns/op	       238.7 GFLOP/s	       709.3 compute-us/op	   4194320 device-buffer-bytes	       148.0 download-us/op	         0 final-sum-us/op	        77.16 first-ms	       266.8 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-naive-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-tiled-resident              	       3	    607536 ns/op	       441.8 GFLOP/s	       607.4 compute-us/op	   4194320 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        74.51 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-tiled-resident              	       3	    604009 ns/op	       444.4 GFLOP/s	       603.8 compute-us/op	   4194320 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        73.56 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-tiled-resident              	       3	    605779 ns/op	       443.1 GFLOP/s	       605.6 compute-us/op	   4194320 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        85.36 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-tiled-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-tiled-end-to-end            	       3	   1040119 ns/op	       258.1 GFLOP/s	       607.0 compute-us/op	   4194320 device-buffer-bytes	       160.3 download-us/op	         0 final-sum-us/op	        77.19 first-ms	       272.3 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-tiled-end-to-end            	       3	   1088981 ns/op	       246.5 GFLOP/s	       626.0 compute-us/op	   4194320 device-buffer-bytes	       163.6 download-us/op	         0 final-sum-us/op	        78.82 first-ms	       298.6 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/matmul/512/gpu-tiled-end-to-end            	       3	   1030401 ns/op	       260.5 GFLOP/s	       606.0 compute-us/op	   4194320 device-buffer-bytes	       150.7 download-us/op	         0 final-sum-us/op	        79.15 first-ms	       273.3 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/matmul/512/gpu-tiled-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1024/cpu                               	       3	       908.7 ns/op	         2.254 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/1024/cpu                               	       3	       895.0 ns/op	         2.288 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/1024/cpu                               	       3	       905.0 ns/op	         2.263 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/1024/gpu-resident-partials             	       3	     34565 ns/op	         0.05925 GFLOP/s	        34.27 compute-us/op	      8240 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        64.97 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/1024/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1024/gpu-resident-partials             	       3	     36913 ns/op	         0.05548 GFLOP/s	        36.71 compute-us/op	      8240 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        68.38 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/1024/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1024/gpu-resident-partials             	       3	     35467 ns/op	         0.05774 GFLOP/s	        35.26 compute-us/op	      8240 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        71.92 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/1024/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1024/gpu-end-to-end                    	       3	    115684 ns/op	         0.01770 GFLOP/s	        32.46 compute-us/op	      8240 device-buffer-bytes	        25.83 download-us/op	         0.09000 final-sum-us/op	        67.52 first-ms	        56.98 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/1024/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1024/gpu-end-to-end                    	       3	    115821 ns/op	         0.01768 GFLOP/s	        34.61 compute-us/op	      8240 device-buffer-bytes	        26.20 download-us/op	         0.1403 final-sum-us/op	        65.51 first-ms	        54.54 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/1024/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1024/gpu-end-to-end                    	       3	    133598 ns/op	         0.01533 GFLOP/s	        36.01 compute-us/op	      8240 device-buffer-bytes	        27.30 download-us/op	         0.1067 final-sum-us/op	        68.08 first-ms	        69.75 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/1024/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/16384/cpu                              	       3	     10523 ns/op	         3.114 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/16384/cpu                              	       3	     10483 ns/op	         3.126 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/16384/cpu                              	       3	     15653 ns/op	         2.093 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/16384/gpu-resident-partials            	       3	     31282 ns/op	         1.047 GFLOP/s	        31.05 compute-us/op	    131600 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        65.96 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/16384/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/16384/gpu-resident-partials            	       3	     32601 ns/op	         1.005 GFLOP/s	        32.30 compute-us/op	    131600 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        65.56 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/16384/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/16384/gpu-resident-partials            	       3	     32598 ns/op	         1.005 GFLOP/s	        32.43 compute-us/op	    131600 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        66.97 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/16384/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/16384/gpu-end-to-end                   	       3	    130976 ns/op	         0.2502 GFLOP/s	        32.52 compute-us/op	    131600 device-buffer-bytes	        25.10 download-us/op	         0.1233 final-sum-us/op	        68.06 first-ms	        72.92 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/16384/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/16384/gpu-end-to-end                   	       3	    129440 ns/op	         0.2532 GFLOP/s	        33.23 compute-us/op	    131600 device-buffer-bytes	        24.83 download-us/op	         0.1237 final-sum-us/op	        64.56 first-ms	        70.95 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/16384/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/16384/gpu-end-to-end                   	       3	    192666 ns/op	         0.1701 GFLOP/s	        57.40 compute-us/op	    131600 device-buffer-bytes	        42.32 download-us/op	         0.2167 final-sum-us/op	        67.96 first-ms	        92.02 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/16384/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1000000/cpu                            	       3	    644144 ns/op	         3.105 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/1000000/cpu                            	       3	    640578 ns/op	         3.122 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/1000000/cpu                            	       3	    686364 ns/op	         2.914 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/1000000/gpu-resident-partials          	       3	     90043 ns/op	        22.21 GFLOP/s	        89.84 compute-us/op	   8031272 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        71.86 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/1000000/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1000000/gpu-resident-partials          	       3	     84048 ns/op	        23.80 GFLOP/s	        83.79 compute-us/op	   8031272 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        68.90 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/1000000/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1000000/gpu-resident-partials          	       3	     79269 ns/op	        25.23 GFLOP/s	        79.09 compute-us/op	   8031272 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        66.28 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/1000000/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1000000/gpu-end-to-end                 	       3	    987804 ns/op	         2.025 GFLOP/s	       102.7 compute-us/op	   8031272 device-buffer-bytes	        37.37 download-us/op	         3.814 final-sum-us/op	        68.18 first-ms	       843.3 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/1000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1000000/gpu-end-to-end                 	       3	    970855 ns/op	         2.060 GFLOP/s	        87.80 compute-us/op	   8031272 device-buffer-bytes	        28.99 download-us/op	         2.565 final-sum-us/op	        69.22 first-ms	       851.0 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/1000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/1000000/gpu-end-to-end                 	       3	   1016671 ns/op	         1.967 GFLOP/s	       103.0 compute-us/op	   8031272 device-buffer-bytes	        37.86 download-us/op	         3.821 final-sum-us/op	        66.16 first-ms	       871.4 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/1000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/10000000/cpu                           	       3	   6367718 ns/op	         3.141 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/10000000/cpu                           	       3	   6264421 ns/op	         3.193 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/10000000/cpu                           	       3	   6274730 ns/op	         3.187 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/dot/10000000/gpu-resident-partials         	       3	    546114 ns/op	        36.62 GFLOP/s	       545.9 compute-us/op	  80312520 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        90.80 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/10000000/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/10000000/gpu-resident-partials         	       3	    557729 ns/op	        35.86 GFLOP/s	       557.5 compute-us/op	  80312520 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	       102.6 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/10000000/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/10000000/gpu-resident-partials         	       3	    556810 ns/op	        35.92 GFLOP/s	       556.6 compute-us/op	  80312520 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	       100.3 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/dot/10000000/gpu-resident-partials
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/10000000/gpu-end-to-end                	       3	   8692585 ns/op	         2.301 GFLOP/s	       625.9 compute-us/op	  80312520 device-buffer-bytes	        57.08 download-us/op	        24.98 final-sum-us/op	        96.68 first-ms	      7983 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/10000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/10000000/gpu-end-to-end                	       3	   8727394 ns/op	         2.292 GFLOP/s	       634.5 compute-us/op	  80312520 device-buffer-bytes	        58.32 download-us/op	        24.74 final-sum-us/op	        94.17 first-ms	      8008 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/10000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/dot/10000000/gpu-end-to-end                	       3	   8678453 ns/op	         2.305 GFLOP/s	       622.2 compute-us/op	  80312520 device-buffer-bytes	        56.64 download-us/op	        24.72 final-sum-us/op	        99.02 first-ms	      7974 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/dot/10000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1024/cpu                             	       3	      1316 ns/op	         1.556 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1024/cpu                             	       3	      1302 ns/op	         1.573 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1024/cpu                             	       3	      1262 ns/op	         1.622 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1024/gpu-resident                    	       3	     32975 ns/op	         0.06211 GFLOP/s	        32.77 compute-us/op	     16400 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        66.98 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1024/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1024/gpu-resident                    	       3	     34184 ns/op	         0.05991 GFLOP/s	        34.00 compute-us/op	     16400 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        64.81 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1024/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1024/gpu-resident                    	       3	     34224 ns/op	         0.05984 GFLOP/s	        33.81 compute-us/op	     16400 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        66.82 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1024/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1024/gpu-end-to-end                  	       3	    119648 ns/op	         0.01712 GFLOP/s	        33.66 compute-us/op	     16400 device-buffer-bytes	        27.68 download-us/op	         0 final-sum-us/op	        65.77 first-ms	        57.95 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1024/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1024/gpu-end-to-end                  	       3	    126531 ns/op	         0.01619 GFLOP/s	        33.87 compute-us/op	     16400 device-buffer-bytes	        28.60 download-us/op	         0 final-sum-us/op	        64.65 first-ms	        63.73 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1024/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1024/gpu-end-to-end                  	       3	    110538 ns/op	         0.01853 GFLOP/s	        31.05 compute-us/op	     16400 device-buffer-bytes	        25.07 download-us/op	         0 final-sum-us/op	        62.90 first-ms	        54.06 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1024/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/16384/cpu                            	       3	     12841 ns/op	         2.552 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/16384/cpu                            	       3	     14043 ns/op	         2.333 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/16384/cpu                            	       3	     14083 ns/op	         2.327 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/16384/gpu-resident                   	       3	     36489 ns/op	         0.8980 GFLOP/s	        36.27 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        67.34 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/16384/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/16384/gpu-resident                   	       3	     37681 ns/op	         0.8696 GFLOP/s	        37.46 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        68.55 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/16384/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/16384/gpu-resident                   	       3	     30801 ns/op	         1.064 GFLOP/s	        30.56 compute-us/op	    262160 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        73.14 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/16384/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/16384/gpu-end-to-end                 	       3	    145057 ns/op	         0.2259 GFLOP/s	        31.79 compute-us/op	    262160 device-buffer-bytes	        34.72 download-us/op	         0 final-sum-us/op	        66.43 first-ms	        78.04 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/16384/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/16384/gpu-end-to-end                 	       3	    135708 ns/op	         0.2415 GFLOP/s	        31.96 compute-us/op	    262160 device-buffer-bytes	        32.78 download-us/op	         0 final-sum-us/op	        64.72 first-ms	        70.61 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/16384/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/16384/gpu-end-to-end                 	       3	    138698 ns/op	         0.2363 GFLOP/s	        31.86 compute-us/op	    262160 device-buffer-bytes	        38.11 download-us/op	         0 final-sum-us/op	        64.08 first-ms	        68.22 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/16384/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1000000/cpu                          	       3	    791291 ns/op	         2.528 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1000000/cpu                          	       3	    786859 ns/op	         2.542 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1000000/cpu                          	       3	    794587 ns/op	         2.517 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/1000000/gpu-resident                 	       3	     52218 ns/op	        38.30 GFLOP/s	        52.03 compute-us/op	  16000016 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        76.97 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1000000/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1000000/gpu-resident                 	       3	     52465 ns/op	        38.12 GFLOP/s	        52.27 compute-us/op	  16000016 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        74.18 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1000000/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1000000/gpu-resident                 	       3	     52228 ns/op	        38.29 GFLOP/s	        52.05 compute-us/op	  16000016 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        68.61 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1000000/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1000000/gpu-end-to-end               	       3	   1403963 ns/op	         1.425 GFLOP/s	        54.54 compute-us/op	  16000016 device-buffer-bytes	       510.2 download-us/op	         0 final-sum-us/op	        71.89 first-ms	       838.7 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1000000/gpu-end-to-end               	       3	   1413387 ns/op	         1.415 GFLOP/s	        52.64 compute-us/op	  16000016 device-buffer-bytes	       513.7 download-us/op	         0 final-sum-us/op	        74.09 first-ms	       846.6 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/1000000/gpu-end-to-end               	       3	   1405432 ns/op	         1.423 GFLOP/s	        52.89 compute-us/op	  16000016 device-buffer-bytes	       510.0 download-us/op	         0 final-sum-us/op	        68.94 first-ms	       842.0 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/1000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/10000000/cpu                         	       3	   7744733 ns/op	         2.582 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/10000000/cpu                         	       3	   7732884 ns/op	         2.586 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/10000000/cpu                         	       3	   7798254 ns/op	         2.565 GFLOP/s	       0 B/op	       0 allocs/op
+BenchmarkCommon/saxpy/10000000/gpu-resident                	       3	    631363 ns/op	        31.68 GFLOP/s	       631.2 compute-us/op	 160000016 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	       101.8 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/10000000/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/10000000/gpu-resident                	       3	    635271 ns/op	        31.48 GFLOP/s	       635.1 compute-us/op	 160000016 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	       100.2 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/10000000/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/10000000/gpu-resident                	       3	    639098 ns/op	        31.29 GFLOP/s	       638.9 compute-us/op	 160000016 device-buffer-bytes	         0 download-us/op	         0 final-sum-us/op	        97.25 first-ms	         0 upload-us/op	     565 B/op	      10 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/10000000/gpu-resident
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/10000000/gpu-end-to-end              	       3	  13178485 ns/op	         1.518 GFLOP/s	       693.9 compute-us/op	 160000016 device-buffer-bytes	      4486 download-us/op	         0 final-sum-us/op	       103.8 first-ms	      7997 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/10000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/10000000/gpu-end-to-end              	       3	  13175754 ns/op	         1.518 GFLOP/s	       692.2 compute-us/op	 160000016 device-buffer-bytes	      4464 download-us/op	         0 final-sum-us/op	       102.7 first-ms	      8018 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/10000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+BenchmarkCommon/saxpy/10000000/gpu-end-to-end              	       3	  13232097 ns/op	         1.511 GFLOP/s	       676.5 compute-us/op	 160000016 device-buffer-bytes	      4505 download-us/op	         0 final-sum-us/op	       114.5 first-ms	      8049 upload-us/op	    1264 B/op	      30 allocs/op
+--- BENCH: BenchmarkCommon/saxpy/10000000/gpu-end-to-end
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+    common_benchmark_test.go:415: NVIDIA GeForce RTX 4060 Laptop GPU; 550.163.01; discrete-gpu; vulkan
+PASS
+ok  	github.com/jtenner/wago-gpu	36.808s

@@ -23,7 +23,7 @@ type bufferDevice interface {
 }
 type bufferSeed struct {
 	source, destination deviceBuffer
-	size                uint64
+	size, offset        uint64
 }
 type bufferPipelineEntry struct {
 	pipeline bufferPipeline
@@ -313,7 +313,13 @@ func (p *Plugin) executeBufferKernel(ctx context.Context, i *bufferInstance, k *
 			outputs[slot] = r
 			resources[idx] = r
 			if !replace {
-				seeds[seedCount] = bufferSeed{b.gpu, r, size}
+				offset := uint64(0)
+				if !k.lowered.readBeforeWrite[slot] {
+					// Every active invocation covers its output. Only the tail
+					// needs preservation when no read needs the old prefix.
+					offset = uint64(count) * 4
+				}
+				seeds[seedCount] = bufferSeed{source: b.gpu, destination: r, size: size - offset, offset: offset}
 				seedCount++
 			}
 		}

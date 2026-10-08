@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/binary"
 	"github.com/oliverbestmann/webgpu/wgpu"
+	"math"
 	"runtime"
 	"strings"
 	"testing"
@@ -419,4 +420,120 @@ func TestBindingPendingMapLifetime(t *testing.T) {
 			buffer.Release()
 		}
 	}
+}
+
+func TestBufferHardwareBindingCacheLifetime(t *testing.T) {
+	requireHardware(t)
+	backend, e := openBackend()
+	if e != nil {
+		t.Fatal(e)
+	}
+	b := backend.(*gpuBackend)
+	defer b.Close()
+	shader := `struct Params { count: u32, a:u32,b:u32,c:u32 }
+ @group(0) @binding(0) var<uniform> p:Params;
+ @group(0) @binding(1) var<storage,read> input:array<f32>;
+ @group(0) @binding(2) var<storage,read_write> output:array<f32>;
+ @compute @workgroup_size(256) fn main(@builtin(global_invocation_id) id:vec3<u32>) {
+ if (id.x<p.count) {output[id.x]=input[id.x]*2.0;}}
+ `
+	pipeline, e := b.BuildBuffer(shader)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer func() {
+		if pipeline != nil {
+			pipeline.Close()
+		}
+	}()
+	uniform, e := b.AllocateUniform(16)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer uniform.Close()
+	var input deviceBuffer
+	input, e = b.AllocateBuffer(16)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer func() { input.Close() }()
+	var outputs [2]deviceBuffer
+	for n := range outputs {
+		outputs[n], e = b.AllocateBuffer(16)
+		if e != nil {
+			t.Fatal(e)
+		}
+		defer outputs[n].Close()
+	}
+	ctx := context.Background()
+	for n := 0; n < 8; n++ {
+		op := BufferOperation{}
+		if e = b.ExecuteBuffers(ctx, pipeline, uniform, []deviceBuffer{input, outputs[n%2]}, nil, 4, n == 0, &op); e != nil {
+			t.Fatal(e)
+		}
+	}
+	hits, misses := b.bindingCounts()
+	if hits != 6 || misses != 2 {
+		t.Fatal(hits, misses)
+	}
+	input.Close()
+	for _, entry := range b.groups {
+		if entry.group != nil {
+			t.Fatal("closed input retained by cache")
+		}
+	}
+	input, e = b.AllocateBuffer(16)
+	if e != nil {
+		t.Fatal(e)
+	}
+	var data [16]byte
+	for n := 0; n < 4; n++ {
+		binary.LittleEndian.PutUint32(data[n*4:], math.Float32bits(float32(n+5)))
+	}
+	if e = b.UploadBuffer(ctx, input, data[:]); e != nil {
+		t.Fatal(e)
+	}
+	if e = b.ExecuteBuffers(ctx, pipeline, uniform, []deviceBuffer{input, outputs[0]}, nil, 3, true, &BufferOperation{}); e != nil {
+		t.Fatal(e)
+	}
+	staging, e := b.AllocateReadback(16)
+	if e != nil {
+		t.Fatal(e)
+	}
+	defer staging.Close()
+	if e = b.ReadBuffer(ctx, outputs[0], staging, 16, func(result []byte) {
+		for n := 0; n < 3; n++ {
+			got := math.Float32frombits(binary.LittleEndian.Uint32(result[n*4:]))
+			if got != float32(n+5)*2 {
+				t.Fatal(n, got)
+			}
+		}
+	}); e != nil {
+		t.Fatal(e)
+	}
+	hits, misses = b.bindingCounts()
+	if hits != 6 || misses != 3 {
+		t.Fatal(hits, misses)
+	}
+	// A parameter-only change can reuse the same group without stale resources.
+	if e = b.ExecuteBuffers(ctx, pipeline, uniform, []deviceBuffer{input, outputs[0]}, nil, 4, true, &BufferOperation{}); e != nil {
+		t.Fatal(e)
+	}
+	hits, misses = b.bindingCounts()
+	if hits != 7 || misses != 3 {
+		t.Fatal(hits, misses)
+	}
+	// Close layout/pipeline only after all matching groups have been released.
+	pipeline.Close()
+	pipeline = nil
+	for _, entry := range b.groups {
+		if entry.group != nil {
+			t.Fatal("pipeline group retained")
+		}
+	}
+}
+
+func TestBufferHardwareTailBoundaries(t *testing.T) {
+	requireHardware(t)
+	testBufferTailBoundaries(t, true)
 }

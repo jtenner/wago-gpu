@@ -24,7 +24,11 @@ func gcStorage(t ElementType) wago.GuestGCArrayStorage {
 	}
 	return 0
 }
-func (p *Plugin) transferBuffer(ctx context.Context, caller wago.Caller, i *bufferInstance, call wago.HostCall, name string, op *BufferOperation) int32 {
+func importCancelled(ctx context.Context, deadline time.Time) bool {
+	return ctx.Err() != nil || (!deadline.IsZero() && !time.Now().Before(deadline))
+}
+
+func (p *Plugin) transferBuffer(ctx context.Context, deadline time.Time, caller wago.Caller, i *bufferInstance, call wago.HostCall, name string, op *BufferOperation) int32 {
 	handle, offset, count := uint32(call.I32(0)), uint32(call.I32(1)), uint32(call.I32(4))
 	op.Count = count
 	b := i.buffers[handle]
@@ -87,7 +91,7 @@ func (p *Plugin) transferBuffer(ctx context.Context, caller wago.Caller, i *buff
 			if count == 0 {
 				return nil
 			}
-			if ctx.Err() != nil {
+			if importCancelled(ctx, deadline) {
 				status = V1Cancelled
 				return nil
 			}
@@ -148,7 +152,7 @@ func (p *Plugin) transferBuffer(ctx context.Context, caller wago.Caller, i *buff
 				return nil
 			}
 		}
-		if ctx.Err() != nil {
+		if importCancelled(ctx, deadline) {
 			status = V1Cancelled
 			return nil
 		}

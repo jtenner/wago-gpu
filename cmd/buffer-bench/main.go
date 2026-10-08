@@ -116,7 +116,7 @@ func run(kernel string, n uint32, repeats int) (out result, resultErr error) {
 		if e != nil {
 			return m, e
 		}
-		if e = fixtures.Verify(instance, n); e != nil {
+		if _, e = fixtures.VerifyKernel(instance, n, kernel, 1); e != nil {
 			return m, e
 		}
 		m.Dispatch = dispatch
@@ -164,7 +164,7 @@ func run(kernel string, n uint32, repeats int) (out result, resultErr error) {
 			e = invoke("download")
 		}
 		if e == nil {
-			e = fixtures.Verify(instance, n)
+			_, e = fixtures.VerifyKernel(instance, n, kernel, 1)
 		}
 		return m, e
 	}
@@ -184,6 +184,7 @@ func run(kernel string, n uint32, repeats int) (out result, resultErr error) {
 }
 func main() {
 	sizes := flag.String("sizes", "1024,16384,1000000,10000000", "element counts")
+	kernels := flag.String("kernels", "twice,square", "twice,square,copy,polynomial")
 	repeats := flag.Int("repeats", 3, "warm runs after first run")
 	flag.Parse()
 	if *repeats < 1 {
@@ -191,7 +192,11 @@ func main() {
 		os.Exit(1)
 	}
 	enc := json.NewEncoder(os.Stdout)
-	for _, kernel := range []string{"twice", "square"} {
+	for _, kernel := range strings.Split(*kernels, ",") {
+		if kernel != "twice" && kernel != "square" && kernel != "copy" && kernel != "polynomial" {
+			fmt.Fprintln(os.Stderr, "invalid kernel", kernel)
+			os.Exit(1)
+		}
 		for _, s := range strings.Split(*sizes, ",") {
 			n, e := strconv.ParseUint(s, 10, 32)
 			if e != nil || n == 0 || n > 10_000_000 {

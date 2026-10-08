@@ -81,7 +81,11 @@ func testBufferSeedRules(t *testing.T, hardware bool) {
 				t.Fatal(got, p.BufferSnapshot())
 			}
 			op := p.BufferSnapshot().Last
-			if (op.DeviceCopyCount != 0) != tc.seed || op.DeviceCopyBytes != uint64(op.DeviceCopyCount)*16 {
+			seedBytes := uint64(op.DeviceCopyCount) * 16
+			if tc.name == "prefix" {
+				seedBytes = 4
+			}
+			if (op.DeviceCopyCount != 0) != tc.seed || op.DeviceCopyBytes != seedBytes {
 				t.Fatal("wrong seed traffic", op)
 			}
 			var inputBytes uint64
@@ -107,5 +111,52 @@ func testBufferSeedRules(t *testing.T, hardware bool) {
 				t.Fatal("allocation leak")
 			}
 		})
+	}
+}
+
+func TestBufferTailBoundaries(t *testing.T) { testBufferTailBoundaries(t, false) }
+func testBufferTailBoundaries(t *testing.T, hardware bool) {
+	c := bufferConfig()
+	c.Disabled = false
+	c.Kernels = c.Kernels[:1]
+	var factory func() (backend, error)
+	if !hardware {
+		factory = func() (backend, error) { return &fakeBufferDevice{}, nil }
+	}
+	rt, p := setup(t, c, factory)
+	_, in := instance(t, rt, wat(t, testModule(`(call $write (call $get (i32.const 1)) (local.get $i) (f32.mul (call $read (call $get (i32.const 0)) (local.get $i)) (f32.const 2)))`)))
+	const total = 513
+	for slot := uint64(0); slot < 2; slot++ {
+		r, e := in.Invoke("create", uint64(TypeF32), total)
+		if e != nil {
+			t.Fatal(e)
+		}
+		invoke(t, in, "bind", slot, uint64(uint32(r[0])))
+	}
+	for n := uint32(0); n < total; n++ {
+		in.WriteFloat32Le(n*4, float32(n+1))
+		in.WriteFloat32Le(4096+n*4, 9)
+	}
+	invoke(t, in, "set", 1, 0, 0, 0, total)
+	for _, count := range []uint32{1, 255, 256, 257, 512, 513, 256} {
+		invoke(t, in, "set", 2, 0, 0, 4096, total)
+		if status := invoke(t, in, "dispatch", 1, uint64(count)); status != V1OK {
+			t.Fatal(status, p.BufferSnapshot())
+		}
+		op := p.BufferSnapshot().Last
+		if op.DeviceCopyBytes != uint64(total-count)*4 {
+			t.Fatal("seed contains overwritten prefix", count, op.DeviceCopyBytes)
+		}
+		invoke(t, in, "copy", 2, 0, 0, 8192, total)
+		for n := uint32(0); n < total; n++ {
+			want := float32(9)
+			if n < count {
+				want = float32(n+1) * 2
+			}
+			got, _ := in.ReadFloat32Le(8192 + n*4)
+			if got != want {
+				t.Fatal(count, n, got, want)
+			}
+		}
 	}
 }

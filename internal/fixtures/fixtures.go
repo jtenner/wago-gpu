@@ -79,7 +79,7 @@ func Verify(in *wago.Instance, n uint32) error {
 // accepts finite f32 roundoff: 8e-6 * passes * max(1, abs(CPU)). This tolerance
 // applies only to these bounded demonstration inputs, not arbitrary Wasm f32.
 func VerifyKernel(in *wago.Instance, n uint32, kernel string, passes uint32) (float64, error) {
-	if kernel == "twice" || (kernel == "square" && passes == 1) {
+	if kernel == "twice" || kernel == "copy" || (kernel == "square" && passes == 1) {
 		return 0, Verify(in, n)
 	}
 	var largest float64
@@ -111,3 +111,7 @@ func VerifyKernel(in *wago.Instance, n uint32, kernel string, passes uint32) (fl
 //go:generate wat2wasm buffer_work.wat -o buffer_work.wasm
 //go:embed buffer_work.wasm
 var BufferWork []byte
+
+//go:generate wat2wasm common.wat -o common.wasm
+//go:embed common.wasm
+var Common []byte

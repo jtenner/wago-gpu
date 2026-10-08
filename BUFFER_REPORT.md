@@ -8,7 +8,8 @@ Measurements recorded on 2026-10-07. Repository checks updated on 2026-10-08. Th
 Real Wasm functions for `2*x` and `x*x+1` were translated into WGSL, executed on
 a hardware GPU, and compared bit for bit with native Wago CPU results. All
 required array sizes passed. The fresh-input GPU path was slower than direct
-CPU execution at every required size. No end-to-end crossover was found.
+CPU execution at every required size for those two kernels. No end-to-end
+crossover was found for them.
 
 The buffer start example, the F16 storage example, and the complete TinyGo guest
 run on both paths. The GC and memory64 transfer examples run on the CPU.
@@ -35,6 +36,14 @@ records the full-HD/1440p runs and scratch reuse changes. The
 [current performance report](examples/mandelbrot/PERFORMANCE_FOLLOWUP.md) records
 CPU input reuse, proven GPU copy omission, and unchanged-parameter reuse. The array benchmark
 numbers below remain the earlier recorded measurements.
+
+The [latest common-workload report](COMMON_BENCHMARKS.md) adds compiled vector
+copy and a 32-step arithmetic kernel. The arithmetic kernel has a measured
+GPU gain with transfers included. It also adds authored WGSL matrix, SAXPY,
+and reduction references against native Wago CPU. Those references do not
+extend the compiler subset. The report records bounded binding reuse,
+tail-only seeds, CPU transfer and ready-fallback deadline checks without timers, bulk CPU runners,
+all new test logs, and the latest large-image checks.
 
 ## Implemented behavior
 
